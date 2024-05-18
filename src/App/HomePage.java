@@ -13,11 +13,17 @@ import javax.swing.JLabel;
  * @author Asus
  */
 public class HomePage extends javax.swing.JFrame {
-
+    private String userID;
     /**
      * Creates new form HomePage
      */
     public HomePage() {
+        initComponents();
+        myinit();
+    }
+    
+    public HomePage(String userID){
+        this.userID = userID;
         initComponents();
         myinit();
     }

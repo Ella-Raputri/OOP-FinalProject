@@ -4,11 +4,26 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -20,23 +35,41 @@ public class Signup extends javax.swing.JFrame {
      * Creates new form 
      */
     public Signup() {
+        setResizable(false);
+        setTitle("Sign Up Page");
         initComponents();
         myinit();
     }
     
-    private void setBottomBorder(javax.swing.JTextField field){
-        Border bottomBorder = BorderFactory.createMatteBorder(0,0,1,0, Color.BLACK);
+    private void setBottomBorder(javax.swing.JTextField field, int colorR, int colorG, int colorB){
+        Color border_color = new java.awt.Color(colorR, colorG, colorB);
+        Border bottomBorder = BorderFactory.createMatteBorder(0,0,1,0,border_color);
         field.setBorder(bottomBorder);
-        field.setOpaque(false);
+        field.setOpaque(false); 
         field.setBackground(new java.awt.Color(0,0,0,0));
+    }
+    
+    public static final Pattern VALID_PASSWORD_REGEX = 
+    Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", Pattern.CASE_INSENSITIVE);
+    
+    public static boolean validatePassword(String passwordStr) {
+        Matcher matcher = VALID_PASSWORD_REGEX.matcher(passwordStr);
+        return matcher.matches();
     }
     
     private void myinit(){
         //style the username textfield to has transparent background and only bottom border 
-        setBottomBorder(username_field);
-        setBottomBorder(password_field);
-        setBottomBorder(confirm_field);
+        setBottomBorder(username_field, 0, 0, 0);
+        setBottomBorder(password_field, 0, 0 ,0);
+        setBottomBorder(confirm_field, 0, 0, 0);
         
+        //set the password field
+        password_field.setEchoChar((char)8226);
+        password_field.setFont(new java.awt.Font("Montserrat", 1, 22));
+        
+        //set the confirm password field
+        confirm_field.setEchoChar((char)8226);
+        confirm_field.setFont(new java.awt.Font("Montserrat", 1, 22));
         
         //set the hover and click action for signup button
         loginBtn.addMouseListener(new MouseAdapter() {
@@ -67,14 +100,17 @@ public class Signup extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (!showPass){
                     show_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hide_password.png")));
+                    password_field.setEchoChar((char)0);
+                    password_field.setFont(new java.awt.Font("Montserrat", Font.PLAIN, 24));
                     showPass = true;
                 }else{
                     show_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/show_password.png")));
+                    password_field.setEchoChar((char)8226);
+                    password_field.setFont(new java.awt.Font("Montserrat", 1, 22));
                     showPass = false;
                 }
             }
         });
-        
         show_conf.addMouseListener(new MouseAdapter() {
             boolean showConf = false;
 
@@ -82,13 +118,87 @@ public class Signup extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (!showConf){
                     show_conf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hide_password.png")));
+                    confirm_field.setEchoChar((char)0);
+                    confirm_field.setFont(new java.awt.Font("Montserrat", Font.PLAIN, 24));
                     showConf = true;
                 }else{
                     show_conf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/show_password.png")));
+                    confirm_field.setEchoChar((char)8226);
+                    confirm_field.setFont(new java.awt.Font("Montserrat", 1, 24));
                     showConf = false;
                 }
             }
         });
+    
+        username_field.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                recolorField(username_field, usernametxt);
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                recolorField(username_field, usernametxt);
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                recolorField(username_field, usernametxt);
+            }
+        });
+        username_field.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // When "Enter" is pressed in textField1, move focus to textField2
+                password_field.requestFocusInWindow();
+            }
+        });
+        
+        password_field.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                recolorField(password_field, passwordtxt);
+                checkPassConfirm();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                recolorField(password_field, passwordtxt);
+                checkPassConfirm();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                recolorField(password_field, passwordtxt);
+                checkPassConfirm();
+            }
+        });
+        password_field.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // When "Enter" is pressed in textField1, move focus to textField2
+                confirm_field.requestFocusInWindow();
+            }
+        });
+        
+        confirm_field.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                recolorField(confirm_field, confirmtxt);
+                checkPassConfirm();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                recolorField(confirm_field, confirmtxt);
+                checkPassConfirm();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                recolorField(confirm_field, confirmtxt);
+                checkPassConfirm();
+            }
+        });
+        confirm_field.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // When "Enter" is pressed in textField1, move focus to textField2
+                submitBtnActionPerformed(e);
+            }
+        });
+    
     }
 
     /**
@@ -133,16 +243,21 @@ public class Signup extends javax.swing.JFrame {
         getContentPane().add(loginBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(922, 490, -1, -1));
 
         show_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/show_password.png"))); // NOI18N
-        getContentPane().add(show_pass, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 410, -1, -1));
+        getContentPane().add(show_pass, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 310, -1, -1));
 
         show_conf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/show_password.png"))); // NOI18N
-        getContentPane().add(show_conf, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 310, -1, -1));
+        getContentPane().add(show_conf, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 410, -1, -1));
 
         confirmtxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); // NOI18N
         confirmtxt.setText("Confirm Password");
         getContentPane().add(confirmtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(589, 363, -1, -1));
 
         confirm_field.setFont(new java.awt.Font("Montserrat", 0, 24)); // NOI18N
+        confirm_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                confirm_fieldFocusLost(evt);
+            }
+        });
         confirm_field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 confirm_fieldActionPerformed(evt);
@@ -155,6 +270,11 @@ public class Signup extends javax.swing.JFrame {
         getContentPane().add(passwordtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(589, 266, -1, -1));
 
         password_field.setFont(new java.awt.Font("Montserrat", 0, 24)); // NOI18N
+        password_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                password_fieldFocusLost(evt);
+            }
+        });
         password_field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 password_fieldActionPerformed(evt);
@@ -164,6 +284,16 @@ public class Signup extends javax.swing.JFrame {
 
         username_field.setFont(new java.awt.Font("Montserrat", 0, 24)); // NOI18N
         username_field.setToolTipText("");
+        username_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                username_fieldFocusLost(evt);
+            }
+        });
+        username_field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                username_fieldActionPerformed(evt);
+            }
+        });
         getContentPane().add(username_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(589, 198, 556, 42));
 
         usernametxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); // NOI18N
@@ -196,6 +326,11 @@ public class Signup extends javax.swing.JFrame {
         submitBtn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 30)); // NOI18N
         submitBtn.setForeground(new java.awt.Color(255, 255, 255));
         submitBtn.setText("Submit");
+        submitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitBtnActionPerformed(evt);
+            }
+        });
         getContentPane().add(submitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(748, 590, 242, 59));
 
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/Signup.png"))); // NOI18N
@@ -219,6 +354,132 @@ public class Signup extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_password_fieldActionPerformed
 
+    private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
+        String username_str = username_field.getText();
+        String pass_str = password_field.getText();
+        String confirm_str = confirm_field.getText();
+        
+        if(username_str.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Username is still empty.");
+        }
+        else if(pass_str.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Password is still empty.");
+        }
+        else if(confirm_str.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Confirm Password is still empty.");
+        }
+        else{           
+           if(!(pass_str.equals(confirm_str))){
+               JOptionPane.showMessageDialog(getContentPane(), "Password and Confirm Password is not the same.");
+           }
+           else{
+               if(!(validatePassword(pass_str))){
+                    JOptionPane.showMessageDialog(getContentPane(), "Password must have 8 characters with at least one number and one character");
+               }
+           }
+        }
+        
+        if(pass_str.equals(confirm_str) && validatePassword(pass_str)){
+            try{
+                //set ID first
+                Connection con = ConnectionProvider.getCon();
+                Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                ResultSet rs = st.executeQuery("select count(userID) from user");
+                String idStr ="";
+                if(rs.first()){
+                    String id = rs.getString(1);                    
+                    int idInt = Integer.parseInt(id);
+                    idInt = idInt+1;
+                    idStr = "u" + String.valueOf(idInt);
+                }
+                else{
+                    idStr = "u1";
+                }
+
+                //insert into database
+                String sql = "insert into user values(?,?,?)";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1, idStr);
+                ps.setString(2, username_str);
+                ps.setString(3, pass_str);
+
+                ps.executeUpdate();
+                setVisible(false);
+                new HomePage(idStr).setVisible(true);
+
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(getContentPane(), e);
+            }
+        }
+                
+    }//GEN-LAST:event_submitBtnActionPerformed
+
+    private void username_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_username_fieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_username_fieldActionPerformed
+
+    private void username_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_username_fieldFocusLost
+        // TODO add your handling code here:
+        recolorField(username_field, usernametxt);
+    }//GEN-LAST:event_username_fieldFocusLost
+
+    private void password_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_password_fieldFocusLost
+        // TODO add your handling code here
+        recolorField(password_field, passwordtxt);
+        checkPassConfirm();
+    }//GEN-LAST:event_password_fieldFocusLost
+
+    private void confirm_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_confirm_fieldFocusLost
+        // TODO add your handling code here:
+        recolorField(confirm_field, confirmtxt);
+        checkPassConfirm();
+    }//GEN-LAST:event_confirm_fieldFocusLost
+    
+    private void recolorField(JTextField field, JLabel label){
+        String text = field.getText();
+        if(text.trim().isEmpty()){
+            label.setForeground(Color.red);
+            setBottomBorder(field, 255, 0, 0);
+            field.setForeground(Color.red);
+        }
+        else{
+            label.setForeground(Color.black);
+            setBottomBorder(field, 0, 0, 0);
+            field.setForeground(Color.black);
+        }
+    }
+    
+    private void checkPassConfirm(){
+        String text = password_field.getText();
+        String textConfirm = confirm_field.getText();
+        if(!(text.equals(textConfirm))){
+            passwordtxt.setForeground(Color.red);
+            setBottomBorder(password_field, 255, 0, 0);
+            password_field.setForeground(Color.red);
+            
+            confirmtxt.setForeground(Color.red);
+            setBottomBorder(confirm_field, 255, 0, 0);
+            confirm_field.setForeground(Color.red);
+        }
+        else if(!(validatePassword(text))){
+            passwordtxt.setForeground(Color.red);
+            setBottomBorder(password_field, 255, 0, 0);
+            password_field.setForeground(Color.red);
+            
+            confirmtxt.setForeground(Color.red);
+            setBottomBorder(confirm_field, 255, 0, 0);
+            confirm_field.setForeground(Color.red);
+        }
+        else{
+            passwordtxt.setForeground(Color.black);
+            setBottomBorder(password_field, 0, 0, 0);
+            password_field.setForeground(Color.black);
+            
+            confirmtxt.setForeground(Color.black);
+            setBottomBorder(confirm_field, 0, 0, 0);
+            confirm_field.setForeground(Color.black);
+        }
+    }
     /**
      * @param args the command line arguments
      */
