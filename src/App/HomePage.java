@@ -4,9 +4,15 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,11 +24,15 @@ public class HomePage extends javax.swing.JFrame {
      * Creates new form HomePage
      */
     public HomePage() {
+        setResizable(false);
+        setTitle("Home Page");
         initComponents();
         myinit();
     }
     
     public HomePage(String userID){
+        setResizable(false);
+        setTitle("Home Page");
         this.userID = userID;
         initComponents();
         myinit();
@@ -41,6 +51,25 @@ public class HomePage extends javax.swing.JFrame {
     
     
     private void myinit(){
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT username FROM user WHERE userID = ?";
+             
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.setString(1, this.userID);
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    String user_name = rs.getString(1);
+                    nametxt.setText(user_name);
+                } 
+            }
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+        
+        
         JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
         JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
         JLabel[] aranara_labels = {aranaraBtn, aranaraBtnTxt};

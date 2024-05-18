@@ -384,7 +384,7 @@ public class Signup extends javax.swing.JFrame {
                 //set ID first
                 Connection con = ConnectionProvider.getCon();
                 Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                ResultSet rs = st.executeQuery("select count(userID) from user");
+                ResultSet rs = st.executeQuery("SELECT COUNT(userID) FROM user");
                 String idStr ="";
                 if(rs.first()){
                     String id = rs.getString(1);                    

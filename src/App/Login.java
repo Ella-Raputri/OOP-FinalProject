@@ -4,12 +4,26 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
-
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 /**
  *
  * @author Asus
@@ -20,21 +34,36 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     public Login() {
+        setResizable(false);
+        setTitle("Login Page");
         initComponents();
         myinit();
     }
     
+    private void setBottomBorder(javax.swing.JTextField field, int colorR, int colorG, int colorB){
+        Color border_color = new java.awt.Color(colorR, colorG, colorB);
+        Border bottomBorder = BorderFactory.createMatteBorder(0,0,1,0,border_color);
+        field.setBorder(bottomBorder);
+        field.setOpaque(false); 
+        field.setBackground(new java.awt.Color(0,0,0,0));
+    }
+    
+    public static final Pattern VALID_PASSWORD_REGEX = 
+    Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", Pattern.CASE_INSENSITIVE);
+    
+    public static boolean validatePassword(String passwordStr) {
+        Matcher matcher = VALID_PASSWORD_REGEX.matcher(passwordStr);
+        return matcher.matches();
+    }
+    
     private void myinit(){
         //style the username textfield to has transparent background and only bottom border 
-        Border bottomBorder = BorderFactory.createMatteBorder(0,0,1,0, Color.BLACK);
-        username_field.setBorder(bottomBorder);
-        username_field.setOpaque(false);
-        username_field.setBackground(new java.awt.Color(0,0,0,0));
+        setBottomBorder(username_field, 0, 0, 0);
+        setBottomBorder(password_field, 0, 0 ,0); 
         
-        password_field.setBorder(bottomBorder);
-        password_field.setOpaque(false);
-        password_field.setBackground(new java.awt.Color(0,0,0,0));
-        
+        //style the password field text
+        password_field.setEchoChar((char)8226);
+        password_field.setFont(new java.awt.Font("Montserrat", 1, 22));
         
         //set the hover and click action for signup button
         signUpBtn.addMouseListener(new MouseAdapter() {
@@ -66,13 +95,62 @@ public class Login extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (!showPass){
                     show_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hide_password.png")));
+                    password_field.setEchoChar((char)0);
+                    password_field.setFont(new java.awt.Font("Montserrat", Font.PLAIN, 24));
                     showPass = true;
                 }else{
                     show_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/show_password.png")));
+                    password_field.setEchoChar((char)8226);
+                    password_field.setFont(new java.awt.Font("Montserrat", 1, 22));
                     showPass = false;
                 }
             }
-        });        
+        });  
+        
+        username_field.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                recolorField(username_field, usernametxt);
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                recolorField(username_field, usernametxt);
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                recolorField(username_field, usernametxt);
+            }
+        });
+        username_field.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // When "Enter" is pressed in textField1, move focus to textField2
+                password_field.requestFocusInWindow();
+            }
+        });
+        
+        password_field.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                recolorField(password_field, passwordtxt);
+                checkPass();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                recolorField(password_field, passwordtxt);
+                checkPass();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                recolorField(password_field, passwordtxt);
+                checkPass();
+            }
+        });
+        password_field.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // When "Enter" is pressed in textField1, move focus to textField2
+                submitBtnActionPerformed(e);
+            }
+        });
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -89,7 +167,7 @@ public class Login extends javax.swing.JFrame {
         signUptxt = new javax.swing.JLabel();
         signUpBtn = new javax.swing.JLabel();
         dont_have_txt = new javax.swing.JLabel();
-        password_field = new javax.swing.JTextField();
+        password_field = new javax.swing.JPasswordField();
         passwordtxt = new javax.swing.JLabel();
         usernametxt = new javax.swing.JLabel();
         username_field = new javax.swing.JTextField();
@@ -129,6 +207,11 @@ public class Login extends javax.swing.JFrame {
         submitBtn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 30)); // NOI18N
         submitBtn.setForeground(new java.awt.Color(255, 255, 255));
         submitBtn.setText("Submit");
+        submitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitBtnActionPerformed(evt);
+            }
+        });
         getContentPane().add(submitBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(745, 542, 242, 59));
 
         signUptxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
@@ -146,8 +229,17 @@ public class Login extends javax.swing.JFrame {
         getContentPane().add(dont_have_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(666, 443, -1, -1));
 
         password_field.setFont(new java.awt.Font("Montserrat", 0, 24)); // NOI18N
-        password_field.setToolTipText("");
-        getContentPane().add(password_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 360, 556, 42));
+        password_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                password_fieldFocusLost(evt);
+            }
+        });
+        password_field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                password_fieldActionPerformed(evt);
+            }
+        });
+        getContentPane().add(password_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 340, 556, 42));
 
         passwordtxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); // NOI18N
         passwordtxt.setText("Password");
@@ -159,6 +251,11 @@ public class Login extends javax.swing.JFrame {
 
         username_field.setFont(new java.awt.Font("Montserrat", 0, 24)); // NOI18N
         username_field.setToolTipText("");
+        username_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                username_fieldFocusLost(evt);
+            }
+        });
         getContentPane().add(username_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(594, 225, 556, 42));
 
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/Login.png"))); // NOI18N
@@ -174,6 +271,100 @@ public class Login extends javax.swing.JFrame {
         new WelcomePage().setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void password_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_password_fieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_password_fieldActionPerformed
+
+    private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
+        // TODO add your handling code here:
+        String username_str = username_field.getText();
+        String pass_str = password_field.getText();
+        
+        if(username_str.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Username is still empty.");
+        }
+        else if(pass_str.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Password is still empty.");
+        }
+        else{
+            if(!(validatePassword(pass_str))){
+                 JOptionPane.showMessageDialog(getContentPane(), "Password must have 8 characters with at least one number and one character");
+            }
+        } 
+        
+        if(validatePassword(pass_str)){
+            try{
+                //search the username in database
+                Connection con = ConnectionProvider.getCon();
+                String query = "SELECT * FROM user WHERE username = ?";
+                
+                PreparedStatement ps = con.prepareStatement(query);
+                ps.setString(1, username_str);
+                
+                try(ResultSet rs = ps.executeQuery()){
+                    
+                    if (rs.next()){
+                        String pass = rs.getString("password");
+                        String id = rs.getString("userID");
+                        
+                        //check password
+                        if (pass_str.equals(pass)){
+                           setVisible(false);
+                           new HomePage(id).setVisible(true);
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(getContentPane(), "Password is incorrect.");
+                        }
+                    }else{
+                        JOptionPane.showMessageDialog(getContentPane(),"User is not available.");
+                    }
+                }
+
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(getContentPane(), e);
+            }
+        }
+        
+    }//GEN-LAST:event_submitBtnActionPerformed
+
+    private void username_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_username_fieldFocusLost
+        // TODO add your handling code here:        recolorField(username_field, usernametxt);
+        recolorField(username_field, usernametxt);
+    }//GEN-LAST:event_username_fieldFocusLost
+
+    private void password_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_password_fieldFocusLost
+        // TODO add your handling code here:
+        recolorField(password_field, passwordtxt);
+        checkPass();
+    }//GEN-LAST:event_password_fieldFocusLost
+
+    private void recolorField(JTextField field, JLabel label){
+        String text = field.getText();
+        if(text.trim().isEmpty()){
+            label.setForeground(Color.red);
+            setBottomBorder(field, 255, 0, 0);
+            field.setForeground(Color.red);
+        }
+        else{
+            label.setForeground(Color.black);
+            setBottomBorder(field, 0, 0, 0);
+            field.setForeground(Color.black);
+        }
+    }
+    
+    private void checkPass(){
+        String text = password_field.getText();
+        if(!(validatePassword(text))){
+            passwordtxt.setForeground(Color.red);
+            setBottomBorder(password_field, 255, 0, 0);
+            password_field.setForeground(Color.red);
+        }
+        else{
+            passwordtxt.setForeground(Color.black);
+            setBottomBorder(password_field, 0, 0, 0);
+            password_field.setForeground(Color.black);
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -213,7 +404,7 @@ public class Login extends javax.swing.JFrame {
     private App.ButtonCustom backBtn;
     private javax.swing.JLabel bg;
     private javax.swing.JLabel dont_have_txt;
-    private javax.swing.JTextField password_field;
+    private javax.swing.JPasswordField password_field;
     private javax.swing.JLabel passwordtxt;
     private javax.swing.JLabel show_pass;
     private javax.swing.JLabel signUpBtn;
