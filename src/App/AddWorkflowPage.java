@@ -4,18 +4,230 @@
  */
 package App;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JLabel;
+
 /**
  *
  * @author Asus
  */
 public class AddWorkflowPage extends javax.swing.JFrame {
-
+    private String userID;
     /**
      * Creates new form AddWorkflowPage
      */
     public AddWorkflowPage() {
+        setResizable(false);
+        setTitle("Add Workflow Page");
         initComponents();
     }
+    
+    public AddWorkflowPage(String id) {
+        setResizable(false);
+        setTitle("Add Workflow Page");
+        this.userID = id;
+        initComponents();
+    }
+    
+    public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
+        for (JLabel label : labels){
+            if (label.getIcon() != null){
+                label.setIcon(new javax.swing.ImageIcon(getClass().getResource(image_path)));
+            }else{
+                label.setForeground(new java.awt.Color(colorR, colorG, colorB));
+            }
+        }
+    }
+    
+//    private void myinit(){
+//        JLabel[] home_labels = {homeBtn, homeBtnTxt};
+//        JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
+//        JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
+//        JLabel[] aranara_labels = {aranaraBtn, aranaraBtnTxt};
+//        JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
+//        
+//        homeBtn.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new HomePage(userID).setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/home_active.png", 0, 141, 189, home_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/home.png", 255, 255, 255, home_labels);
+//            }
+//        });
+//        homeBtnTxt.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new HomePage(userID).setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/home_active.png", 0, 141, 189, home_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/home.png", 255, 255, 255, home_labels);
+//            }
+//        }); 
+//        
+//        addWorkflowBtn.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new AddWorkflowPage(userID).setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/add_workflow.png", 255, 255, 255, add_workflow_labels);
+//            }
+//        });
+//        addWorkflowBtnTxt.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new AddWorkflowPage(userID).setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/add_workflow.png", 255, 255, 255, add_workflow_labels);
+//            }
+//        });      
+//        addWorkflowBtnTxt1.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new AddWorkflowPage(userID).setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/add_workflow.png", 255, 255, 255, add_workflow_labels);
+//            }
+//        });
+//    
+//        calendarBtn.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new CalendarPage(userID).setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/calendar_active.png", 0, 141, 189, calendar_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/calendar.png", 255, 255, 255, calendar_labels);
+//            }
+//        });
+//        calendarBtnTxt.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new CalendarPage(userID).setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/calendar_active.png", 0, 141, 189, calendar_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/calendar.png", 255, 255, 255, calendar_labels);
+//            }
+//        });
+//        
+//        aranaraBtn.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new AranaraPage(userID).setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/aranara_active.png", 0, 141, 189, aranara_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/aranara.png", 255, 255, 255, aranara_labels);
+//            }
+//        });
+//        aranaraBtnTxt.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new AranaraPage(userID).setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/aranara_active.png", 0, 141, 189, aranara_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/aranara.png", 255, 255, 255, aranara_labels);
+//            }
+//        });
+//        
+//        logoutBtn.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new WelcomePage().setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/logout_active.png", 0, 141, 189, logout_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/logout.png", 255, 255, 255, logout_labels);
+//            }
+//        });
+//        logoutBtnTxt.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                setVisible(false);
+//                new WelcomePage().setVisible(true);
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                hoverButton("/App/img/logout_active.png", 0, 141, 189, logout_labels);
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                hoverButton("/App/img/logout.png", 255, 255, 255, logout_labels);
+//            }
+//        });
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.

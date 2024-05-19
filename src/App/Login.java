@@ -85,6 +85,24 @@ public class Login extends javax.swing.JFrame {
                 signUptxt.setForeground(new java.awt.Color(112, 79, 40));
             }
         });
+        signUptxt.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new Signup().setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                signUpBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hover_smallButton.png")));
+                signUptxt.setForeground(new java.awt.Color(252, 239, 220));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                signUpBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/smallButton.png")));      
+                signUptxt.setForeground(new java.awt.Color(112, 79, 40));
+            }
+        });
         
         
         //set the click action for hide and show password

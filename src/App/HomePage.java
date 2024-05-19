@@ -30,10 +30,10 @@ public class HomePage extends javax.swing.JFrame {
         myinit();
     }
     
-    public HomePage(String userID){
+    public HomePage(String ID){
         setResizable(false);
         setTitle("Home Page");
-        this.userID = userID;
+        this.userID = ID;
         initComponents();
         myinit();
     }
@@ -75,11 +75,26 @@ public class HomePage extends javax.swing.JFrame {
         JLabel[] aranara_labels = {aranaraBtn, aranaraBtnTxt};
         JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
 
+        homeBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new HomePage(userID).setVisible(true);
+            }
+        });
+        homeBtnTxt.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new HomePage(userID).setVisible(true);
+            }
+        }); 
+        
         addWorkflowBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowPage().setVisible(true);
+                new AddWorkflowPage(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -95,7 +110,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowPage().setVisible(true);
+                new AddWorkflowPage(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -111,7 +126,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowPage().setVisible(true);
+                new AddWorkflowPage(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -128,7 +143,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new CalendarPage().setVisible(true);
+                new CalendarPage(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -144,7 +159,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new CalendarPage().setVisible(true);
+                new CalendarPage(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -161,7 +176,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraPage().setVisible(true);
+                new AranaraPage(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -177,7 +192,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraPage().setVisible(true);
+                new AranaraPage(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
