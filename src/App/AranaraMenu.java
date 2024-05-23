@@ -4,9 +4,9 @@
  */
 package App;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
@@ -16,21 +16,41 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
  *
  * @author Asus
  */
-public class Test extends javax.swing.JFrame {
-
+public class AranaraMenu extends javax.swing.JFrame {
+    private String userID;
     /**
-     * Creates new form Test
+     * Creates new form AranaraMenu
      */
-    public Test() {
+    public AranaraMenu() {
+        setResizable(false);
+        setTitle("Aranara Page");
         initComponents();
         myinit();
+    }
+    
+    public AranaraMenu (String id){
+        setResizable(false);
+        setTitle("Aranara Page");
+        this.userID = id;
+        initComponents();
+        myinit();
+    }
+    
+    public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
+        for (JLabel label : labels){
+            if (label.getIcon() != null){
+                label.setIcon(new javax.swing.ImageIcon(getClass().getResource(image_path)));
+            }else{
+                label.setForeground(new java.awt.Color(colorR, colorG, colorB));
+            }
+        }
     }
     
     private void myinit(){
         setLayout(new AbsoluteLayout()); // Set layout manager to AbsoluteLayout
 
         DropShadowPanel shadowPanel = new DropShadowPanel();
-        shadowPanel.setBackground(Color.red);
+        shadowPanel.setBackground(Color.white);
         shadowPanel.setLayout(null); // Ensure DropShadowPanel uses null layout for its children
 
         JLabel label = new JLabel("This panel has a drop shadow");
@@ -38,7 +58,7 @@ public class Test extends javax.swing.JFrame {
         shadowPanel.add(label);
 
         // Manually set the position and size of the DropShadowPanel
-        shadowPanel.setBounds(100, 100, 200, 100);
+        shadowPanel.setBounds(195, 139, 292, 278);
 
         // Add DropShadowPanel using AbsoluteConstraints
         getContentPane().setLayout(new AbsoluteLayout());
@@ -117,11 +137,184 @@ public class Test extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-
-        setSize(600, 600); // Ensure the frame size is large enough to display the components
+        hoverMenu();
+        
+        setSize(1280, 750); // Ensure the frame size is large enough to display the components
         setLocationRelativeTo(null); // Center the window
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Ensure the application exits when the window is closed
-        setVisible(true); // Make the frame visible
+        setVisible(true);
+        
+    }
+    
+    private void hoverMenu(){
+        JLabel[] home_labels = {homeBtn, homeBtnTxt};
+        JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
+        JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
+        JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
+        
+        homeBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new HomePage(userID).setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverButton("/App/img/home_active.png", 0, 141, 189, home_labels);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverButton("/App/img/home.png", 255, 255, 255, home_labels);
+            }
+        });
+        homeBtnTxt.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new HomePage(userID).setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverButton("/App/img/home_active.png", 0, 141, 189, home_labels);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverButton("/App/img/home.png", 255, 255, 255, home_labels);
+            }
+        }); 
+        
+        addWorkflowBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new AddWorkflowPage(userID).setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverButton("/App/img/add_workflow.png", 255, 255, 255, add_workflow_labels);
+            }
+        });
+        addWorkflowBtnTxt.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new AddWorkflowPage(userID).setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverButton("/App/img/add_workflow.png", 255, 255, 255, add_workflow_labels);
+            }
+        });      
+        addWorkflowBtnTxt1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new AddWorkflowPage(userID).setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverButton("/App/img/add_workflow.png", 255, 255, 255, add_workflow_labels);
+            }
+        });
+    
+        calendarBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new CalendarPage(userID).setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverButton("/App/img/calendar_active.png", 0, 141, 189, calendar_labels);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverButton("/App/img/calendar.png", 255, 255, 255, calendar_labels);
+            }
+        });
+        calendarBtnTxt.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new CalendarPage(userID).setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverButton("/App/img/calendar_active.png", 0, 141, 189, calendar_labels);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverButton("/App/img/calendar.png", 255, 255, 255, calendar_labels);
+            }
+        });
+        
+        aranaraBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new AranaraPage(userID).setVisible(true);
+            }
+        });
+        aranaraBtnTxt.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new AranaraPage(userID).setVisible(true);
+            }
+        });
+        
+        logoutBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new WelcomePage().setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverButton("/App/img/logout_active.png", 0, 141, 189, logout_labels);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverButton("/App/img/logout.png", 255, 255, 255, logout_labels);
+            }
+        });
+        logoutBtnTxt.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new WelcomePage().setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverButton("/App/img/logout_active.png", 0, 141, 189, logout_labels);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverButton("/App/img/logout.png", 255, 255, 255, logout_labels);
+            }
+        });
+        
     }
 
     /**
@@ -166,25 +359,26 @@ public class Test extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Test().setVisible(true);
+                new AranaraMenu().setVisible(true);
             }
         });
     }
+
     
-        private javax.swing.JLabel addWorkflowBtn;
+    private javax.swing.JLabel addWorkflowBtn;
     private javax.swing.JLabel addWorkflowBtnTxt;
     private javax.swing.JLabel addWorkflowBtnTxt1;
     private javax.swing.JLabel aranaraBtn;
@@ -197,7 +391,6 @@ public class Test extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel logoutBtn;
     private javax.swing.JLabel logoutBtnTxt;
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }
