@@ -292,9 +292,7 @@ public class HomePage extends javax.swing.JFrame {
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(1280, 750));
         setMinimumSize(new java.awt.Dimension(1280, 750));
-        setPreferredSize(new java.awt.Dimension(1280, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         buttonCustom1.setForeground(new java.awt.Color(255, 255, 255));
