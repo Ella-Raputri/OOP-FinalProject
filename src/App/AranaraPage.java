@@ -49,22 +49,22 @@ public class AranaraPage extends javax.swing.JFrame {
     private void initLayout(){
         //the three shadow panel
         setLayout(new AbsoluteLayout());
-        DropShadowPanel shadowPanel = new DropShadowPanel();
-        shadowPanel.setBackground(Color.red);
-        shadowPanel.setLayout(null);
-        
-        JLabel label = new JLabel("This panel has a drop shadow");
-        label.setBounds(10, 35, 180, 30); // Manually set the position and size of the label
-        
-        shadowPanel.add(label);
-        shadowPanel.setBounds(100, 100, 200, 100); // Manually set the position and size of the DropShadowPanel
-        
-        getContentPane().setLayout(new AbsoluteLayout());
-        getContentPane().add(shadowPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 500, -1, -1));
-        
-        
-        setLocationRelativeTo(null); // Center the window
-        setVisible(true);
+//        //AranaraDropShadowPanel shadowPanel = new AranaraDropShadowPanel();
+//        shadowPanel.setBackground(Color.red);
+//        shadowPanel.setLayout(null);
+//        
+//        JLabel label = new JLabel("This panel has a drop shadow");
+//        label.setBounds(10, 35, 180, 30); // Manually set the position and size of the label
+//        
+//        shadowPanel.add(label);
+//        shadowPanel.setBounds(100, 100, 200, 100); // Manually set the position and size of the DropShadowPanel
+//        
+//        getContentPane().setLayout(new AbsoluteLayout());
+//        getContentPane().add(shadowPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 500, -1, -1));
+//        
+//        
+//        setLocationRelativeTo(null); // Center the window
+//        setVisible(true);
     }
 
     

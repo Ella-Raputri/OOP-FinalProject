@@ -29,20 +29,20 @@ public class Test extends javax.swing.JFrame {
     private void myinit(){
         setLayout(new AbsoluteLayout()); // Set layout manager to AbsoluteLayout
 
-        DropShadowPanel shadowPanel = new DropShadowPanel();
-        shadowPanel.setBackground(Color.red);
-        shadowPanel.setLayout(null); // Ensure DropShadowPanel uses null layout for its children
-
-        JLabel label = new JLabel("This panel has a drop shadow");
-        label.setBounds(10, 35, 180, 30); // Manually set the position and size of the label
-        shadowPanel.add(label);
-
-        // Manually set the position and size of the DropShadowPanel
-        shadowPanel.setBounds(100, 100, 200, 100);
-
-        // Add DropShadowPanel using AbsoluteConstraints
-        getContentPane().setLayout(new AbsoluteLayout());
-        getContentPane().add(shadowPanel, new AbsoluteConstraints(100, 100, 200, 100));
+//        AranaraDropShadowPanel shadowPanel = new AranaraDropShadowPanel();
+//        shadowPanel.setBackground(Color.red);
+//        shadowPanel.setLayout(null); // Ensure DropShadowPanel uses null layout for its children
+//
+//        JLabel label = new JLabel("This panel has a drop shadow");
+//        label.setBounds(10, 35, 180, 30); // Manually set the position and size of the label
+//        shadowPanel.add(label);
+//
+//        // Manually set the position and size of the DropShadowPanel
+//        shadowPanel.setBounds(100, 100, 200, 100);
+//
+////        // Add DropShadowPanel using AbsoluteConstraints
+//        getContentPane().setLayout(new AbsoluteLayout());
+//        getContentPane().add(shadowPanel, new AbsoluteConstraints(100, 100, 200, 100));
         
         homeBtn = new javax.swing.JLabel();
         homeBtnTxt = new javax.swing.JLabel();

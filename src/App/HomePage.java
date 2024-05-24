@@ -66,7 +66,7 @@ public class HomePage extends javax.swing.JFrame {
             }
 
         }catch(Exception e){
-            JOptionPane.showMessageDialog(getContentPane(), e);
+            e.printStackTrace();
         }
         
         
@@ -176,7 +176,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraPage(userID).setVisible(true);
+                new AranaraMenu(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -192,7 +192,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraPage(userID).setVisible(true);
+                new AranaraMenu(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {

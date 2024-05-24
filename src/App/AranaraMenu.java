@@ -49,20 +49,29 @@ public class AranaraMenu extends javax.swing.JFrame {
     private void myinit(){
         setLayout(new AbsoluteLayout()); // Set layout manager to AbsoluteLayout
 
-        DropShadowPanel shadowPanel = new DropShadowPanel();
-        shadowPanel.setBackground(Color.white);
-        shadowPanel.setLayout(null); // Ensure DropShadowPanel uses null layout for its children
-
-        JLabel label = new JLabel("This panel has a drop shadow");
-        label.setBounds(10, 35, 180, 30); // Manually set the position and size of the label
-        shadowPanel.add(label);
+        AranaraDropShadowPanel panel_arama = new AranaraDropShadowPanel("Arama",0);
+        panel_arama.setBackground(Color.white);
+        panel_arama.setLayout(null); // Ensure DropShadowPanel uses null layout for its children
+        
+        AranaraDropShadowPanel panel_ararycan = new AranaraDropShadowPanel("Ararycan",0);
+        panel_ararycan.setBackground(Color.white);
+        panel_ararycan.setLayout(null);
+        
+        AranaraDropShadowPanel panel_arabalika = new AranaraDropShadowPanel("Arabalika",0);
+        panel_arabalika.setBackground(Color.white);
+        panel_arabalika.setLayout(null);
 
         // Manually set the position and size of the DropShadowPanel
-        shadowPanel.setBounds(195, 139, 292, 278);
+        panel_arama.setBounds(195, 139, 292, 278);
+        panel_ararycan.setBounds(548, 139, 292, 278);
+        panel_arabalika.setBounds(905, 139, 292, 278);
 
         // Add DropShadowPanel using AbsoluteConstraints
         getContentPane().setLayout(new AbsoluteLayout());
-        getContentPane().add(shadowPanel, new AbsoluteConstraints(100, 100, 200, 100));
+        getContentPane().add(panel_arama, new AbsoluteConstraints(100, 100, 200, 100));
+        getContentPane().add(panel_ararycan, new AbsoluteConstraints(100, 100, 200, 100));
+        getContentPane().add(panel_arabalika, new AbsoluteConstraints(100, 100, 200, 100));
+        
         
         homeBtn = new javax.swing.JLabel();
         homeBtnTxt = new javax.swing.JLabel();
