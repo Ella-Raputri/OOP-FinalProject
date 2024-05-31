@@ -32,6 +32,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     private JPanel contentPane;
     private JPanel cloneablePanel;
     private JScrollPane scrollPane;
+    public static int open = 0;
     /**
      * Creates new form AddWorkflowPage
      */
@@ -469,9 +470,29 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         add_panel.add(createtxt);
         
         JLabel add_icon = new JLabel();
-        add_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow_icon.png"))); // NOI18N
+        add_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow_icon.png"))); 
         add_icon.setBounds(102, 77, 79, 78);
         add_panel.add(add_icon);
+        
+        //add_panel get selected
+        add_panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                AddWorkflowMenu.open = 1;
+                new CreateNewWorkflow(userID).setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                createtxt.setForeground(new java.awt.Color(31, 139, 217));
+                add_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow_icon_hover.png")));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                createtxt.setForeground(new java.awt.Color(167, 204, 231));
+                add_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow_icon.png")));
+            }
+        });
         
         //add the add panel to the cloneable panel
         cloneablePanel.add(add_panel);
@@ -553,7 +574,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     private javax.swing.JLabel homeBtnTxt;
     private javax.swing.JLabel logoutBtn;
     private javax.swing.JLabel logoutBtnTxt;
-    private javax.swing.JTextField search_field;
+    private RoundJTextField search_field;
     private javax.swing.JLabel search_icon;
     private javax.swing.JLabel titletxt;
 }

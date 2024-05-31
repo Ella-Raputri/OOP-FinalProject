@@ -20,7 +20,7 @@ public class RoundJTextField extends JTextField {
     @Override
     protected void paintComponent(Graphics g) {
          g.setColor(getBackground());
-         g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 15, 15);
+         g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 30, 30);
          super.paintComponent(g);
     }
     
@@ -31,7 +31,7 @@ public class RoundJTextField extends JTextField {
         
         g2.setStroke(new BasicStroke(1)); //the thickness of the border
         g.setColor(getForeground());
-        g.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 15, 15); //draw the round rect for the border
+        g.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 30, 30); //draw the round rect for the border
         
         g2.setStroke(oldStroke); // Restore the original stroke
     }
@@ -39,7 +39,7 @@ public class RoundJTextField extends JTextField {
     @Override
     public boolean contains(int x, int y) {
          if (shape == null || !shape.getBounds().equals(getBounds())) {
-             shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, 15, 15);
+             shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, 30, 30);
          }
          return shape.contains(x, y);
     }
