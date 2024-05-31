@@ -416,11 +416,15 @@ public class Signup extends javax.swing.JFrame {
                 }
 
                 //insert into database
-                String sql = "insert into user values(?,?,?)";
+                String sql = "insert into user values(?,?,?,?,?,?,?)";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setString(1, idStr);
                 ps.setString(2, username_str);
                 ps.setString(3, pass_str);
+                ps.setString(4, "arama");
+                ps.setInt(5, 0);
+                ps.setInt(6, 0);
+                ps.setInt(7, 0);
 
                 ps.executeUpdate();
                 setVisible(false);

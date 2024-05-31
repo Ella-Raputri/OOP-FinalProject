@@ -7,29 +7,46 @@ package App;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
+import App.RoundJTextField;
+import DatabaseConnection.ConnectionProvider;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.LinkedList;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 /**
  *
  * @author Asus
  */
-public class CalendarPage extends javax.swing.JFrame {
+public class AddWorkflowMenu extends javax.swing.JFrame {
     private String userID;
+    private JPanel contentPane;
+    private JPanel cloneablePanel;
+    private JScrollPane scrollPane;
     /**
-     * Creates new form CalendarPage
+     * Creates new form AddWorkflowPage
      */
-    public CalendarPage() {
+    public AddWorkflowMenu() {
         setResizable(false);
-        setTitle("Calendar Page");
-        initComponents();
+        setTitle("Add Workflow Page");
         myinit();
+        initComponents();
     }
     
-    public CalendarPage(String id) {
+    public AddWorkflowMenu(String id) {
         setResizable(false);
-        setTitle("Calendar Page");
+        setTitle("Add Workflow Page");
         this.userID = id;
-        initComponents();
         myinit();
+        initComponents();
     }
     
     public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
@@ -42,7 +59,7 @@ public class CalendarPage extends javax.swing.JFrame {
         }
     }
     
-    private void myinit(){
+    private void initHover(){
         JLabel[] home_labels = {homeBtn, homeBtnTxt};
         JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
         JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
@@ -84,11 +101,6 @@ public class CalendarPage extends javax.swing.JFrame {
         
         addWorkflowBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new AddWorkflowPage(userID).setVisible(true);
-            }
-            @Override
             public void mouseEntered(MouseEvent e) {
                 hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
             }
@@ -100,11 +112,6 @@ public class CalendarPage extends javax.swing.JFrame {
         });
         addWorkflowBtnTxt.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new AddWorkflowPage(userID).setVisible(true);
-            }
-            @Override
             public void mouseEntered(MouseEvent e) {
                 hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
             }
@@ -115,11 +122,6 @@ public class CalendarPage extends javax.swing.JFrame {
             }
         });      
         addWorkflowBtnTxt1.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new AddWorkflowPage(userID).setVisible(true);
-            }
             @Override
             public void mouseEntered(MouseEvent e) {
                 hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
@@ -133,6 +135,11 @@ public class CalendarPage extends javax.swing.JFrame {
     
         calendarBtn.addMouseListener(new MouseAdapter() {
             @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new CalendarPage(userID).setVisible(true);
+            }
+            @Override
             public void mouseEntered(MouseEvent e) {
                 hoverButton("/App/img/calendar_active.png", 0, 141, 189, calendar_labels);
             }
@@ -143,6 +150,11 @@ public class CalendarPage extends javax.swing.JFrame {
             }
         });
         calendarBtnTxt.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new CalendarPage(userID).setVisible(true);
+            }
             @Override
             public void mouseEntered(MouseEvent e) {
                 hoverButton("/App/img/calendar_active.png", 0, 141, 189, calendar_labels);
@@ -219,19 +231,29 @@ public class CalendarPage extends javax.swing.JFrame {
                 hoverButton("/App/img/logout.png", 255, 255, 255, logout_labels);
             }
         });
+        
+        search_icon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                search_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hover_search.png")));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                search_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/search.png")));
+            }
+        });
+        
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        homeBtnTxt = new javax.swing.JLabel();
+    
+    private void initDesign(){
         homeBtn = new javax.swing.JLabel();
+        homeBtnTxt = new javax.swing.JLabel();
         addWorkflowBtn = new javax.swing.JLabel();
         addWorkflowBtnTxt1 = new javax.swing.JLabel();
         addWorkflowBtnTxt = new javax.swing.JLabel();
@@ -242,38 +264,41 @@ public class CalendarPage extends javax.swing.JFrame {
         logoutBtn = new javax.swing.JLabel();
         logoutBtnTxt = new javax.swing.JLabel();
         titletxt = new javax.swing.JLabel();
+        search_icon = new javax.swing.JLabel();
+        search_field = new RoundJTextField(21);
+        jPanel1 = new javax.swing.JPanel();
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1280, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        homeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/home.png"))); // NOI18N
+        getContentPane().add(homeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 55, -1, -1));
+
         homeBtnTxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 16)); // NOI18N
         homeBtnTxt.setForeground(new java.awt.Color(255, 255, 255));
         homeBtnTxt.setText("Home");
         getContentPane().add(homeBtnTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, -1, -1));
 
-        homeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/home.png"))); // NOI18N
-        getContentPane().add(homeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 55, -1, -1));
-
-        addWorkflowBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow.png"))); // NOI18N
+        addWorkflowBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow_active.png"))); // NOI18N
         getContentPane().add(addWorkflowBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(38, 155, -1, -1));
 
         addWorkflowBtnTxt1.setFont(new java.awt.Font("Montserrat SemiBold", 0, 16)); // NOI18N
-        addWorkflowBtnTxt1.setForeground(new java.awt.Color(255, 255, 255));
+        addWorkflowBtnTxt1.setForeground(new java.awt.Color(0, 141, 189));
         addWorkflowBtnTxt1.setText("Add");
         getContentPane().add(addWorkflowBtnTxt1, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 206, -1, -1));
 
         addWorkflowBtnTxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 16)); // NOI18N
-        addWorkflowBtnTxt.setForeground(new java.awt.Color(255, 255, 255));
+        addWorkflowBtnTxt.setForeground(new java.awt.Color(0, 141, 189));
         addWorkflowBtnTxt.setText("workflow");
         getContentPane().add(addWorkflowBtnTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 224, -1, -1));
 
-        calendarBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/calendar_active.png"))); // NOI18N
+        calendarBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/calendar.png"))); // NOI18N
         getContentPane().add(calendarBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 284, -1, -1));
 
         calendarBtnTxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 16)); // NOI18N
-        calendarBtnTxt.setForeground(new java.awt.Color(0, 141, 189));
+        calendarBtnTxt.setForeground(new java.awt.Color(255, 255, 255));
         calendarBtnTxt.setText("Calendar");
         getContentPane().add(calendarBtnTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 335, -1, -1));
 
@@ -295,14 +320,164 @@ public class CalendarPage extends javax.swing.JFrame {
 
         titletxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 48)); // NOI18N
         titletxt.setForeground(new java.awt.Color(0, 141, 189));
-        titletxt.setText("Calendar");
-        getContentPane().add(titletxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 23, -1, -1));
+        titletxt.setText("Add a New Workflow");
+        getContentPane().add(titletxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 27, -1, -1));
 
-        bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/default_page.png"))); // NOI18N
-        getContentPane().add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        search_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/search.png"))); // NOI18N
+        getContentPane().add(search_icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 120, -1, -1));
+
+        search_field.setFont(new java.awt.Font("Montserrat", 0, 20)); // NOI18N
+        search_field.setForeground(new java.awt.Color(155, 154, 154));
+        search_field.setText("    Find workflow");
+        search_field.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, java.awt.Color.lightGray));
+        search_field.setPreferredSize(new java.awt.Dimension(456, 46));
+        getContentPane().add(search_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 110, -1, -1));
+
+        jPanel1.setBackground(new java.awt.Color(246, 252, 254));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(51, 51, 51), null));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 288, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 274, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 200, 292, 278));
+
+//        bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/default_page.png"))); // NOI18N
+//        getContentPane().add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
         setLocationRelativeTo(null);
+    }
+    
+    private void myinit(){
+        int totalElement = 0;
+        LinkedList<Workflow> workflowList = new LinkedList<>();
+        
+        try{
+            Connection con = ConnectionProvider.getCon();
+            Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = st.executeQuery("select * from workflow");
+            while(rs.next()){
+                String id = rs.getString("workflowID");
+                String title = rs.getString("title");
+                int checkpoint = rs.getInt("checkpoint");
+                Workflow workflow = new Workflow(title, checkpoint, id);
+                workflowList.add(workflow);
+            }
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+        totalElement = workflowList.size();
+        
+        // Create the content pane
+        contentPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Load the background image
+                ImageIcon bgImage = new ImageIcon("src/App/img/default_page.png");
+                // Draw the background image
+                g.drawImage(bgImage.getImage(), 0, 0, getWidth(), getHeight(), null);
+            }
+        };
+        contentPane.setLayout(null); // Use absolute layout
+        setContentPane(contentPane);
+        
+        // Create the scroll pane
+        scrollPane = new JScrollPane();
+        scrollPane.setBounds(184, 180, 1054, 455); // Set bounds for the scroll pane
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(null);
+        contentPane.add(scrollPane);
+
+        // Create the cloneable panel
+        cloneablePanel = new JPanel(); // The initial panel inside scroll pane
+        cloneablePanel.setLayout(null); // Use absolute layout
+        cloneablePanel.setPreferredSize(new Dimension(400, 200)); // Set initial size
+        cloneablePanel.setBounds(185, 200, 1200, 1500); // Set bounds for the initial panel
+        cloneablePanel.setBackground(Color.white);
+        scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
+
+        
+        int row=0, column=0;
+        for(int i=0; i<totalElement;i++){
+            String id = workflowList.get(i).getId();
+            String title = workflowList.get(i).getTitle();
+            int checkpoint = workflowList.get(i).getCheckpoint();
+            
+            // Create a new cloned panel
+            // Cloneable Panel
+            CloneablePanelAdmin clonedPanel = new CloneablePanelAdmin(20, Color.white, 2 ,id, title, checkpoint);
+            // Set your custom width and height for the cloned panel
+            int panelWidth = 292;
+            int panelHeight = 278;
+            
+            
+            // Calculate the row and column indices
+            row = i / 3;
+            column = i % 3;
+
+            // Calculate the x and y positions based on row and column indices
+            int x = 10 + column * (panelWidth + 50);
+            int y = 10 + row * (panelHeight + 50);
+
+            // Set the bounds for the cloned panel with your custom size
+            clonedPanel.setBounds(x, y, panelWidth, panelHeight);
+            clonedPanel.setBackground(Color.white);
+            
+            // Add the cloned panel to the initial panel
+            cloneablePanel.add(clonedPanel);
+            // Adjust preferred size of initial panel to include new panel
+            Dimension newSize = new Dimension(cloneablePanel.getWidth(), y + panelHeight + 10); // Adjusted size
+            cloneablePanel.setPreferredSize(newSize);
+            // Ensure the scroll pane updates its viewport
+            scrollPane.revalidate();
+            scrollPane.repaint();
+            // Scroll to show the new panel
+            scrollPane.getVerticalScrollBar().setValue(0);
+        }
+        
+
+        ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
+        contentPane.setPreferredSize(new Dimension(bgImage.getIconWidth(), bgImage.getIconHeight()));
+        
+        
+
+        initDesign(); //initialize all the design components
+        initHover(); //initialize the hovering method for buttons
+        
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -322,25 +497,26 @@ public class CalendarPage extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CalendarPage().setVisible(true);
+                new AddWorkflowMenu().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    // End of variables declaration//GEN-END:variables
     private javax.swing.JLabel addWorkflowBtn;
     private javax.swing.JLabel addWorkflowBtnTxt;
     private javax.swing.JLabel addWorkflowBtnTxt1;
@@ -351,8 +527,10 @@ public class CalendarPage extends javax.swing.JFrame {
     private javax.swing.JLabel calendarBtnTxt;
     private javax.swing.JLabel homeBtn;
     private javax.swing.JLabel homeBtnTxt;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel logoutBtn;
     private javax.swing.JLabel logoutBtnTxt;
+    private javax.swing.JTextField search_field;
+    private javax.swing.JLabel search_icon;
     private javax.swing.JLabel titletxt;
-    // End of variables declaration//GEN-END:variables
 }
