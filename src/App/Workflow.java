@@ -12,11 +12,13 @@ public class Workflow {
     private String title;
     private int checkpoint;
     private String id;
+    private String userID;
 
-    public Workflow(String title, int checkpoint, String id) {
+    public Workflow(String title, int checkpoint, String id, String userid) {
         this.title = title;
         this.checkpoint = checkpoint;
         this.id = id;
+        this.userID = userid;
     }
 
     public String getTitle() {

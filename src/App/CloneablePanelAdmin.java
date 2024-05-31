@@ -20,6 +20,7 @@ public class CloneablePanelAdmin extends JPanel{
     private String id;
     private String titleInput;
     private int checkpointInput;
+    private String userID;
 
     public CloneablePanelAdmin(int borderRadius, Color bgColor, int borderWidth, String id, String titleInput, int checkpointInput) {
         setLayout(null);
@@ -42,7 +43,7 @@ public class CloneablePanelAdmin extends JPanel{
         
         JLabel total_check = new JLabel();
         total_check.setFont(new Font("Montserrat", 0, 24));
-        total_check.setText(checkpointInput + " minutes");
+        total_check.setText("Total: " + checkpointInput + " checkpoints");
         setComponentBounds(total_check, 25, title.getY()+title.getHeight()+50, total_check.getPreferredSize().width+10, total_check.getPreferredSize().height);
         add(total_check);
         
@@ -53,6 +54,7 @@ public class CloneablePanelAdmin extends JPanel{
         deleteButton.setBorderColorNotOver(bgColor);
         deleteButton.setText("–");
         deleteButton.setColor2(new Color(31, 139, 217));
+        deleteButton.setForeground(new Color(31, 139, 217));
         deleteButton.setColor(Color.white);
         deleteButton.setColorClick2(new Color(167, 204, 231));
         deleteButton.setColorClick(Color.white);
@@ -87,7 +89,7 @@ public class CloneablePanelAdmin extends JPanel{
                 editButtonActionPerformed(evt);
             }
         });
-        setComponentBounds(editButton, 68, 189, editButton.getPreferredSize().width+25, editButton.getPreferredSize().height+7);
+        setComponentBounds(editButton, 95, 189, editButton.getPreferredSize().width+25, editButton.getPreferredSize().height+7);
         add(editButton);
         
     }

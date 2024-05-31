@@ -94,7 +94,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowPage(userID).setVisible(true);
+                new AddWorkflowMenu(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -110,7 +110,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowPage(userID).setVisible(true);
+                new AddWorkflowMenu(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -126,7 +126,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowPage(userID).setVisible(true);
+                new AddWorkflowMenu(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {

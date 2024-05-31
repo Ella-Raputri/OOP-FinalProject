@@ -7,8 +7,8 @@ package App;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
-import App.RoundJTextField;
 import DatabaseConnection.ConnectionProvider;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.LinkedList;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -266,8 +267,6 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         titletxt = new javax.swing.JLabel();
         search_icon = new javax.swing.JLabel();
         search_field = new RoundJTextField(21);
-        jPanel1 = new javax.swing.JPanel();
-        bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1280, 750));
@@ -333,25 +332,6 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         search_field.setPreferredSize(new java.awt.Dimension(456, 46));
         getContentPane().add(search_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 110, -1, -1));
 
-        jPanel1.setBackground(new java.awt.Color(246, 252, 254));
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(51, 51, 51), null));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 200, 292, 278));
-
-//        bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/default_page.png"))); // NOI18N
-//        getContentPane().add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
         pack();
         setLocationRelativeTo(null);
     }
@@ -368,7 +348,8 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
                 String id = rs.getString("workflowID");
                 String title = rs.getString("title");
                 int checkpoint = rs.getInt("checkpoint");
-                Workflow workflow = new Workflow(title, checkpoint, id);
+                String userid = rs.getString("userID");
+                Workflow workflow = new Workflow(title, checkpoint, id, userid);
                 workflowList.add(workflow);
             }
             
@@ -393,19 +374,21 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         
         // Create the scroll pane
         scrollPane = new JScrollPane();
-        scrollPane.setBounds(184, 180, 1054, 455); // Set bounds for the scroll pane
+        scrollPane.setBounds(180, 180, 1054, 455); // Set bounds for the scroll pane
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         contentPane.add(scrollPane);
 
         // Create the cloneable panel
         cloneablePanel = new JPanel(); // The initial panel inside scroll pane
         cloneablePanel.setLayout(null); // Use absolute layout
         cloneablePanel.setPreferredSize(new Dimension(400, 200)); // Set initial size
-        cloneablePanel.setBounds(185, 200, 1200, 1500); // Set bounds for the initial panel
+        cloneablePanel.setBounds(180, 200, 1200, 1500); // Set bounds for the initial panel
         cloneablePanel.setBackground(Color.white);
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
-
+        
+        
         
         int row=0, column=0;
         for(int i=0; i<totalElement;i++){
@@ -422,8 +405,13 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             
             
             // Calculate the row and column indices
-            row = i / 3;
-            column = i % 3;
+            if (i == 0 || i == 1){
+                column = (i % 3) +1;
+                row = 0;
+            }else{
+              column = (i-2) % 3;  
+              row = (i+2)/3;
+            }
 
             // Calculate the x and y positions based on row and column indices
             int x = 10 + column * (panelWidth + 50);
@@ -445,15 +433,52 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             scrollPane.getVerticalScrollBar().setValue(0);
         }
         
-
+        createAddPanel();
+        
         ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
         contentPane.setPreferredSize(new Dimension(bgImage.getIconWidth(), bgImage.getIconHeight()));
         
-        
-
         initDesign(); //initialize all the design components
         initHover(); //initialize the hovering method for buttons
         
+    }
+    
+    private void createAddPanel(){
+        //intialize the add panel, 
+        JPanel add_panel = new JPanel();
+        //add panel width, height, x, and y
+        int panelWidth = 292;
+        int panelHeight = 278;
+        int add_panel_x = 10;
+        int add_panel_y = 10;
+        add_panel.setBounds(add_panel_x, add_panel_y, panelWidth, panelHeight);
+        add_panel.setLayout(null);
+        
+        //add_panel color and border
+        add_panel.setBackground(new Color(246, 252, 254));
+        float[] dashPattern = {10, 10}; // 10 pixels on, 10 pixels off
+        BasicStroke dashedStroke = new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10, dashPattern, 0);
+        add_panel.setBorder(BorderFactory.createStrokeBorder(dashedStroke, new Color(31,139,217)));
+        
+        //labels inside the add panel
+        JLabel createtxt = new JLabel();
+        createtxt.setFont(new java.awt.Font("Montserrat Medium", 0, 28)); // NOI18N
+        createtxt.setForeground(new java.awt.Color(167, 204, 231));
+        createtxt.setText("Create New");
+        createtxt.setBounds(57, 172, 235, 34);
+        add_panel.add(createtxt);
+        
+        JLabel add_icon = new JLabel();
+        add_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow_icon.png"))); // NOI18N
+        add_icon.setBounds(102, 77, 79, 78);
+        add_panel.add(add_icon);
+        
+        //add the add panel to the cloneable panel
+        cloneablePanel.add(add_panel);
+        scrollPane.revalidate();
+        scrollPane.repaint();
+        // Scroll to show the new panel
+        scrollPane.getVerticalScrollBar().setValue(0);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -522,12 +547,10 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     private javax.swing.JLabel addWorkflowBtnTxt1;
     private javax.swing.JLabel aranaraBtn;
     private javax.swing.JLabel aranaraBtnTxt;
-    private javax.swing.JLabel bg;
     private javax.swing.JLabel calendarBtn;
     private javax.swing.JLabel calendarBtnTxt;
     private javax.swing.JLabel homeBtn;
     private javax.swing.JLabel homeBtnTxt;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel logoutBtn;
     private javax.swing.JLabel logoutBtnTxt;
     private javax.swing.JTextField search_field;
