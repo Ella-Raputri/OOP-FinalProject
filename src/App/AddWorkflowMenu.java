@@ -12,6 +12,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -22,6 +23,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -267,7 +270,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         logoutBtnTxt = new javax.swing.JLabel();
         titletxt = new javax.swing.JLabel();
         search_icon = new javax.swing.JLabel();
-        search_field = new RoundJTextField(21);
+        search_field = new RoundJTextField(21, "Find workflow");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1280, 750));
@@ -329,8 +332,8 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         search_field.setFont(new java.awt.Font("Montserrat", 0, 20)); // NOI18N
         search_field.setForeground(new java.awt.Color(155, 154, 154));
         search_field.setText("    Find workflow");
-        search_field.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, java.awt.Color.lightGray));
-        search_field.setPreferredSize(new java.awt.Dimension(456, 46));
+        search_field.setPreferredSize(new java.awt.Dimension(456, 46));        
+        search_field.setBorder(new EmptyBorder(new Insets(5, 10, 5, 10)));
         getContentPane().add(search_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 110, -1, -1));
 
         pack();
@@ -441,6 +444,10 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         
         initDesign(); //initialize all the design components
         initHover(); //initialize the hovering method for buttons
+        
+        //set the addworkflowbutton to be focused when opening this page 
+        //so that the textfield is not focused first
+        SwingUtilities.invokeLater(() -> addWorkflowBtn.requestFocusInWindow());
         
     }
     

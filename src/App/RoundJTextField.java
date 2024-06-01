@@ -2,19 +2,38 @@ package App;
 
 
 import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JTextField;
 
 public class RoundJTextField extends JTextField {
+    private String placeholder;
     private Shape shape;
-    public RoundJTextField(int size) {
+    
+    public RoundJTextField(int size, String placeholder) {
         super(size);
         setOpaque(false); // As suggested by @AVD in comment.
+        this.placeholder = placeholder;
+        
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                setText("");
+                repaint();
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                repaint();
+            }
+        });
     }
     
     @Override
@@ -22,6 +41,14 @@ public class RoundJTextField extends JTextField {
          g.setColor(getBackground());
          g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 30, 30);
          super.paintComponent(g);
+         
+         if (getText().isEmpty() && !isFocusOwner()) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setColor(Color.GRAY); // Set the color for the placeholder text
+            int padding = (getHeight() - getFont().getSize()) / 2;
+            g2d.drawString(placeholder, getInsets().left, getHeight() - padding - 1);
+            g2d.dispose();
+        }
     }
     
     @Override

@@ -54,7 +54,7 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
         idLabel = new javax.swing.JLabel();
         idtxt = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
-        nameField = new RoundJTextField(10);
+        nameField = new RoundJTextField(10, "");
         OKbutton = new App.ButtonCustom();
         
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
