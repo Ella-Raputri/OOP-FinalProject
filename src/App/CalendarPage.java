@@ -242,6 +242,7 @@ public class CalendarPage extends javax.swing.JFrame {
         logoutBtn = new javax.swing.JLabel();
         logoutBtnTxt = new javax.swing.JLabel();
         titletxt = new javax.swing.JLabel();
+        calendarCustom2 = new App.CalendarCustom();
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -297,6 +298,7 @@ public class CalendarPage extends javax.swing.JFrame {
         titletxt.setForeground(new java.awt.Color(0, 141, 189));
         titletxt.setText("Calendar");
         getContentPane().add(titletxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 23, -1, -1));
+        getContentPane().add(calendarCustom2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, -1, -1));
 
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/default_page.png"))); // NOI18N
         getContentPane().add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -349,6 +351,7 @@ public class CalendarPage extends javax.swing.JFrame {
     private javax.swing.JLabel bg;
     private javax.swing.JLabel calendarBtn;
     private javax.swing.JLabel calendarBtnTxt;
+    private App.CalendarCustom calendarCustom2;
     private javax.swing.JLabel homeBtn;
     private javax.swing.JLabel homeBtnTxt;
     private javax.swing.JLabel logoutBtn;
