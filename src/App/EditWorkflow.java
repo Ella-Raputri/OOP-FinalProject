@@ -8,6 +8,9 @@ import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,13 +22,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
  * @author Asus
  */
 public class EditWorkflow extends javax.swing.JFrame {
-    private String workflowID;
+    private String workflowID = "w1";
+    private String userID = "u1";
+    private Workflow current_workflow;
     private JPanel contentPane;
     private JPanel cloneablePanel;
     private JScrollPane scrollPane;
@@ -41,8 +47,9 @@ public class EditWorkflow extends javax.swing.JFrame {
         initDesign();
     }
     
-    public EditWorkflow(String workflowid) {
+    public EditWorkflow(String workflowid, String userid) {
         this.workflowID = workflowid;
+        this.userID = userid;
         setResizable(false);
         setTitle("Edit Workflow");
         initComponents();
@@ -51,125 +58,170 @@ public class EditWorkflow extends javax.swing.JFrame {
         initDesign();
     }
     
+    private void queryWorkflow(){
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM workflow WHERE workflowID = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, this.workflowID);
+            
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                String id = rs.getString("workflowID");
+                String title = rs.getString("title");
+                int checkpoint = rs.getInt("checkpoint");
+                String userid = rs.getString("userID");
+                current_workflow = new Workflow(title, checkpoint, id, userid);
+            }
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+    }
+    
     private void initDesign(){
+        queryWorkflow();
+        
         backButton = new javax.swing.JLabel();
         checkpoint = new javax.swing.JLabel();
         workflow_name = new javax.swing.JLabel();
         multipleDay = new javax.swing.JRadioButton();
         oneDay = new javax.swing.JRadioButton();
-        fromField = new javax.swing.JTextField();
-        nameField = new javax.swing.JTextField();
+        fromField = new PlaceHolderTextField("Day","1");
+        nameField = new PlaceHolderTextField("Name","0");
         fromtxt = new javax.swing.JLabel();
         fromComboBox = new javax.swing.JComboBox<>();
         theDay_from = new javax.swing.JLabel();
-        theDay_to = new javax.swing.JLabel();
-        toField = new javax.swing.JTextField();
+        colortxt = new javax.swing.JLabel();
+        toField = new PlaceHolderTextField("Day","1");
         colorComboBox = new javax.swing.JComboBox<>();
         toComboBox = new javax.swing.JComboBox<>();
-        theDay_to1 = new javax.swing.JLabel();
+        theDay_to = new javax.swing.JLabel();
         totxt = new javax.swing.JLabel();
         viewtxt = new javax.swing.JLabel();
         saveBtn = new App.ButtonCustom();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        notesArea = new PlaceHolderJTextArea("Notes");
+        optGrp = new javax.swing.ButtonGroup();
         bg = new javax.swing.JLabel();
+        
+        //append the two radio buttons to the button group 
+        //so that only one radio button can be selecter
+        optGrp.add(oneDay); optGrp.add(multipleDay);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1280, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_btn.png"))); // NOI18N
+        backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_btn.png"))); 
         getContentPane().add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 17, -1, -1));
+        backButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new AddWorkflowMenu(userID).setVisible(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_btn_hover.png"))); 
+            }
 
-        checkpoint.setFont(new java.awt.Font("Montserrat", 0, 24)); // NOI18N
-        checkpoint.setText("Total: xx checkpoints");
+            @Override
+            public void mouseExited(MouseEvent e) {
+                backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_btn.png"))); 
+            }
+        });
+
+        checkpoint.setFont(new java.awt.Font("Montserrat", 0, 24)); 
+        checkpoint.setText("Total: " + current_workflow.getCheckpoint() + " checkpoints");
         getContentPane().add(checkpoint, new org.netbeans.lib.awtextra.AbsoluteConstraints(116, 120, -1, -1));
 
-        workflow_name.setFont(new java.awt.Font("Montserrat SemiBold", 0, 40)); // NOI18N
+        workflow_name.setFont(new java.awt.Font("Montserrat SemiBold", 0, 40)); 
         workflow_name.setForeground(new java.awt.Color(0, 141, 189));
-        workflow_name.setText("View Workflow");
-        getContentPane().add(workflow_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(828, 52, -1, -1));
+        workflow_name.setText(this.current_workflow.getTitle());
+        getContentPane().add(workflow_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(116, 54, -1, -1));
 
         multipleDay.setBackground(new java.awt.Color(255, 255, 255));
-        multipleDay.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        multipleDay.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         multipleDay.setText("Multiple-day event");
         getContentPane().add(multipleDay, new org.netbeans.lib.awtextra.AbsoluteConstraints(353, 271, -1, -1));
 
         oneDay.setBackground(new java.awt.Color(255, 255, 255));
-        oneDay.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        oneDay.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         oneDay.setSelected(true);
         oneDay.setText("One-day event");
         getContentPane().add(oneDay, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 271, -1, -1));
 
         fromField.setBackground(new java.awt.Color(234, 234, 234));
-        fromField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        fromField.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         fromField.setForeground(new java.awt.Color(155, 154, 154));
         fromField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         fromField.setText("Day");
-        fromField.setToolTipText("");
+        fromField.setBorder(new EmptyBorder(new Insets(5, 10, 5, 10)));
         getContentPane().add(fromField, new org.netbeans.lib.awtextra.AbsoluteConstraints(239, 317, 80, 38));
 
         nameField.setBackground(new java.awt.Color(234, 234, 234));
-        nameField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        nameField.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         nameField.setForeground(new java.awt.Color(155, 154, 154));
-        nameField.setText("Name ");
+        nameField.setBorder(new EmptyBorder(new Insets(5, 15, 5, 10)));
+        nameField.setText("Name");
         getContentPane().add(nameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(155, 211, 427, 41));
 
-        fromtxt.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        fromtxt.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         fromtxt.setText("The Day");
         getContentPane().add(fromtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(509, 321, -1, -1));
 
         fromComboBox.setBackground(new java.awt.Color(234, 234, 234));
-        fromComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        fromComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         fromComboBox.setForeground(new java.awt.Color(155, 154, 154));
         fromComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Before", "After" }));
         fromComboBox.setToolTipText("");
         getContentPane().add(fromComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 317, 140, 38));
 
-        theDay_from.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        theDay_from.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         theDay_from.setText("From");
         getContentPane().add(theDay_from, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 322, -1, -1));
 
-        theDay_to.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        theDay_to.setText("Color");
-        getContentPane().add(theDay_to, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 550, -1, -1));
+        colortxt.setFont(new java.awt.Font("Montserrat", 0, 18)); 
+        colortxt.setText("Color");
+        getContentPane().add(colortxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 540, -1, -1));
 
         toField.setBackground(new java.awt.Color(234, 234, 234));
-        toField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        toField.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         toField.setForeground(new java.awt.Color(155, 154, 154));
         toField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         toField.setText("Day");
-        toField.setToolTipText("");
+        toField.setBorder(new EmptyBorder(new Insets(5, 15, 5, 10)));
         getContentPane().add(toField, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 374, 80, 38));
 
         colorComboBox.setBackground(new java.awt.Color(234, 234, 234));
-        colorComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        colorComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         colorComboBox.setForeground(new java.awt.Color(155, 154, 154));
         colorComboBox.setMaximumRowCount(10);
         colorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Blue", "Red", "Orange", "Yellow", "Green", "Purple", "Pink", "Brown" }));
         colorComboBox.setToolTipText("");
-        getContentPane().add(colorComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 540, 100, 38));
+        getContentPane().add(colorComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 530, 100, 38));
 
         toComboBox.setBackground(new java.awt.Color(234, 234, 234));
-        toComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        toComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         toComboBox.setForeground(new java.awt.Color(155, 154, 154));
         toComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Before", "After" }));
         toComboBox.setToolTipText("");
         getContentPane().add(toComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 374, 140, 38));
 
-        theDay_to1.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        theDay_to1.setText("To");
-        getContentPane().add(theDay_to1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 380, -1, -1));
+        theDay_to.setFont(new java.awt.Font("Montserrat", 0, 18)); 
+        theDay_to.setText("To");
+        getContentPane().add(theDay_to, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 380, -1, -1));
 
-        totxt.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
+        totxt.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         totxt.setText("The Day");
         getContentPane().add(totxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 380, -1, -1));
 
-        viewtxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 40)); // NOI18N
+        viewtxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 40)); 
         viewtxt.setForeground(new java.awt.Color(0, 141, 189));
-        viewtxt.setText("[workflow name]");
-        getContentPane().add(viewtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(116, 54, -1, -1));
+        viewtxt.setText("View Workflow");
+        getContentPane().add(viewtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(828, 54, -1, -1));
 
         saveBtn.setForeground(new java.awt.Color(255, 255, 255));
         saveBtn.setText("Save");
@@ -182,7 +234,7 @@ public class EditWorkflow extends javax.swing.JFrame {
         saveBtn.setColorClick2(java.awt.Color.white);
         saveBtn.setColorOver(new java.awt.Color(125, 201, 255));
         saveBtn.setColorOver2(java.awt.Color.white);
-        saveBtn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); // NOI18N
+        saveBtn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); 
         saveBtn.setRadius(50);
         saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -191,29 +243,29 @@ public class EditWorkflow extends javax.swing.JFrame {
         });
         getContentPane().add(saveBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 605, 110, 47));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow.png"))); 
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(158, 615, -1, -1));
 
-        jTextArea1.setBackground(new java.awt.Color(234, 234, 234));
-        jTextArea1.setColumns(22);
-        jTextArea1.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        jTextArea1.setForeground(new java.awt.Color(155, 154, 154));
-        jTextArea1.setRows(3);
-        jTextArea1.setTabSize(5);
-        jTextArea1.setText("Important notes");
-        jTextArea1.setName(""); // NOI18N
-        jScrollPane1.setViewportView(jTextArea1);
+        notesArea.setBackground(new java.awt.Color(234, 234, 234));
+        notesArea.setColumns(22);
+        notesArea.setFont(new java.awt.Font("Montserrat", 0, 18)); 
+        notesArea.setForeground(new java.awt.Color(155, 154, 154));
+        notesArea.setRows(3);
+        notesArea.setTabSize(5);
+        notesArea.setText("Notes");
+        notesArea.setBorder(new EmptyBorder(new Insets(5, 10, 5, 10)));
+        jScrollPane1.setViewportView(notesArea);
+        jScrollPane1.setBorder(null);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 430, -1, -1));
 
-        bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_workflow_page.png"))); // NOI18N
+        bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_workflow_page.png"))); 
         bg.setText("jLabel1");
         getContentPane().add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 720));
 
         pack();
         setLocationRelativeTo(null);
     }
-
 
     
     private void myinit(){
@@ -318,7 +370,19 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {                                        
-        // TODO add your handling code here:
+        String nameStr = nameField.getText();
+        String typeStr;
+        
+        if(oneDay.isSelected()){
+            typeStr = "One-day event";
+        }
+        else if(multipleDay.isSelected()){
+            typeStr = "Multiple-day event";
+        }
+        
+        String noteStr = notesArea.getText();
+        String colorStr = (String) colorComboBox.getSelectedItem();
+        System.out.print(colorStr);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -391,17 +455,18 @@ public class EditWorkflow extends javax.swing.JFrame {
     private javax.swing.JLabel fromtxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea notesArea;
     private javax.swing.JRadioButton multipleDay;
     private javax.swing.JTextField nameField;
     private javax.swing.JRadioButton oneDay;
     private App.ButtonCustom saveBtn;
     private javax.swing.JLabel theDay_from;
+    private javax.swing.JLabel colortxt;
     private javax.swing.JLabel theDay_to;
-    private javax.swing.JLabel theDay_to1;
     private javax.swing.JComboBox<String> toComboBox;
     private javax.swing.JTextField toField;
     private javax.swing.JLabel totxt;
     private javax.swing.JLabel viewtxt;
     private javax.swing.JLabel workflow_name;
+    private javax.swing.ButtonGroup optGrp;
 }

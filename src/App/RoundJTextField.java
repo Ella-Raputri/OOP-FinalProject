@@ -23,6 +23,9 @@ public class RoundJTextField extends JTextField {
         setOpaque(false); // As suggested by @AVD in comment.
         this.placeholder = placeholder;
         
+        // Remove the default border
+        setBorder(null);
+        
         addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {

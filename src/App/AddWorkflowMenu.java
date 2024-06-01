@@ -327,13 +327,13 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         getContentPane().add(titletxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 27, -1, -1));
 
         search_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/search.png"))); // NOI18N
-        getContentPane().add(search_icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 120, -1, -1));
+        getContentPane().add(search_icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 120, -1, -1));
 
         search_field.setFont(new java.awt.Font("Montserrat", 0, 20)); // NOI18N
         search_field.setForeground(new java.awt.Color(155, 154, 154));
-        search_field.setText("    Find workflow");
+        search_field.setText("Find workflow");
         search_field.setPreferredSize(new java.awt.Dimension(456, 46));        
-        search_field.setBorder(new EmptyBorder(new Insets(5, 10, 5, 10)));
+        search_field.setBorder(new EmptyBorder(new Insets(5, 20, 5, 10)));
         getContentPane().add(search_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 110, -1, -1));
 
         pack();
@@ -514,7 +514,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     
     public void goToEdit(String workflowID){
         setVisible(false);
-        new EditWorkflow(workflowID).setVisible(true);
+        new EditWorkflow(workflowID, userID).setVisible(true);
     }
     
     public void reload(){
