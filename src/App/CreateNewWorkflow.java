@@ -4,10 +4,16 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
@@ -96,10 +102,68 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
         });
         getContentPane().add(OKbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(287, 295, 102, 57));
         
+        
+        LinkedList<String> allIdList = new LinkedList<>();
+        try{
+            Connection con = ConnectionProvider.getCon();
+            Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = st.executeQuery("SELECT workflowID FROM workflow");
+            while(rs.next()){
+                String text = rs.getString("workflowID");
+                allIdList.add(text);
+            }
+            
+            if(allIdList.isEmpty()){
+                idtxt.setText("w1");
+            }
+            else{
+                String lastId = allIdList.getLast();
+                String temp = "";
+                for(int i=1; i<lastId.length(); i++){
+                    temp = temp + lastId.charAt(i);
+                }
+                int idnow = Integer.parseInt(temp);
+                idnow++;
+                String str = "w" + String.valueOf(idnow);
+                idtxt.setText(str);
+            }
+            
+        } catch(Exception e){
+            JFrame jf = new JFrame();
+            jf.setAlwaysOnTop(true);
+            JOptionPane.showMessageDialog(jf, e);
+        }
+        
     }
     
     private void OKbuttonActionPerformed(java.awt.event.ActionEvent evt) {                                        
-        // TODO add your handling code here:
+        String idInput = idtxt.getText();
+        String titleInput = nameField.getText();
+        
+        if(titleInput.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Your workflow name is still empty");
+        }
+        else{
+            try{
+                Connection con = ConnectionProvider.getCon();
+                Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                
+                PreparedStatement ps = con.prepareStatement("INSERT INTO workflow VALUES(?,?,?,?)");
+                ps.setString(1, idInput);
+                ps.setString(2, titleInput);
+                ps.setInt(3, 0);
+                ps.setString(4, userID);
+                ps.executeUpdate();
+                
+                JOptionPane.showMessageDialog(getContentPane(), "Successfully created a new workflow!");
+                AddWorkflowMenu.open=0;
+                setVisible(false);
+                new AddWorkflowMenu(userID).setVisible(true);
+
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(getContentPane(), e);
+            }
+        }
     }
 
     /**

@@ -6,6 +6,10 @@ package App;
 import DatabaseConnection.ConnectionProvider;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.util.LinkedList;
 /**
@@ -39,6 +43,43 @@ public class CloneablePanelWorkflow extends JPanel{
         setComponentBounds(title, 25, 27, title.getPreferredSize().width, title.getPreferredSize().height);
         add(title);
         
+        JTextField titleField = new JTextField();
+        titleField.setVisible(false);
+        titleField.setFont(new Font("Montserrat SemiBold", 0, 36));
+        setComponentBounds(titleField, 25, 27, titleField.getPreferredSize().width, titleField.getPreferredSize().height);
+        add(titleField);    
+        
+        title.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //switch to textfield
+                titleField.setText(title.getText());
+                titleField.setVisible(true);
+                title.setVisible(false);
+                
+                Dimension preferredSize = title.getPreferredSize();
+                setComponentBounds(titleField, 25, 27, preferredSize.width + 10, preferredSize.height);  // Adding some extra width
+                
+                titleField.requestFocus();
+                titleField.selectAll();
+            }
+        });
+        
+        titleField.addActionListener(new ActionListener() {
+            //switch to label
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                title.setText(titleField.getText());
+                
+                //update name in the database
+                updateNameDatabase(title);
+                
+                //make the label visible again
+                title.setVisible(true);
+                titleField.setVisible(false);                
+                setComponentBounds(title, 25, 27, title.getPreferredSize().width, title.getPreferredSize().height);
+            }
+        });
         
         JLabel total_check = new JLabel();
         total_check.setFont(new Font("Montserrat", 0, 24));
@@ -59,13 +100,13 @@ public class CloneablePanelWorkflow extends JPanel{
         deleteButton.setColorClick(Color.white);
         deleteButton.setColorOver(Color.white);
         deleteButton.setColorOver2(new Color(125, 201, 255));
-        deleteButton.setFont(new java.awt.Font("Montserrat Black", 0, 44)); 
+        deleteButton.setFont(new java.awt.Font("Montserrat Black", 0, 36)); 
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteButtonActionPerformed(evt);
             }
         });
-        setComponentBounds(deleteButton, 250, 10, deleteButton.getPreferredSize().width, deleteButton.getPreferredSize().height);
+        setComponentBounds(deleteButton, 255, 10, deleteButton.getPreferredSize().width, deleteButton.getPreferredSize().height);
         add(deleteButton);
         
         
@@ -91,6 +132,43 @@ public class CloneablePanelWorkflow extends JPanel{
         setComponentBounds(editButton, 95, 189, editButton.getPreferredSize().width+25, editButton.getPreferredSize().height+7);
         add(editButton);
         
+        
+        
+//        JLabel editTitle = new JLabel();
+//        editTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_title.png"))); 
+//        setComponentBounds(editTitle, title.getX() + title.getWidth() + 15, title.getY()+10, 22, 27);
+//        add(editTitle);     
+//        
+//        editTitle.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                //
+//            }
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                editTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_title_hover.png")));
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                editTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_title.png")));
+//            }
+//        });
+    }
+    
+    private void updateNameDatabase(JLabel nameLabel){
+        try{
+            Connection con = ConnectionProvider.getCon();
+            Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+            PreparedStatement ps = con.prepareStatement("UPDATE workflow SET title = ? WHERE workflowID = ?");
+            ps.setString(1, nameLabel.getText());
+            ps.setString(2, id);
+            ps.executeUpdate();
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
     }
     
     public void setComponentBounds(Component component, int x, int y, int width, int height) {
@@ -98,24 +176,24 @@ public class CloneablePanelWorkflow extends JPanel{
     }
     
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {
-//        String str = "Do you really want to delete " + titleInput + "?";
+        String message = "Do you really want to delete " + titleInput + "?";
         AddWorkflowMenu home = (AddWorkflowMenu) SwingUtilities.getWindowAncestor(this);
-      JOptionPane.showMessageDialog(home.getContentPane(), "delete berhaisl");
-//        int a = JOptionPane.showConfirmDialog(home.getContentPane(), str, "SELECT", JOptionPane.YES_OPTION);
-//        if(a==0){
-//            try{
-//                Connection con = ConnectionProvider.getCon();
-//                PreparedStatement ps = con.prepareStatement("delete from quiz where id=?");
-//                ps.setString(1, id);
-//                ps.executeUpdate();
-//
-//                JOptionPane.showMessageDialog(home.getContentPane(), "Successfully deleted");
-//                home.reloadSelf();
-//            
-//            }catch(Exception e){
-//                JOptionPane.showMessageDialog(home.getContentPane(), e);
-//            }
-//        }
+        int a = JOptionPane.showConfirmDialog(home.getContentPane(), message, "SELECT", JOptionPane.YES_OPTION);
+        
+        if(a==0){
+            try{
+                Connection con = ConnectionProvider.getCon();
+                PreparedStatement ps = con.prepareStatement("DELETE FROM workflow where workflowID = ?");
+                ps.setString(1, id);
+                ps.executeUpdate();
+
+                JOptionPane.showMessageDialog(home.getContentPane(), "Successfully deleted");
+                home.reload();
+            
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(home.getContentPane(), e);
+            }
+        }
     }
     
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {                                         

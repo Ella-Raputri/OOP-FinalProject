@@ -51,7 +51,7 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
             if (!cell.isTitle()){
                 cell.setText(calendar.get(Calendar.DATE) + "");
                 cell.setDate(calendar.getTime());
-                cell.currentMonth(calendar.get(Calendar.MONTH) == month-1);
+                cell.currentMonth(calendar.get(Calendar.MONTH) == month -1);
                 
                 if (today.isToday(new CalendarToday(calendar.get(Calendar.DATE), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)))){
                     cell.setAsToday();
@@ -64,7 +64,7 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
     private CalendarToday getToday(){
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        return new CalendarToday(cal.get(Calendar.DATE), cal.get(Calendar.MONTH)+1, cal.get(Calendar.YEAR));
+        return new CalendarToday(cal.get(Calendar.DATE), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
     }
 
     /**

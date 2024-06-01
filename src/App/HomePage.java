@@ -265,7 +265,7 @@ public class HomePage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonCustom1 = new App.ButtonCustom();
+        viewMoreBtn = new App.ButtonCustom();
         new_window_btn = new javax.swing.JLabel();
         upcoming_tasks = new javax.swing.JLabel();
         nearest_time = new javax.swing.JLabel();
@@ -295,20 +295,25 @@ public class HomePage extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1280, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        buttonCustom1.setForeground(new java.awt.Color(255, 255, 255));
-        buttonCustom1.setText("View More >");
-        buttonCustom1.setBorderColor(new java.awt.Color(31, 139, 217));
-        buttonCustom1.setBorderColorNotOver(new java.awt.Color(31, 139, 217));
-        buttonCustom1.setBorderColorOver(new java.awt.Color(125, 201, 255));
-        buttonCustom1.setColor(new java.awt.Color(31, 139, 217));
-        buttonCustom1.setColor2(java.awt.Color.white);
-        buttonCustom1.setColorClick(new java.awt.Color(125, 201, 255));
-        buttonCustom1.setColorClick2(java.awt.Color.white);
-        buttonCustom1.setColorOver(new java.awt.Color(125, 201, 255));
-        buttonCustom1.setColorOver2(java.awt.Color.white);
-        buttonCustom1.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
-        buttonCustom1.setRadius(50);
-        getContentPane().add(buttonCustom1, new org.netbeans.lib.awtextra.AbsoluteConstraints(602, 591, 167, 44));
+        viewMoreBtn.setForeground(new java.awt.Color(255, 255, 255));
+        viewMoreBtn.setText("View More >");
+        viewMoreBtn.setBorderColor(new java.awt.Color(31, 139, 217));
+        viewMoreBtn.setBorderColorNotOver(new java.awt.Color(31, 139, 217));
+        viewMoreBtn.setBorderColorOver(new java.awt.Color(125, 201, 255));
+        viewMoreBtn.setColor(new java.awt.Color(31, 139, 217));
+        viewMoreBtn.setColor2(java.awt.Color.white);
+        viewMoreBtn.setColorClick(new java.awt.Color(125, 201, 255));
+        viewMoreBtn.setColorClick2(java.awt.Color.white);
+        viewMoreBtn.setColorOver(new java.awt.Color(125, 201, 255));
+        viewMoreBtn.setColorOver2(java.awt.Color.white);
+        viewMoreBtn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
+        viewMoreBtn.setRadius(50);
+        viewMoreBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewMoreBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(viewMoreBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(602, 591, 167, 44));
 
         new_window_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/open_new_window.png"))); // NOI18N
         getContentPane().add(new_window_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1162, 357, -1, -1));
@@ -416,6 +421,11 @@ public class HomePage extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void viewMoreBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewMoreBtnActionPerformed
+        setVisible(false);
+        new CalendarPage().setVisible(true);
+    }//GEN-LAST:event_viewMoreBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -460,7 +470,6 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JLabel aranaraBtnTxt;
     private javax.swing.JLabel aranara_pict;
     private javax.swing.JLabel bg;
-    private App.ButtonCustom buttonCustom1;
     private javax.swing.JLabel calendarBtn;
     private javax.swing.JLabel calendarBtnTxt;
     private javax.swing.JLabel homeBtn;
@@ -474,6 +483,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JLabel quoteby_txt;
     private javax.swing.JLabel quotetxt;
     private javax.swing.JLabel upcoming_tasks;
+    private App.ButtonCustom viewMoreBtn;
     private javax.swing.JLabel welcometxt;
     private javax.swing.JLabel your_daily_quote;
     private javax.swing.JLabel your_daily_txt1;

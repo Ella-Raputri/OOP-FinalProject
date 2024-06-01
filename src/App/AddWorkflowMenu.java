@@ -15,7 +15,7 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.util.LinkedList;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -31,7 +31,7 @@ import javax.swing.border.EmptyBorder;
  * @author Asus
  */
 public class AddWorkflowMenu extends javax.swing.JFrame {
-    private String userID;
+    private String userID = "u1";
     private JPanel contentPane;
     private JPanel cloneablePanel;
     private JScrollPane scrollPane;
@@ -346,8 +346,11 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         
         try{
             Connection con = ConnectionProvider.getCon();
-            Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = st.executeQuery("select * from workflow");
+            String query = "SELECT * FROM workflow WHERE userID = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, userID);
+            
+            ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 String id = rs.getString("workflowID");
                 String title = rs.getString("title");
@@ -414,7 +417,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
                 row = 0;
             }else{
               column = (i-2) % 3;  
-              row = (i+2)/3;
+              row = (i+1)/3;
             }
 
             // Calculate the x and y positions based on row and column indices
@@ -512,6 +515,11 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     public void goToEdit(String workflowID){
         setVisible(false);
         new EditWorkflow(workflowID).setVisible(true);
+    }
+    
+    public void reload(){
+        setVisible(false);
+        new AddWorkflowMenu().setVisible(true);
     }
     /**
      * This method is called from within the constructor to initialize the form.
