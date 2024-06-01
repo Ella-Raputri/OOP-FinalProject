@@ -175,7 +175,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraPage(userID).setVisible(true);
+                new AranaraMenu(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -191,7 +191,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraPage(userID).setVisible(true);
+                new AranaraMenu(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -402,7 +402,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             
             // Create a new cloned panel
             // Cloneable Panel
-            CloneablePanelAdmin clonedPanel = new CloneablePanelAdmin(20, Color.white, 2 ,id, title, checkpoint);
+            CloneablePanelWorkflow clonedPanel = new CloneablePanelWorkflow(20, Color.white, 2 ,id, title, checkpoint);
             // Set your custom width and height for the cloned panel
             int panelWidth = 292;
             int panelHeight = 278;
@@ -507,6 +507,11 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         scrollPane.repaint();
         // Scroll to show the new panel
         scrollPane.getVerticalScrollBar().setValue(0);
+    }
+    
+    public void goToEdit(String workflowID){
+        setVisible(false);
+        new EditWorkflow(workflowID).setVisible(true);
     }
     /**
      * This method is called from within the constructor to initialize the form.

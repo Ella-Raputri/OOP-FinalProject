@@ -4,12 +4,32 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.LinkedList;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+
 /**
  *
  * @author Asus
  */
 public class EditWorkflow extends javax.swing.JFrame {
     private String workflowID;
+    private JPanel contentPane;
+    private JPanel cloneablePanel;
+    private JScrollPane scrollPane;
+    public static int open = 0;
     /**
      * Creates new form EditWorkflow
      */
@@ -17,6 +37,7 @@ public class EditWorkflow extends javax.swing.JFrame {
         setResizable(false);
         setTitle("Edit Workflow");
         initComponents();
+        myinit();
         initDesign();
     }
     
@@ -25,6 +46,8 @@ public class EditWorkflow extends javax.swing.JFrame {
         setResizable(false);
         setTitle("Edit Workflow");
         initComponents();
+        myinit();
+        System.out.print(workflowid);
         initDesign();
     }
     
@@ -191,6 +214,109 @@ public class EditWorkflow extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
+
+    
+    private void myinit(){
+        int totalElement = 0;
+        LinkedList<Flow> flowList = new LinkedList<>();
+        
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM flow WHERE workflowID = ? ORDER BY dayFrom ASC";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, this.workflowID);
+            
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+                String fID = rs.getString("id");
+                String fname = rs.getString("name");
+                String ftype = rs.getString("type");
+                int fdayFrom = rs.getInt("dayFrom");
+                int fdayTo = rs.getInt("dayTo");
+                String fnotes = rs.getString("notes");
+                String fcolor = rs.getString("color");
+                
+                Flow flow = new Flow(fID, fname, ftype, fdayFrom, fdayTo, fnotes, fcolor);
+                flowList.add(flow);
+            }
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+        totalElement = flowList.size();
+        
+        // Create the content pane
+        contentPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Load the background image
+                ImageIcon bgImage = new ImageIcon("src/App/img/edit_workflow_page.png");
+                // Draw the background image
+                g.drawImage(bgImage.getImage(), 0, 0, getWidth(), getHeight(), null);
+            }
+        };
+        contentPane.setLayout(null); // Use absolute layout
+        setContentPane(contentPane);
+        
+        // Create the scroll pane
+        scrollPane = new JScrollPane();
+        scrollPane.setBounds(732, 120, 508, 559); // Set bounds for the scroll pane
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        contentPane.add(scrollPane);
+
+        // Create the cloneable panel
+        cloneablePanel = new JPanel(); // The initial panel inside scroll pane
+        cloneablePanel.setLayout(null); // Use absolute layout
+        cloneablePanel.setPreferredSize(new Dimension(400, 200)); // Set initial size
+        cloneablePanel.setBounds(180, 200, 1200, 1500); // Set bounds for the initial panel
+        cloneablePanel.setBackground(new Color(246,252,254));
+        scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
+        
+        
+        for(int i=0; i<totalElement;i++){
+            String id = flowList.get(i).getId();
+            String name = flowList.get(i).getNameInput();
+            String type = flowList.get(i).getTypeInput();
+            int dayFrom = flowList.get(i).getDayFromInput();
+            int dayTo = flowList.get(i).getDayToInput();
+            String color = flowList.get(i).getColorInput();
+            
+            // Create a new cloned panel
+            // Cloneable Panel
+            CloneablePanelFlow clonedPanel = new CloneablePanelFlow(20, Color.white, 2 ,id, name, type, dayFrom, dayTo, color);
+            // Set your custom width and height for the cloned panel
+            int panelWidth = 288;
+            int panelHeight = 146;
+            
+
+            // Calculate the x and y positions based on row and column indices
+            int x = 110;
+            int y = 10 + i * (panelHeight + 50);
+
+            // Set the bounds for the cloned panel with your custom size
+            clonedPanel.setBounds(x, y, panelWidth, panelHeight);
+            clonedPanel.setBackground(new Color(246,252,254));
+            
+            // Add the cloned panel to the initial panel
+            cloneablePanel.add(clonedPanel);
+            // Adjust preferred size of initial panel to include new panel
+            Dimension newSize = new Dimension(cloneablePanel.getWidth(), y + panelHeight + 10); // Adjusted size
+            cloneablePanel.setPreferredSize(newSize);
+            // Ensure the scroll pane updates its viewport
+            scrollPane.revalidate();
+            scrollPane.repaint();
+            // Scroll to show the new panel
+            scrollPane.getVerticalScrollBar().setValue(0);
+        }
+        
+        
+        ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
+        contentPane.setPreferredSize(new Dimension(bgImage.getIconWidth(), bgImage.getIconHeight()));
+    }
+    
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {                                        
         // TODO add your handling code here:
     }

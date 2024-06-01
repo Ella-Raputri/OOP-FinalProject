@@ -12,7 +12,7 @@ import java.util.LinkedList;
  *
  * @author asus
  */
-public class CloneablePanelAdmin extends JPanel{ 
+public class CloneablePanelWorkflow extends JPanel{ 
     private static int panelCount = 0; 
     private static int borderRadius;
     private static Color bgColor;
@@ -20,9 +20,8 @@ public class CloneablePanelAdmin extends JPanel{
     private String id;
     private String titleInput;
     private int checkpointInput;
-    private String userID;
 
-    public CloneablePanelAdmin(int borderRadius, Color bgColor, int borderWidth, String id, String titleInput, int checkpointInput) {
+    public CloneablePanelWorkflow(int borderRadius, Color bgColor, int borderWidth, String id, String titleInput, int checkpointInput) {
         setLayout(null);
         this.borderRadius = borderRadius;
         this.bgColor = bgColor;
@@ -56,10 +55,10 @@ public class CloneablePanelAdmin extends JPanel{
         deleteButton.setColor2(new Color(31, 139, 217));
         deleteButton.setForeground(new Color(31, 139, 217));
         deleteButton.setColor(Color.white);
-        deleteButton.setColorClick2(new Color(167, 204, 231));
+        deleteButton.setColorClick2(new Color(125, 201, 255));
         deleteButton.setColorClick(Color.white);
         deleteButton.setColorOver(Color.white);
-        deleteButton.setColorOver2(new Color(167, 204, 231));
+        deleteButton.setColorOver2(new Color(125, 201, 255));
         deleteButton.setFont(new java.awt.Font("Montserrat Black", 0, 44)); 
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -75,12 +74,12 @@ public class CloneablePanelAdmin extends JPanel{
         editButton.setText("Edit");
         editButton.setBorderColorNotOver(new java.awt.Color(31, 139, 217));
         editButton.setBorderColor(new java.awt.Color(31, 139, 217));
-        editButton.setBorderColorOver(new java.awt.Color(167, 204, 231));
+        editButton.setBorderColorOver(new java.awt.Color(125, 201, 255));
         editButton.setColor2(Color.white);
         editButton.setColor(new Color(31, 139, 217));
         editButton.setColorClick2(Color.white);
-        editButton.setColorClick(new Color(167, 204, 231));
-        editButton.setColorOver(new Color(167, 204, 231));
+        editButton.setColorClick(new Color(125, 201, 255));
+        editButton.setColorOver(new Color(125, 201, 255));
         editButton.setColorOver2(Color.white);
         editButton.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); 
         editButton.setRadius(20);
@@ -121,8 +120,7 @@ public class CloneablePanelAdmin extends JPanel{
     
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {                                         
         AddWorkflowMenu home = (AddWorkflowMenu) SwingUtilities.getWindowAncestor(this);
-      JOptionPane.showMessageDialog(home.getContentPane(), "eddit berhaisl");
-        //home.goToEdit(id);
+        home.goToEdit(id);
     }
     
     

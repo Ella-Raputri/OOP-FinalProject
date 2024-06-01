@@ -41,7 +41,7 @@
           <Color blue="d9" green="8b" red="1f" type="rgb"/>
         </Property>
         <Property name="borderColorOver" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="fb" green="cf" red="6d" type="rgb"/>
+          <Color blue="ff" green="c9" red="7d" type="rgb"/>
         </Property>
         <Property name="color" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="d9" green="8b" red="1f" type="rgb"/>
@@ -50,13 +50,13 @@
           <Color blue="ff" green="ff" id="white" palette="1" red="ff" type="palette"/>
         </Property>
         <Property name="colorClick" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="fb" green="cf" red="6d" type="rgb"/>
+          <Color blue="ff" green="c9" red="7d" type="rgb"/>
         </Property>
         <Property name="colorClick2" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" id="white" palette="1" red="ff" type="palette"/>
         </Property>
         <Property name="colorOver" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="fb" green="cf" red="6d" type="rgb"/>
+          <Color blue="ff" green="c9" red="7d" type="rgb"/>
         </Property>
         <Property name="colorOver2" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" id="white" palette="1" red="ff" type="palette"/>

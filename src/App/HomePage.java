@@ -242,7 +242,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraPage().setVisible(true);
+                new AranaraMenu().setVisible(true);
             }            
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -299,12 +299,12 @@ public class HomePage extends javax.swing.JFrame {
         buttonCustom1.setText("View More >");
         buttonCustom1.setBorderColor(new java.awt.Color(31, 139, 217));
         buttonCustom1.setBorderColorNotOver(new java.awt.Color(31, 139, 217));
-        buttonCustom1.setBorderColorOver(new java.awt.Color(109, 207, 251));
+        buttonCustom1.setBorderColorOver(new java.awt.Color(125, 201, 255));
         buttonCustom1.setColor(new java.awt.Color(31, 139, 217));
         buttonCustom1.setColor2(java.awt.Color.white);
-        buttonCustom1.setColorClick(new java.awt.Color(109, 207, 251));
+        buttonCustom1.setColorClick(new java.awt.Color(125, 201, 255));
         buttonCustom1.setColorClick2(java.awt.Color.white);
-        buttonCustom1.setColorOver(new java.awt.Color(109, 207, 251));
+        buttonCustom1.setColorOver(new java.awt.Color(125, 201, 255));
         buttonCustom1.setColorOver2(java.awt.Color.white);
         buttonCustom1.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
         buttonCustom1.setRadius(50);

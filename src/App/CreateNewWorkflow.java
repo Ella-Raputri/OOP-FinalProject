@@ -83,9 +83,9 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
         OKbutton.setBorderColor(new java.awt.Color(255, 255, 255));
         OKbutton.setBorderColorNotOver(new java.awt.Color(255, 255, 255));
         OKbutton.setBorderColorOver(new java.awt.Color(255, 255, 255));
-        OKbutton.setColorClick(new java.awt.Color(167, 204, 231));
+        OKbutton.setColorClick(new java.awt.Color(125, 201, 255));
         OKbutton.setColorClick2(new java.awt.Color(255, 255, 255));
-        OKbutton.setColorOver(new java.awt.Color(167, 204, 231));
+        OKbutton.setColorOver(new java.awt.Color(125, 201, 255));
         OKbutton.setColorOver2(new java.awt.Color(255, 255, 255));
         OKbutton.setFont(new java.awt.Font("Montserrat SemiBold", 0, 28)); 
         OKbutton.setRadius(10);

@@ -158,7 +158,7 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraPage(userID).setVisible(true);
+                new AranaraMenu(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -174,7 +174,7 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraPage(userID).setVisible(true);
+                new AranaraMenu(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
