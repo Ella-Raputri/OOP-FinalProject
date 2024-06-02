@@ -26,6 +26,7 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
     }
     
     private void init(){
+        //set the titles style
         mon.asTitle();
         tue.asTitle();
         wed.asTitle();
@@ -51,7 +52,7 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
             if (!cell.isTitle()){
                 cell.setText(calendar.get(Calendar.DATE) + "");
                 cell.setDate(calendar.getTime());
-                cell.currentMonth(calendar.get(Calendar.MONTH) == month -1);
+                cell.currentMonth(calendar.get(Calendar.MONTH) == month -1, calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY);
                 
                 if (today.isToday(new CalendarToday(calendar.get(Calendar.DATE), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)))){
                     cell.setAsToday();

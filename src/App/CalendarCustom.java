@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import javax.swing.JPanel;
 
 /**
  *
@@ -90,6 +91,10 @@ public class CalendarCustom extends javax.swing.JPanel {
         calendar.set(Calendar.DATE, 1);
         SimpleDateFormat date_format = new SimpleDateFormat("MMMM yyyy");
         month_year.setText(date_format.format(calendar.getTime()));
+    }
+    
+    public JPanel getTaskPanel(){
+        return taskPanel;
     }
 
     /**

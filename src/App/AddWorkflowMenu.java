@@ -513,40 +513,29 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         scrollPane.getVerticalScrollBar().setValue(0);
     }
     
-    private void handleSearch(){
-        if (search_field.getText().equals("")){
-            searchLostFocus();
+    private void handleSearch(){        
+        String searchStr = search_field.getText();
+        LinkedList<Workflow> resultList= new LinkedList<>();
+        boolean exist = false;
+
+        for (int i = 0; i < workflowList.size(); i++){
+            String want_to_be_check = workflowList.get(i).getTitle().toLowerCase();
+            if (want_to_be_check.contains(searchStr.toLowerCase())){
+                resultList.add(workflowList.get(i));
+                exist = true;
+            }
+        }
+
+        if (exist == true){
+            cloneablePanel.removeAll();
+            createClonedPanels(resultList, resultList.size());
+            createAddPanel();  
         }
         else{
-            String searchStr = search_field.getText();
-            LinkedList<Workflow> resultList= new LinkedList<>();
-            boolean exist = false;
-
-            for (int i = 0; i < workflowList.size(); i++){
-                String want_to_be_check = workflowList.get(i).getTitle().toLowerCase();
-                if (want_to_be_check.contains(searchStr.toLowerCase())){
-                    resultList.add(workflowList.get(i));
-                    exist = true;
-                }
-            }
-
-            if (exist == true){
-                cloneablePanel.removeAll();
-                createClonedPanels(resultList, resultList.size());
-                createAddPanel();  
-            }
-            else{
-                cloneablePanel.removeAll();
-                createAddPanel();
-            }
+            cloneablePanel.removeAll();
+            createAddPanel();
         }
-    }
-    
-    private void searchLostFocus(){
-        cloneablePanel.removeAll();
-        createClonedPanels(workflowList, workflowList.size());
-        createAddPanel();        
-        SwingUtilities.invokeLater(() -> addWorkflowBtn.requestFocusInWindow());
+        
     }
     
     public void goToEdit(String workflowID){

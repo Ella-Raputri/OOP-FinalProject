@@ -45,11 +45,9 @@ public class EditWorkflow extends javax.swing.JFrame {
     public static int open = 0;
     private LinkedList<Flow> flowList = new LinkedList<>();
     private String flowIDTemp;
-    //private HashMap<String, CloneablePanelFlow> panelMap = new HashMap<>();
     private CloneablePanelFlow currentPanel = null;
-    /**
-     * Creates new form EditWorkflow
-     */
+    
+    
     public EditWorkflow() {
         setResizable(false);
         setTitle("Edit Workflow");

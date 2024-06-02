@@ -4,32 +4,54 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.LinkedList;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 /**
  *
  * @author Asus
  */
 public class CalendarPage extends javax.swing.JFrame {
-    private String userID;
+    private String userID = "u1";
+    private JPanel contentPane;
+    private JPanel cloneablePanel;
+    private JScrollPane scrollPane;
+    private LinkedList<Task> taskList = new LinkedList<>();
+    private String taskIDTemp;
     /**
      * Creates new form CalendarPage
      */
     public CalendarPage() {
         setResizable(false);
-        setTitle("Calendar Page");
-        initComponents();
+        setTitle("Calendar Page");        
         myinit();
+        initComponents();
+        initHover();
+        
     }
     
     public CalendarPage(String id) {
         setResizable(false);
         setTitle("Calendar Page");
         this.userID = id;
-        initComponents();
         myinit();
+        initComponents();
+        initHover();
+        
     }
     
     public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
@@ -42,7 +64,7 @@ public class CalendarPage extends javax.swing.JFrame {
         }
     }
     
-    private void myinit(){
+    private void initHover(){
         JLabel[] home_labels = {homeBtn, homeBtnTxt};
         JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
         JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
@@ -220,7 +242,183 @@ public class CalendarPage extends javax.swing.JFrame {
             }
         });
     }
+    
+    private void queryTask(){
+       taskList.clear();
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM tasks WHERE userID = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, this.userID);
+            
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+                String tID = rs.getString("taskID");
+                String tname = rs.getString("name");
+                String ttype = rs.getString("type");
+                String ttimeFrom = rs.getString("timeFrom");
+                String ttimeTo = rs.getString("timeTo");
+                String tnotes = rs.getString("notes");
+                String tcolor = rs.getString("color");
+                
+                Task new_task = new Task(tID, tname, ttype, ttimeFrom, ttimeTo, tnotes, tcolor, this.userID);
+                taskList.add(new_task);
+            }
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        } 
+    }
+    
+    private void myinit(){
+        queryTask();
+        
+        // Create the content pane
+        contentPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Load the background image
+                ImageIcon bgImage = new ImageIcon("src/App/img/search.png");
+                // Draw the background image
+                g.drawImage(bgImage.getImage(), 0, 0, getWidth(), getHeight(), null);
+            }
+        };
+        contentPane.setLayout(null); // Use absolute layout
+        setContentPane(contentPane);
+        
+        // Create the scroll pane
+        scrollPane = new JScrollPane();
+        scrollPane.setBounds(971, 195, 260, 440); // Set bounds for the scroll pane
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        contentPane.add(scrollPane);
 
+        // Create the cloneable panel
+        cloneablePanel = new JPanel(); // The initial panel inside scroll pane
+        cloneablePanel.setLayout(null); // Use absolute layout
+        cloneablePanel.setPreferredSize(new Dimension(400, 200)); // Set initial size
+        cloneablePanel.setBounds(180, 200, 1200, 1500); // Set bounds for the initial panel
+        cloneablePanel.setBackground(new Color(246,252,254));
+        scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
+        
+        calendarCustom2 = new App.CalendarCustom();
+        contentPane.add(calendarCustom2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, -1, -1));
+
+        createClonedPanels(taskList, taskList.size());
+
+        contentPane.setPreferredSize(new Dimension(1280, 750));
+        
+        // Make the components viewable
+        cloneablePanel.setVisible(true);
+        calendarCustom2.setVisible(true);
+    }
+    
+    private void createClonedPanels(LinkedList<Task> list, int size){
+        JPanel taskPanel = calendarCustom2.getTaskPanel(); // Access the taskPanel from calendarCustom2
+        taskPanel.removeAll();
+    
+        //panelMap.clear();
+        for(int i=0; i<size;i++){
+            String id = list.get(i).getId();
+            String name = list.get(i).getNameInput();
+            String type = list.get(i).getTypeInput();
+            String timeFrom = list.get(i).getTimeFromInput();
+            String timeTo = list.get(i).getTimeToInput();
+            String note = list.get(i).getNoteInput();
+            String color = list.get(i).getColorInput();
+            
+            // Create a new cloned panel
+            // Cloneable Panel
+            CloneablePanelTask clonedPanel = new CloneablePanelTask(0, Color.blue, 2 ,
+                    id, name, type, timeFrom, timeTo, note, color);
+            // Set your custom width and height for the cloned panel
+            int panelWidth = 260;
+            int panelHeight = 90;
+            
+            // Calculate the x and y positions based on row and column indices
+            int x = 0;
+            int y = 10 + i * (panelHeight + 30);
+
+            // Set the bounds for the cloned panel with your custom size
+            clonedPanel.setBounds(x, y, panelWidth, panelHeight);
+            clonedPanel.setBackground(new Color(255,0,0));
+            
+//            clonedPanel.addMouseListener(new MouseAdapter() {
+//                @Override
+//                public void mouseClicked(MouseEvent e) {
+//                    if (currentPanel == clonedPanel){
+//                       currentPanel.setClicked(false);
+//                       currentPanel = null;
+//                       clearAllFields();
+//                       deactivateDeleteBtn();
+//                    }
+//                    else{
+//                        if (currentPanel != null ) {
+//                            currentPanel.setClicked(false);
+//                        }
+//                        clonedPanel.setClicked(true);
+//                        currentPanel = clonedPanel;
+//                        handleEditPanel();
+//                    }   
+//                }
+//            });
+            
+            // Add the cloned panel to the initial panel
+            taskPanel.add(clonedPanel);
+            cloneablePanel.add(clonedPanel);
+            
+            // Adjust preferred size of initial panel to include new panel
+            Dimension newSize = new Dimension(cloneablePanel.getWidth(), y + panelHeight + 10); // Adjusted size
+            cloneablePanel.setPreferredSize(newSize);
+            // Ensure the scroll pane updates its viewport
+            scrollPane.revalidate();
+            scrollPane.repaint();
+            // Scroll to show the new panel
+            scrollPane.getVerticalScrollBar().setValue(0);
+            
+            //calendarCustom2.setVisible(false);
+        }
+        
+        int totalHeight = size * (90 + 30) + 10; // panelHeight + vertical gap + initial gap
+        taskPanel.setPreferredSize(new Dimension(400, totalHeight)); // Adjusted size
+
+        // Ensure the taskPanel updates its viewport
+        taskPanel.revalidate();
+        taskPanel.repaint();
+    }
+    
+//    private void handleEditPanel(){
+//        //set name field
+//        nameField.requestFocus();
+//        nameField.setText(currentPanel.getNameInput());
+//        
+//        //set radio button
+//        if (currentPanel.getTypeInput().equals("One-day event")){
+//            oneDay.setSelected(true);   
+//            toField.setEnabled(false);
+//            toComboBox.setEnabled(false);
+//            repaint();
+//        }else{
+//            multipleDay.setSelected(true);
+//            toField.setEnabled(true);
+//            toComboBox.setEnabled(true);
+//            repaint();
+//            //set dayTo
+//            handleDayField(currentPanel.getDayToInput(), toComboBox, toField);
+//        }
+//        
+//        //set day from
+//        handleDayField(currentPanel.getDayFromInput(), fromComboBox, fromField);
+//        notesArea.setText(currentPanel.getNoteInput());
+//        colorComboBox.setSelectedItem(currentPanel.getColorInput());
+//        
+//        //activate delete button
+//        activateDeleteBtn();
+//    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

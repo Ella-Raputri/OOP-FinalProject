@@ -35,16 +35,24 @@ public class CalendarCell extends JButton{
     public boolean isTitle(){
         return title;
     }
-    
+        
     public void setDate(Date date1){
         this.date = date1;
     }
     
-    public void currentMonth(boolean act){
-        if(act){
+    public void currentMonth(boolean act, boolean isSunday){
+        if(act && !isSunday){
             setForeground(new Color(58,58,58));
+            setFont(new java.awt.Font("Montserrat Medium", 0, 22));
         }
-        else{
+        else if (act && isSunday){
+            setForeground(new Color(234, 111, 111));
+            setFont(new java.awt.Font("Montserrat Medium", 0, 22));
+        }
+        else if (!act && isSunday){
+            setForeground(new Color(255, 167, 167));
+        }
+        else {
             setForeground(new Color(200,200,200));
         }
     }
