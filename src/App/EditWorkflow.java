@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.LinkedList;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,6 +37,8 @@ public class EditWorkflow extends javax.swing.JFrame {
     private JPanel cloneablePanel;
     private JScrollPane scrollPane;
     public static int open = 0;
+    private LinkedList<Flow> flowList = new LinkedList<>();
+    private String flowIDTemp;
     /**
      * Creates new form EditWorkflow
      */
@@ -268,10 +271,8 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
 
     
-    private void myinit(){
-        int totalElement = 0;
-        LinkedList<Flow> flowList = new LinkedList<>();
-        
+    private void queryFlow(){
+        flowList.clear();
         try{
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM flow WHERE workflowID = ? ORDER BY dayFrom ASC";
@@ -288,13 +289,18 @@ public class EditWorkflow extends javax.swing.JFrame {
                 String fnotes = rs.getString("notes");
                 String fcolor = rs.getString("color");
                 
-                Flow flow = new Flow(fID, fname, ftype, fdayFrom, fdayTo, fnotes, fcolor);
+                Flow flow = new Flow(fID, this.workflowID, fname, ftype, fdayFrom, fdayTo, fnotes, fcolor);
                 flowList.add(flow);
             }
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(getContentPane(), e);
         }
+    }
+    
+    private void myinit(){
+        int totalElement = 0;
+        queryFlow();
         totalElement = flowList.size();
         
         // Create the content pane
@@ -327,14 +333,21 @@ public class EditWorkflow extends javax.swing.JFrame {
         cloneablePanel.setBackground(new Color(246,252,254));
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
+        createClonedPanels(flowList, totalElement);
         
-        for(int i=0; i<totalElement;i++){
-            String id = flowList.get(i).getId();
-            String name = flowList.get(i).getNameInput();
-            String type = flowList.get(i).getTypeInput();
-            int dayFrom = flowList.get(i).getDayFromInput();
-            int dayTo = flowList.get(i).getDayToInput();
-            String color = flowList.get(i).getColorInput();
+        ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
+        contentPane.setPreferredSize(new Dimension(bgImage.getIconWidth(), bgImage.getIconHeight()));
+    }
+    
+    private void createClonedPanels(LinkedList<Flow> list, int size){
+        
+        for(int i=0; i<size;i++){
+            String id = list.get(i).getId();
+            String name = list.get(i).getNameInput();
+            String type = list.get(i).getTypeInput();
+            int dayFrom = list.get(i).getDayFromInput();
+            int dayTo = list.get(i).getDayToInput();
+            String color = list.get(i).getColorInput();
             
             // Create a new cloned panel
             // Cloneable Panel
@@ -363,27 +376,155 @@ public class EditWorkflow extends javax.swing.JFrame {
             // Scroll to show the new panel
             scrollPane.getVerticalScrollBar().setValue(0);
         }
-        
-        
-        ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
-        contentPane.setPreferredSize(new Dimension(bgImage.getIconWidth(), bgImage.getIconHeight()));
+    }
+    
+    private boolean isInteger(String str){
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
     
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        insertNewFlow();
+    }
+    
+    private void getFlowLastID(){
+        LinkedList<String> allIdList = new LinkedList<>();
+        try{
+            Connection con = ConnectionProvider.getCon();
+            Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = st.executeQuery("SELECT id FROM flow");
+            while(rs.next()){
+                String text = rs.getString("id");
+                allIdList.add(text);
+            }
+            
+            if(allIdList.isEmpty()){
+                flowIDTemp = "f1";
+            }
+            else{
+                String lastId = allIdList.getLast();
+                String temp = "";
+                for(int i=1; i<lastId.length(); i++){
+                    temp = temp + lastId.charAt(i);
+                }
+                int idnow = Integer.parseInt(temp);
+                idnow++;
+                flowIDTemp = "f" + String.valueOf(idnow);
+            }
+            
+        } catch(Exception e){
+            JFrame jf = new JFrame();
+            jf.setAlwaysOnTop(true);
+            JOptionPane.showMessageDialog(jf, e);
+        }
+    }
+    
+    private void insertNewFlow(){
         String nameStr = nameField.getText();
         String typeStr;
+        String dayToStr;
         
         if(oneDay.isSelected()){
             typeStr = "One-day event";
+            dayToStr = "0";
         }
-        else if(multipleDay.isSelected()){
+        else{
             typeStr = "Multiple-day event";
+            dayToStr = toField.getText();
         }
         
+        String dayFromStr = fromField.getText();
         String noteStr = notesArea.getText();
+        if (noteStr.equals("Notes")){
+            noteStr = "";
+        }        
         String colorStr = (String) colorComboBox.getSelectedItem();
-        System.out.print(colorStr);
+        
+        //handle user wrong input
+        if (nameStr.equals("Name") || nameStr.equals("")){
+            JOptionPane.showMessageDialog(getContentPane(), "Name is still empty.");
+        }
+        else if (typeStr.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Type is still empty.");
+        }
+        else if (dayFromStr.equals("Day") || dayFromStr.equals("")){
+            JOptionPane.showMessageDialog(getContentPane(), "Day 'from' is still empty.");
+        }
+        else if (!isInteger(dayFromStr)){
+            JOptionPane.showMessageDialog(getContentPane(), "Day 'from' is not valid.");
+        }
+        else if (colorStr.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Color is still empty.");
+        }        
+        //only for multiple day event
+        else if ((dayToStr.equals("Day") || dayToStr.equals("")) && typeStr.equals("Multiple-day event")){
+            JOptionPane.showMessageDialog(getContentPane(), "Day 'to' is still empty.");
+        }
+        else if (!isInteger(dayToStr) && typeStr.equals("Multiple-day event")){
+            JOptionPane.showMessageDialog(getContentPane(), "Day 'to' is not valid.");
+        }
+        else{
+            //set day from int and day to int
+            int dayFromInt = Integer.parseInt(beforeAfterDay(dayFromStr, fromComboBox));
+            int dayToInt = Integer.parseInt(beforeAfterDay(dayToStr, toComboBox));
+            
+            getFlowLastID();
+            Flow new_flow = new Flow(flowIDTemp, this.workflowID, nameStr, typeStr, dayFromInt, dayToInt, noteStr, colorStr);
+            
+            try{
+               Connection con = ConnectionProvider.getCon();
+               
+               PreparedStatement ps = con.prepareStatement("insert into flow values(?,?,?,?,?,?,?,?)");
+               ps.setString(1, new_flow.getId());
+               ps.setString(2, new_flow.getWorkflowID());
+               ps.setString(3, new_flow.getNameInput());
+               ps.setString(4, new_flow.getTypeInput());
+               ps.setInt(5, new_flow.getDayFromInput());
+               ps.setInt(6, new_flow.getDayToInput());
+               ps.setString(7, new_flow.getNoteInput());
+               ps.setString(8, new_flow.getColorInput());
+
+               ps.executeUpdate();
+               //success message
+               String message = "Flow added successfully.";              
+               JOptionPane.showMessageDialog(getContentPane(), message);
+               
+               //clear all the field
+               clearAllFields();
+               
+               //refresh the flow view on the right
+               queryFlow();
+               cloneablePanel.removeAll();
+               createClonedPanels(flowList, flowList.size());
+               
+           }catch(Exception e){
+               JOptionPane.showMessageDialog(getContentPane(), e);
+           }                
+        }
     }
+    
+    private void clearAllFields(){
+        nameField.setText("");
+        oneDay.setSelected(true);
+        fromField.setText("");
+        fromComboBox.setSelectedIndex(0);
+        toField.setText("");
+        toComboBox.setSelectedIndex(0);
+        notesArea.setText("");
+        colorComboBox.setSelectedIndex(0);
+    }
+        
+    private String beforeAfterDay(String str, JComboBox box){
+        if (box.getSelectedItem().equals("Before") && (!str.equals("0"))){
+            str = "-" + str;
+        }
+        return str;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

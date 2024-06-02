@@ -28,7 +28,11 @@ public class PlaceHolderTextField extends JTextField{
         addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                setText("");
+                if (getText().equals(placeholder) || getText().equals("")){
+                  setText("");
+                }else{
+                  setText(getText());
+                }
                 repaint();
             }
 

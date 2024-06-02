@@ -13,6 +13,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
@@ -25,6 +27,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -36,6 +40,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     private JPanel cloneablePanel;
     private JScrollPane scrollPane;
     public static int open = 0;
+    private LinkedList<Workflow> workflowList = new LinkedList<>();
     /**
      * Creates new form AddWorkflowPage
      */
@@ -237,24 +242,27 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             }
         });
         
-        search_icon.addMouseListener(new MouseAdapter() {
+        search_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                searchLostFocus();
+            }
+        }); 
+        search_field.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                //
+            public void insertUpdate(DocumentEvent e) {
+                handleSearch();
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
-                search_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hover_search.png")));
+            public void removeUpdate(DocumentEvent e) {
+                handleSearch();
             }
-
             @Override
-            public void mouseExited(MouseEvent e) {
-                search_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/search.png")));
+            public void changedUpdate(DocumentEvent e) {
+                handleSearch();
             }
         });
-        
     }
-
+    
     
     private void initDesign(){
         homeBtn = new javax.swing.JLabel();
@@ -327,13 +335,13 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         getContentPane().add(titletxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 27, -1, -1));
 
         search_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/search.png"))); // NOI18N
-        getContentPane().add(search_icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 120, -1, -1));
+        getContentPane().add(search_icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, -1, -1));
 
         search_field.setFont(new java.awt.Font("Montserrat", 0, 20)); // NOI18N
         search_field.setForeground(new java.awt.Color(155, 154, 154));
         search_field.setText("Find workflow");
-        search_field.setPreferredSize(new java.awt.Dimension(456, 46));        
-        search_field.setBorder(new EmptyBorder(new Insets(5, 20, 5, 10)));
+        search_field.setPreferredSize(new java.awt.Dimension(495, 46));        
+        search_field.setBorder(new EmptyBorder(new Insets(5, 55, 5, 10)));
         getContentPane().add(search_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 110, -1, -1));
 
         pack();
@@ -342,8 +350,6 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     
     private void myinit(){
         int totalElement = 0;
-        LinkedList<Workflow> workflowList = new LinkedList<>();
-        
         try{
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM workflow WHERE userID = ?";
@@ -395,13 +401,27 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         cloneablePanel.setBackground(Color.white);
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
+        createClonedPanels(workflowList, totalElement);
+        createAddPanel();
         
+        ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
+        contentPane.setPreferredSize(new Dimension(bgImage.getIconWidth(), bgImage.getIconHeight()));
         
+        initDesign(); //initialize all the design components
+        initHover(); //initialize the hovering method for buttons
+        
+        //set the addworkflowbutton to be focused when opening this page 
+        //so that the textfield is not focused first
+        SwingUtilities.invokeLater(() -> addWorkflowBtn.requestFocusInWindow());
+        
+    }
+    
+    private void createClonedPanels(LinkedList<Workflow> list, int totalElement){
         int row=0, column=0;
         for(int i=0; i<totalElement;i++){
-            String id = workflowList.get(i).getId();
-            String title = workflowList.get(i).getTitle();
-            int checkpoint = workflowList.get(i).getCheckpoint();
+            String id = list.get(i).getId();
+            String title = list.get(i).getTitle();
+            int checkpoint = list.get(i).getCheckpoint();
             
             // Create a new cloned panel
             // Cloneable Panel
@@ -439,19 +459,6 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             // Scroll to show the new panel
             scrollPane.getVerticalScrollBar().setValue(0);
         }
-        
-        createAddPanel();
-        
-        ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
-        contentPane.setPreferredSize(new Dimension(bgImage.getIconWidth(), bgImage.getIconHeight()));
-        
-        initDesign(); //initialize all the design components
-        initHover(); //initialize the hovering method for buttons
-        
-        //set the addworkflowbutton to be focused when opening this page 
-        //so that the textfield is not focused first
-        SwingUtilities.invokeLater(() -> addWorkflowBtn.requestFocusInWindow());
-        
     }
     
     private void createAddPanel(){
@@ -510,6 +517,41 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         scrollPane.repaint();
         // Scroll to show the new panel
         scrollPane.getVerticalScrollBar().setValue(0);
+    }
+    
+    private void handleSearch(){
+        if (search_field.getText().equals("")){
+            searchLostFocus();
+        }
+        else{
+            String searchStr = search_field.getText();
+            LinkedList<Workflow> resultList= new LinkedList<>();
+            boolean exist = false;
+
+            for (int i = 0; i < workflowList.size(); i++){
+                String want_to_be_check = workflowList.get(i).getTitle().toLowerCase();
+                if (want_to_be_check.contains(searchStr.toLowerCase())){
+                    resultList.add(workflowList.get(i));
+                    exist = true;
+                }
+            }
+
+            if (exist == true){
+                cloneablePanel.removeAll();
+                createClonedPanels(resultList, resultList.size());
+                createAddPanel();  
+            }
+            else{
+                cloneablePanel.removeAll();
+                createAddPanel();
+            }
+        }
+    }
+    
+    private void searchLostFocus(){
+        cloneablePanel.removeAll();
+        createClonedPanels(workflowList, workflowList.size());
+        createAddPanel();
     }
     
     public void goToEdit(String workflowID){

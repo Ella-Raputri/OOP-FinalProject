@@ -10,6 +10,7 @@ package App;
  */
 public class Flow {
     private String id;
+    private String workflowID;
     private String nameInput;
     private String typeInput;
     private int dayFromInput;
@@ -17,9 +18,10 @@ public class Flow {
     private String noteInput;
     private String colorInput;
 
-    public Flow(String id, String nameInput, String typeInput, int dayFromInput, int dayToInput, 
+    public Flow(String id, String workflowID, String nameInput, String typeInput, int dayFromInput, int dayToInput, 
             String noteInput, String colorInput) {
         this.id = id;
+        this.workflowID = workflowID;
         this.nameInput = nameInput;
         this.typeInput = typeInput;
         this.dayFromInput = dayFromInput;
@@ -34,6 +36,14 @@ public class Flow {
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public String getWorkflowID() {
+        return workflowID;
+    }
+
+    public void setWorkflowID(String wid) {
+        this.workflowID = wid;
     }
 
     public String getNameInput() {
