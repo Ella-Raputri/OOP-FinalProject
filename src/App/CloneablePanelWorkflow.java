@@ -84,7 +84,7 @@ public class CloneablePanelWorkflow extends JPanel{
         JLabel total_check = new JLabel();
         total_check.setFont(new Font("Montserrat", 0, 24));
         total_check.setText("Total: " + checkpointInput + " checkpoints");
-        setComponentBounds(total_check, 25, title.getY()+title.getHeight()+50, total_check.getPreferredSize().width+10, total_check.getPreferredSize().height);
+        setComponentBounds(total_check, 25, title.getY()+title.getHeight()+30, total_check.getPreferredSize().width+10, total_check.getPreferredSize().height);
         add(total_check);
         
         ButtonCustom deleteButton = new App.ButtonCustom();
@@ -153,25 +153,32 @@ public class CloneablePanelWorkflow extends JPanel{
         component.setBounds(x, y, width, height); // Set the position and size of the component
     }
     
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        String message = "Do you really want to delete " + titleInput + "?";
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {        
         AddWorkflowMenu home = (AddWorkflowMenu) SwingUtilities.getWindowAncestor(this);
-        int a = JOptionPane.showConfirmDialog(home.getContentPane(), message, "SELECT", JOptionPane.YES_OPTION);
-        
-        if(a==0){
-            try{
-                Connection con = ConnectionProvider.getCon();
-                PreparedStatement ps = con.prepareStatement("DELETE FROM workflow where workflowID = ?");
-                ps.setString(1, id);
-                ps.executeUpdate();
+        if (home.open == 0){
+            String message = "Do you really want to delete " + titleInput + "?";
+            int a = JOptionPane.showConfirmDialog(home.getContentPane(), message, "SELECT", JOptionPane.YES_OPTION);
 
-                JOptionPane.showMessageDialog(home.getContentPane(), "Successfully deleted");
-                home.reload();
-            
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(home.getContentPane(), e);
-            }
+            if(a==0){
+                try{
+                    Connection con = ConnectionProvider.getCon();
+                    PreparedStatement ps = con.prepareStatement("DELETE FROM workflow where workflowID = ?");
+                    ps.setString(1, id);
+                    ps.executeUpdate();
+
+                    JOptionPane.showMessageDialog(home.getContentPane(), "Successfully deleted");
+                    home.reload();
+
+                }catch(Exception e){
+                    JOptionPane.showMessageDialog(home.getContentPane(), e);
+                }
+            }  
         }
+        else{
+            JOptionPane.showMessageDialog(home.getContentPane(), "One window is already open.");
+            
+        }
+        
     }
     
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {                                         

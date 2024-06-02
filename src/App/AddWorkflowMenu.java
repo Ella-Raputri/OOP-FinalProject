@@ -37,10 +37,10 @@ import javax.swing.event.DocumentListener;
 public class AddWorkflowMenu extends javax.swing.JFrame {
     private String userID = "u1";
     private JPanel contentPane;
-    private JPanel cloneablePanel;
+    public JPanel cloneablePanel;
     private JScrollPane scrollPane;
     public static int open = 0;
-    private LinkedList<Workflow> workflowList = new LinkedList<>();
+    public LinkedList<Workflow> workflowList = new LinkedList<>();
     /**
      * Creates new form AddWorkflowPage
      */
@@ -342,8 +342,8 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
     
-    private void myinit(){
-        int totalElement = 0;
+    public void queryWorkflow(){
+        workflowList.clear();
         try{
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM workflow WHERE userID = ?";
@@ -363,8 +363,10 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(getContentPane(), e);
         }
-        totalElement = workflowList.size();
-        
+    }
+    
+    private void myinit(){
+        queryWorkflow();
         // Create the content pane
         contentPane = new JPanel() {
             @Override
@@ -395,7 +397,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         cloneablePanel.setBackground(Color.white);
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
-        createClonedPanels(workflowList, totalElement);
+        createClonedPanels(workflowList, workflowList.size());
         createAddPanel();
         
         ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
@@ -410,7 +412,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         
     }
     
-    private void createClonedPanels(LinkedList<Workflow> list, int totalElement){
+    public void createClonedPanels(LinkedList<Workflow> list, int totalElement){
         int row=0, column=0;
         for(int i=0; i<totalElement;i++){
             String id = list.get(i).getId();
@@ -455,7 +457,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         }
     }
     
-    private void createAddPanel(){
+    public void createAddPanel(){
         //intialize the add panel, 
         JPanel add_panel = new JPanel();
         //add panel width, height, x, and y
@@ -486,11 +488,17 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         add_panel.add(add_icon);
         
         //add_panel get selected
+        AddWorkflowMenu home = (AddWorkflowMenu) SwingUtilities.getRoot(this);
         add_panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                AddWorkflowMenu.open = 1;
-                new CreateNewWorkflow(userID).setVisible(true);
+                if (open == 0){
+                   AddWorkflowMenu.open = 1;
+                    new CreateNewWorkflow(userID, home).setVisible(true); 
+                }
+                else{
+                 JOptionPane.showMessageDialog(getContentPane(), "One window is already open.");
+                }                
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -545,7 +553,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     
     public void reload(){
         setVisible(false);
-        new AddWorkflowMenu().setVisible(true);
+        new AddWorkflowMenu(this.userID).setVisible(true);
     }
     /**
      * This method is called from within the constructor to initialize the form.

@@ -17,9 +17,10 @@ public class Task {
     private String timeToInput;
     private String noteInput;
     private String colorInput;
+    private boolean completed = false;
 
     public Task(String id, String nameInput, String typeInput, String timeFromInput, String timeToInput, 
-            String noteInput, String colorInput, String userID) {
+            String noteInput, String colorInput, String userID, boolean comp) {
         this.id = id;
         this.userID = userID;
         this.nameInput = nameInput;
@@ -28,6 +29,7 @@ public class Task {
         this.timeToInput = timeToInput;
         this.noteInput = noteInput;
         this.colorInput = colorInput;
+        this.completed = comp;
     }
 
     public String getId() {
@@ -92,5 +94,13 @@ public class Task {
 
     public void setColorInput(String colorInput) {
         this.colorInput = colorInput;
+    }
+    
+    public boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean comp) {
+        this.completed = comp;
     }
 }

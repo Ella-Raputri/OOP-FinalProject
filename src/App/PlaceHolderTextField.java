@@ -17,11 +17,11 @@ import javax.swing.JTextField;
  */
 public class PlaceHolderTextField extends JTextField{
     private String placeholder;
-    private String choice;
+    private int adder;
 
-    public PlaceHolderTextField(String placeholder, String choice) {
+    public PlaceHolderTextField(String placeholder, int add) {
         this.placeholder = placeholder;
-        this.choice = choice;
+        this.adder = add;
 
         // Add focus listener to repaint the field on focus gain/loss
         setBorder(null);
@@ -54,13 +54,7 @@ public class PlaceHolderTextField extends JTextField{
             //g2d.setFont(getFont().deriveFont(Font.ITALIC)); // Set the font for the placeholder text
             int padding = (getHeight() - getFont().getSize()) / 2;
             
-            if (choice.equals("1")){
-                g2d.drawString(placeholder, getInsets().left+10, getHeight() - padding - 1);
-            }
-            else{
-                g2d.drawString(placeholder, getInsets().left, getHeight() - padding - 1);
-            }
-            
+            g2d.drawString(placeholder, getInsets().left+this.adder, getHeight() - padding - 1);
             g2d.dispose();
         }
     }

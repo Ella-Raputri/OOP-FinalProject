@@ -63,7 +63,6 @@ public class EditWorkflow extends javax.swing.JFrame {
         setTitle("Edit Workflow");
         initComponents();
         myinit();
-        System.out.print(workflowid);
         initDesign();
     }
     
@@ -96,13 +95,13 @@ public class EditWorkflow extends javax.swing.JFrame {
         workflow_name = new javax.swing.JLabel();
         multipleDay = new javax.swing.JRadioButton();
         oneDay = new javax.swing.JRadioButton();
-        fromField = new PlaceHolderTextField("Day","1");
-        nameField = new PlaceHolderTextField("Name","0");
+        fromField = new PlaceHolderTextField("Day",10);
+        nameField = new PlaceHolderTextField("Name",0);
         fromtxt = new javax.swing.JLabel();
         fromComboBox = new javax.swing.JComboBox<>();
         theDay_from = new javax.swing.JLabel();
         colortxt = new javax.swing.JLabel();
-        toField = new PlaceHolderTextField("Day","1");
+        toField = new PlaceHolderTextField("Day",10);
         colorComboBox = new javax.swing.JComboBox<>();
         toComboBox = new javax.swing.JComboBox<>();
         theDay_to = new javax.swing.JLabel();
@@ -410,8 +409,7 @@ public class EditWorkflow extends javax.swing.JFrame {
             
             // Create a new cloned panel
             // Cloneable Panel
-            CloneablePanelFlow clonedPanel = new CloneablePanelFlow(20, Color.white, 2 ,
-                    id, name, type, dayFrom, dayTo, note, color);
+            CloneablePanelFlow clonedPanel = new CloneablePanelFlow(20, Color.white, 2 ,id, name, type, dayFrom, dayTo, note, color);
             // Set your custom width and height for the cloned panel
             int panelWidth = 288;
             int panelHeight = 146;

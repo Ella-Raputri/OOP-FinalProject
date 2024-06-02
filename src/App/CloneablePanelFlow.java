@@ -3,15 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package App;
-import DatabaseConnection.ConnectionProvider;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.*;
 import java.util.HashMap;
-import java.util.LinkedList;
-import javax.swing.border.LineBorder;
 /**
  *
  * @author asus

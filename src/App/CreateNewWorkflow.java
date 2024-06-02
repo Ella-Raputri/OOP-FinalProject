@@ -16,6 +16,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -24,12 +25,14 @@ import javax.swing.border.EmptyBorder;
  */
 public class CreateNewWorkflow extends javax.swing.JFrame {
     private String userID;
+    private AddWorkflowMenu home;
     /**
      * Creates new form CreateNewWorkflow
      */
     
-    public CreateNewWorkflow(String userID) {
+    public CreateNewWorkflow(String userID, AddWorkflowMenu home) {
         this.userID = userID;
+        this.home = home;
         initComponents();
         myinit();
     }
@@ -158,10 +161,14 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(getContentPane(), "Successfully created a new workflow!");
                 AddWorkflowMenu.open=0;
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                
+                home.queryWorkflow();
+                home.cloneablePanel.removeAll();
+                home.createClonedPanels(home.workflowList, home.workflowList.size());
+                home.createAddPanel();
 
             }catch(Exception e){
-                JOptionPane.showMessageDialog(getContentPane(), e);
+                e.printStackTrace();
             }
         }
     }

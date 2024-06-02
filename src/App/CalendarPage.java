@@ -32,6 +32,7 @@ public class CalendarPage extends javax.swing.JFrame {
     private JScrollPane scrollPane;
     private LinkedList<Task> taskList = new LinkedList<>();
     private String taskIDTemp;
+    public static int open = 0;
     /**
      * Creates new form CalendarPage
      */
@@ -260,8 +261,9 @@ public class CalendarPage extends javax.swing.JFrame {
                 String ttimeTo = rs.getString("timeTo");
                 String tnotes = rs.getString("notes");
                 String tcolor = rs.getString("color");
+                boolean tcomp = rs.getBoolean("completed");
                 
-                Task new_task = new Task(tID, tname, ttype, ttimeFrom, ttimeTo, tnotes, tcolor, this.userID);
+                Task new_task = new Task(tID, tname, ttype, ttimeFrom, ttimeTo, tnotes, tcolor, this.userID, tcomp);
                 taskList.add(new_task);
             }
         }
@@ -289,7 +291,7 @@ public class CalendarPage extends javax.swing.JFrame {
         
         // Create the scroll pane
         scrollPane = new JScrollPane();
-        scrollPane.setBounds(971, 195, 260, 440); // Set bounds for the scroll pane
+        scrollPane.setBounds(971, 195, 260, 370); // Set bounds for the scroll pane
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -300,11 +302,14 @@ public class CalendarPage extends javax.swing.JFrame {
         cloneablePanel.setLayout(null); // Use absolute layout
         cloneablePanel.setPreferredSize(new Dimension(400, 200)); // Set initial size
         cloneablePanel.setBounds(180, 200, 1200, 1500); // Set bounds for the initial panel
-        cloneablePanel.setBackground(new Color(246,252,254));
+        cloneablePanel.setBackground(new Color(31, 139, 217));
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
         calendarCustom2 = new App.CalendarCustom();
         contentPane.add(calendarCustom2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, -1, -1));
+        
+        initAddTaskBtn();
+        contentPane.add(addTaskBtn);
 
         createClonedPanels(taskList, taskList.size());
 
@@ -313,6 +318,9 @@ public class CalendarPage extends javax.swing.JFrame {
         // Make the components viewable
         cloneablePanel.setVisible(true);
         calendarCustom2.setVisible(true);
+        
+        contentPane.revalidate();
+        contentPane.repaint();
     }
     
     private void createClonedPanels(LinkedList<Task> list, int size){
@@ -331,19 +339,18 @@ public class CalendarPage extends javax.swing.JFrame {
             
             // Create a new cloned panel
             // Cloneable Panel
-            CloneablePanelTask clonedPanel = new CloneablePanelTask(0, Color.blue, 2 ,
+            CloneablePanelTask clonedPanel = new CloneablePanelTask(0, new Color(31, 139, 217), 1 ,
                     id, name, type, timeFrom, timeTo, note, color);
             // Set your custom width and height for the cloned panel
             int panelWidth = 260;
             int panelHeight = 90;
             
             // Calculate the x and y positions based on row and column indices
-            int x = 0;
+            int x = -10;
             int y = 10 + i * (panelHeight + 30);
 
             // Set the bounds for the cloned panel with your custom size
             clonedPanel.setBounds(x, y, panelWidth, panelHeight);
-            clonedPanel.setBackground(new Color(255,0,0));
             
 //            clonedPanel.addMouseListener(new MouseAdapter() {
 //                @Override
@@ -377,16 +384,46 @@ public class CalendarPage extends javax.swing.JFrame {
             scrollPane.repaint();
             // Scroll to show the new panel
             scrollPane.getVerticalScrollBar().setValue(0);
-            
-            //calendarCustom2.setVisible(false);
         }
+        
         
         int totalHeight = size * (90 + 30) + 10; // panelHeight + vertical gap + initial gap
         taskPanel.setPreferredSize(new Dimension(400, totalHeight)); // Adjusted size
-
         // Ensure the taskPanel updates its viewport
         taskPanel.revalidate();
         taskPanel.repaint();
+    }
+    
+    private void addTaskBtnActionPerformed(){
+        if (CalendarPage.open == 0){
+           CalendarPage.open = 1; 
+           new AddNewTask(userID).setVisible(true);
+        }else{
+           JOptionPane.showMessageDialog(getContentPane(), "One window is already open.");
+        }               
+    }
+    
+    private void initAddTaskBtn(){
+        addTaskBtn = new App.ButtonCustom();
+        addTaskBtn.setForeground(Color.white);
+        addTaskBtn.setText("Add task");
+        addTaskBtn.setBorderColor(Color.white);
+        addTaskBtn.setBorderColorNotOver(Color.white);
+        addTaskBtn.setBorderColorOver(Color.white);
+        addTaskBtn.setColor(new java.awt.Color(31, 139, 217));
+        addTaskBtn.setColor2(java.awt.Color.white);
+        addTaskBtn.setColorClick(new java.awt.Color(125, 201, 255));
+        addTaskBtn.setColorClick2(java.awt.Color.white);
+        addTaskBtn.setColorOver(new java.awt.Color(125, 201, 255));
+        addTaskBtn.setColorOver2(java.awt.Color.white);
+        addTaskBtn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); 
+        addTaskBtn.setRadius(0);
+        addTaskBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addTaskBtnActionPerformed();
+            }
+        });
+        addTaskBtn.setBounds(1070, 580, 133, 40); 
     }
     
 //    private void handleEditPanel(){
@@ -556,4 +593,5 @@ public class CalendarPage extends javax.swing.JFrame {
     private javax.swing.JLabel logoutBtnTxt;
     private javax.swing.JLabel titletxt;
     // End of variables declaration//GEN-END:variables
+    private App.ButtonCustom addTaskBtn;
 }

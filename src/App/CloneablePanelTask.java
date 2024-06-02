@@ -74,7 +74,8 @@ public class CloneablePanelTask extends JPanel{
         
         // Example content - you can add whatever components you need
         WrappedLabel title = new WrappedLabel(270);
-        title.setText(nameInput);
+        title.setText(nameInput);        
+        title.setForeground(Color.white);
         title.setFont(new Font("Montserrat", 0, 20));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setBounds(18, 10, title.getPreferredSize().width, title.getPreferredSize().height);
@@ -84,8 +85,31 @@ public class CloneablePanelTask extends JPanel{
         JLabel color_label = new JLabel();
         color_label.setBackground(color_map.get(colorInput));
         color_label.setOpaque(true);
-        setComponentBounds(color_label, 231, 47, 14, 14);
+        setComponentBounds(color_label, 231, 55, 14, 14);
         add(color_label);
+        
+        //the view more label
+        //INSERT INTO `tasks`(`taskID`, `name`, `type`, `timeFrom`, `timeTo`, `notes`, `color`, `userID`) VALUES ('t3','haii','One-day event','18 June 2024','18 June 2024','ddd','Brown','u1')
+        JLabel more_label = new JLabel();
+        more_label.setForeground(Color.white);
+        more_label.setFont(new Font("Montserrat", 0, 36));
+        more_label.setText("...");
+        setComponentBounds(more_label, 226, -20, 23, 54);
+        more_label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                more_label.setForeground(new Color(125, 201, 255));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                more_label.setForeground(Color.white);
+            }
+        });
+        add(more_label);
         
 //        addMouseListener(new MouseAdapter() {
 //            @Override
@@ -173,20 +197,20 @@ public class CloneablePanelTask extends JPanel{
         g2d.dispose();
     }
 
-//    @Override
-//    protected void paintBorder(Graphics g) {
-//        super.paintBorder(g);
-//        Graphics2D g2d = (Graphics2D) g.create();
-//        if (isClicked) {
-//            g2d.setColor(new Color(125,201,255));
-//            g2d.setStroke(new BasicStroke(4)); // Set border width
-//        } else {
-//            g2d.setColor(Color.black);
-//            g2d.setStroke(new BasicStroke(borderWidth)); // Set border width
-//        }
-//        
-//        g2d.drawRoundRect(borderWidth / 2, borderWidth / 2, getWidth() - borderWidth, getHeight() - borderWidth, borderRadius, borderRadius); // Adjust position and size based on border width
-//        g2d.dispose();
-//    }
+    @Override
+    protected void paintBorder(Graphics g) {
+        super.paintBorder(g);
+        Graphics2D g2d = (Graphics2D) g.create();
+        if (isClicked) {
+            g2d.setColor(new Color(125,201,255));
+            g2d.setStroke(new BasicStroke(2)); // Set border width
+        } else {
+            g2d.setColor(Color.white);
+            g2d.setStroke(new BasicStroke(borderWidth)); // Set border width
+        }
+        
+        g2d.drawRoundRect(borderWidth / 2, getHeight() - borderWidth, getWidth() - borderWidth, borderWidth, borderRadius, borderRadius);
+        g2d.dispose();
+    }
 }
 
