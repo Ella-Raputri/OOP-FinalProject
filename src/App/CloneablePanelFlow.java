@@ -6,9 +6,12 @@ package App;
 import DatabaseConnection.ConnectionProvider;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.LinkedList;
+import javax.swing.border.LineBorder;
 /**
  *
  * @author asus
@@ -24,6 +27,8 @@ public class CloneablePanelFlow extends JPanel{
     private String id;
     private String typeInput;
     private String colorInput;
+    private String noteInput;
+    private boolean isClicked = false;
     
     
     private String appendPlusToDay(int value){
@@ -31,15 +36,16 @@ public class CloneablePanelFlow extends JPanel{
             return "+ " + String.valueOf(value);
         }
         else if (value == 0){
-            return "-Day";
+            return "- Day";
         }
         else{
             return "- " + String.valueOf(value - 2*value);
         }
     }
+    
 
     public CloneablePanelFlow(int borderRadius, Color bgColor, int borderWidth, String id, 
-            String nameInput, String typeInput, int dayFromInput, int dayToInput, String colorInput) {
+            String nameInput, String typeInput, int dayFromInput, int dayToInput, String noteInput, String colorInput) {
         setLayout(null);
         this.borderRadius = borderRadius;
         this.bgColor = bgColor;
@@ -49,6 +55,7 @@ public class CloneablePanelFlow extends JPanel{
         this.dayFromInput = dayFromInput;
         this.dayToInput = dayToInput;
         this.typeInput = typeInput;
+        this.noteInput = noteInput;
         this.colorInput = colorInput;
         setOpaque(false);
         
@@ -100,59 +107,83 @@ public class CloneablePanelFlow extends JPanel{
         setComponentBounds(color_label, 230, title.getY()+title.getHeight()+30, 33, 23);
         add(color_label);
         
-        
-        
-//        ButtonCustom editButton = new App.ButtonCustom();
-//        editButton.setForeground(new java.awt.Color(255, 255, 255));
-//        editButton.setText("Edit");
-//        editButton.setBorderColorNotOver(new java.awt.Color(31, 139, 217));
-//        editButton.setBorderColor(new java.awt.Color(31, 139, 217));
-//        editButton.setBorderColorOver(new java.awt.Color(125, 201, 255));
-//        editButton.setColor2(Color.white);
-//        editButton.setColor(new Color(31, 139, 217));
-//        editButton.setColorClick2(Color.white);
-//        editButton.setColorClick(new Color(125, 201, 255));
-//        editButton.setColorOver(new Color(125, 201, 255));
-//        editButton.setColorOver2(Color.white);
-//        editButton.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); 
-//        editButton.setRadius(20);
-//        editButton.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                editButtonActionPerformed(evt);
-//            }
-//        });
-//        setComponentBounds(editButton, 95, 189, editButton.getPreferredSize().width+25, editButton.getPreferredSize().height+7);
-//        add(editButton);
-        
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!isClicked) {
+                    setClicked(true);
+                }
+            }
+        });
+    }
+
+    public String getNameInput() {
+        return nameInput;
+    }
+
+    public void setNameInput(String nameInput) {
+        this.nameInput = nameInput;
+    }
+
+    public int getDayFromInput() {
+        return dayFromInput;
+    }
+
+    public void setDayFromInput(int dayFromInput) {
+        this.dayFromInput = dayFromInput;
+    }
+
+    public int getDayToInput() {
+        return dayToInput;
+    }
+
+    public void setDayToInput(int dayToInput) {
+        this.dayToInput = dayToInput;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTypeInput() {
+        return typeInput;
+    }
+
+    public void setTypeInput(String typeInput) {
+        this.typeInput = typeInput;
+    }
+    
+    public String getNoteInput() {
+        return noteInput;
+    }
+
+    public void setNoteInput(String noteInput) {
+        this.noteInput = noteInput;
+    }
+
+    public String getColorInput() {
+        return colorInput;
+    }
+
+    public void setColorInput(String colorInput) {
+        this.colorInput = colorInput;
+    }
+    
+    
+    
+    public void setClicked(boolean click){
+        this.isClicked = click;
+        repaint();
     }
     
     public void setComponentBounds(Component component, int x, int y, int width, int height) {
         component.setBounds(x, y, width, height); // Set the position and size of the component
     }
-    
-//    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {
-////        String str = "Do you really want to delete " + nameInput + "?";
-//        AddWorkflowMenu home = (AddWorkflowMenu) SwingUtilities.getWindowAncestor(this);
-//      JOptionPane.showMessageDialog(home.getContentPane(), "delete berhaisl");
-////        int a = JOptionPane.showConfirmDialog(home.getContentPane(), str, "SELECT", JOptionPane.YES_OPTION);
-////        if(a==0){
-////            try{
-////                Connection con = ConnectionProvider.getCon();
-////                PreparedStatement ps = con.prepareStatement("delete from quiz where id=?");
-////                ps.setString(1, id);
-////                ps.executeUpdate();
-////
-////                JOptionPane.showMessageDialog(home.getContentPane(), "Successfully deleted");
-////                home.reloadSelf();
-////            
-////            }catch(Exception e){
-////                JOptionPane.showMessageDialog(home.getContentPane(), e);
-////            }
-////        }
-//    }
-    
-    
-    
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -167,8 +198,14 @@ public class CloneablePanelFlow extends JPanel{
     protected void paintBorder(Graphics g) {
         super.paintBorder(g);
         Graphics2D g2d = (Graphics2D) g.create();
-        g2d.setColor(Color.BLACK); // Set border color
-        g2d.setStroke(new BasicStroke(borderWidth)); // Set border width
+        if (isClicked) {
+            g2d.setColor(new Color(125,201,255));
+            g2d.setStroke(new BasicStroke(4)); // Set border width
+        } else {
+            g2d.setColor(Color.black);
+            g2d.setStroke(new BasicStroke(borderWidth)); // Set border width
+        }
+        
         g2d.drawRoundRect(borderWidth / 2, borderWidth / 2, getWidth() - borderWidth, getHeight() - borderWidth, borderRadius, borderRadius); // Adjust position and size based on border width
         g2d.dispose();
     }

@@ -11,19 +11,25 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.LinkedList;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -39,6 +45,8 @@ public class EditWorkflow extends javax.swing.JFrame {
     public static int open = 0;
     private LinkedList<Flow> flowList = new LinkedList<>();
     private String flowIDTemp;
+    //private HashMap<String, CloneablePanelFlow> panelMap = new HashMap<>();
+    private CloneablePanelFlow currentPanel = null;
     /**
      * Creates new form EditWorkflow
      */
@@ -103,10 +111,11 @@ public class EditWorkflow extends javax.swing.JFrame {
         totxt = new javax.swing.JLabel();
         viewtxt = new javax.swing.JLabel();
         saveBtn = new App.ButtonCustom();
-        jLabel1 = new javax.swing.JLabel();
+        deleteBtn = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         notesArea = new PlaceHolderJTextArea("Notes");
         optGrp = new javax.swing.ButtonGroup();
+        generateBtn = new App.ButtonCustom();
         bg = new javax.swing.JLabel();
         
         //append the two radio buttons to the button group 
@@ -148,12 +157,28 @@ public class EditWorkflow extends javax.swing.JFrame {
         multipleDay.setBackground(new java.awt.Color(255, 255, 255));
         multipleDay.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         multipleDay.setText("Multiple-day event");
+        multipleDay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toField.setEnabled(true);
+                toComboBox.setEnabled(true);
+                revalidate();
+                repaint();
+            }
+        });
         getContentPane().add(multipleDay, new org.netbeans.lib.awtextra.AbsoluteConstraints(353, 271, -1, -1));
 
         oneDay.setBackground(new java.awt.Color(255, 255, 255));
         oneDay.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         oneDay.setSelected(true);
         oneDay.setText("One-day event");
+        oneDay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toField.setEnabled(false);
+                toComboBox.setEnabled(false);
+                revalidate();
+                repaint();
+            }
+        });
         getContentPane().add(oneDay, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 271, -1, -1));
 
         fromField.setBackground(new java.awt.Color(234, 234, 234));
@@ -193,9 +218,9 @@ public class EditWorkflow extends javax.swing.JFrame {
         toField.setBackground(new java.awt.Color(234, 234, 234));
         toField.setFont(new java.awt.Font("Montserrat", 0, 18)); 
         toField.setForeground(new java.awt.Color(155, 154, 154));
-        toField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        toField.setText("Day");
+        toField.setHorizontalAlignment(javax.swing.JTextField.CENTER);        
         toField.setBorder(new EmptyBorder(new Insets(5, 15, 5, 10)));
+        toField.setEnabled(false);
         getContentPane().add(toField, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 374, 80, 38));
 
         colorComboBox.setBackground(new java.awt.Color(234, 234, 234));
@@ -211,6 +236,7 @@ public class EditWorkflow extends javax.swing.JFrame {
         toComboBox.setForeground(new java.awt.Color(155, 154, 154));
         toComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Before", "After" }));
         toComboBox.setToolTipText("");
+        toComboBox.setEnabled(false);
         getContentPane().add(toComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 374, 140, 38));
 
         theDay_to.setFont(new java.awt.Font("Montserrat", 0, 18)); 
@@ -246,8 +272,9 @@ public class EditWorkflow extends javax.swing.JFrame {
         });
         getContentPane().add(saveBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 605, 110, 47));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow.png"))); 
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(158, 615, -1, -1));
+        deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow.png"))); 
+        deleteBtn.setEnabled(false);
+        getContentPane().add(deleteBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(158, 615, -1, -1));
 
         notesArea.setBackground(new java.awt.Color(234, 234, 234));
         notesArea.setColumns(22);
@@ -257,19 +284,52 @@ public class EditWorkflow extends javax.swing.JFrame {
         notesArea.setTabSize(5);
         notesArea.setText("Notes");
         notesArea.setBorder(new EmptyBorder(new Insets(5, 10, 5, 10)));
+        
         jScrollPane1.setViewportView(notesArea);
         jScrollPane1.setBorder(null);
-
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 430, -1, -1));
+        
+        generateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/generate_text.png")));
+        generateBtn.setBackground(Color.white);
+        generateBtn.setBorderColor(new java.awt.Color(0,141,189));
+        generateBtn.setBorderColorNotOver(new java.awt.Color(0,141,189));
+        generateBtn.setBorderColorOver(new java.awt.Color(125, 201, 255));
+        generateBtn.setColor(Color.white);
+        generateBtn.setColorClick(new java.awt.Color(234,234,234));
+        generateBtn.setColorOver(new java.awt.Color(234, 234, 234));
+        generateBtn.setRadius(0);
+        generateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateBtnActionPerformed();
+            }
+        });
+        generateBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                generateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/generate_text_hover.png")));
+                generateBtn.setBackground(new java.awt.Color(234, 234, 234));
+                generateBtn.setBorderColor(new java.awt.Color(125, 201, 255));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent me) {
+                generateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/generate_text.png")));
+                generateBtn.setBackground(Color.white);
+                generateBtn.setBorderColor(new java.awt.Color(0, 141, 189));
+            }
+        });
+        getContentPane().add(generateBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 23, 98, 29));
 
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_workflow_page.png"))); 
-        bg.setText("jLabel1");
         getContentPane().add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 720));
 
         pack();
         setLocationRelativeTo(null);
     }
-
+    
+    private void generateBtnActionPerformed(){
+        //
+    }
     
     private void queryFlow(){
         flowList.clear();
@@ -340,18 +400,20 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void createClonedPanels(LinkedList<Flow> list, int size){
-        
+        //panelMap.clear();
         for(int i=0; i<size;i++){
             String id = list.get(i).getId();
             String name = list.get(i).getNameInput();
             String type = list.get(i).getTypeInput();
             int dayFrom = list.get(i).getDayFromInput();
             int dayTo = list.get(i).getDayToInput();
+            String note = list.get(i).getNoteInput();
             String color = list.get(i).getColorInput();
             
             // Create a new cloned panel
             // Cloneable Panel
-            CloneablePanelFlow clonedPanel = new CloneablePanelFlow(20, Color.white, 2 ,id, name, type, dayFrom, dayTo, color);
+            CloneablePanelFlow clonedPanel = new CloneablePanelFlow(20, Color.white, 2 ,
+                    id, name, type, dayFrom, dayTo, note, color);
             // Set your custom width and height for the cloned panel
             int panelWidth = 288;
             int panelHeight = 146;
@@ -365,8 +427,32 @@ public class EditWorkflow extends javax.swing.JFrame {
             clonedPanel.setBounds(x, y, panelWidth, panelHeight);
             clonedPanel.setBackground(new Color(246,252,254));
             
+            clonedPanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (currentPanel == clonedPanel){
+                       currentPanel.setClicked(false);
+                       currentPanel = null;
+                       clearAllFields();
+                       deactivateDeleteBtn();
+                    }
+                    else{
+                        if (currentPanel != null ) {
+                            currentPanel.setClicked(false);
+                        }
+                        clonedPanel.setClicked(true);
+                        currentPanel = clonedPanel;
+                        handleEditPanel();
+                    }   
+                }
+            });
+            
             // Add the cloned panel to the initial panel
             cloneablePanel.add(clonedPanel);
+            
+            //add the cloned panel to the hash map
+            //panelMap.put(id, clonedPanel);
+            
             // Adjust preferred size of initial panel to include new panel
             Dimension newSize = new Dimension(cloneablePanel.getWidth(), y + panelHeight + 10); // Adjusted size
             cloneablePanel.setPreferredSize(newSize);
@@ -375,6 +461,118 @@ public class EditWorkflow extends javax.swing.JFrame {
             scrollPane.repaint();
             // Scroll to show the new panel
             scrollPane.getVerticalScrollBar().setValue(0);
+        }
+    }
+    
+    private void handleEditPanel(){
+        //set name field
+        nameField.requestFocus();
+        nameField.setText(currentPanel.getNameInput());
+        
+        //set radio button
+        if (currentPanel.getTypeInput().equals("One-day event")){
+            oneDay.setSelected(true);   
+            toField.setEnabled(false);
+            toComboBox.setEnabled(false);
+            repaint();
+        }else{
+            multipleDay.setSelected(true);
+            toField.setEnabled(true);
+            toComboBox.setEnabled(true);
+            repaint();
+            //set dayTo
+            handleDayField(currentPanel.getDayToInput(), toComboBox, toField);
+        }
+        
+        //set day from
+        handleDayField(currentPanel.getDayFromInput(), fromComboBox, fromField);
+        notesArea.setText(currentPanel.getNoteInput());
+        colorComboBox.setSelectedItem(currentPanel.getColorInput());
+        
+        //activate delete button
+        activateDeleteBtn();
+    }
+    
+    private void activateDeleteBtn(){
+        removeMouseListeners(deleteBtn);
+        deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow_active.png")));
+        deleteBtn.setEnabled(true);
+        deleteBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                deleteFlow();
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow_hover.png")));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow_active.png")));
+            }
+        });
+    }
+    
+    private void deleteFlow(){
+        String question = "Do you really want to delete " + currentPanel.getNameInput() + "?";
+        int a = JOptionPane.showConfirmDialog(getContentPane(), question, "SELECT", JOptionPane.YES_OPTION);
+        
+        if (currentPanel != null && a == 0){
+            String id = currentPanel.getId();
+            
+            //delete from database
+            try{
+                Connection conn = ConnectionProvider.getCon();
+                String query = "DELETE FROM flow WHERE id = ?";
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setString(1, id);
+                
+                ps.executeUpdate();
+                currentPanel = null;
+                String message = "Flow/checkpoint deleted successfully.";
+                JOptionPane.showMessageDialog(getContentPane(), message);                
+                
+            }catch(SQLException se){
+                JOptionPane.showMessageDialog(getContentPane(), se);
+            }
+            
+            //add the checkpoint by 1 and query to refresh workflow
+            updateCheckpoint(-1);
+            queryWorkflow();
+            checkpoint.setText("Total: " + current_workflow.getCheckpoint() + " checkpoints");
+
+            //refresh the flow view on the right
+            queryFlow();
+            cloneablePanel.removeAll();
+            createClonedPanels(flowList, flowList.size());
+            
+            //deactivate delete button and clear all fields
+            deactivateDeleteBtn();
+            clearAllFields();
+        } 
+    }
+    
+    private void handleDayField(int day, JComboBox box, JTextField field){
+        if (day > 0){
+            box.setSelectedItem("After");
+            field.setText(""+day);
+        }
+        else{
+            box.setSelectedItem("Before");
+            field.setText(""+(day - 2*day));
+        }
+    }
+    
+    private void deactivateDeleteBtn(){
+        removeMouseListeners(deleteBtn);
+        deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow.png")));
+        deleteBtn.setEnabled(false);
+    }
+    
+    private void removeMouseListeners(JLabel button) {
+        for (MouseListener listener : button.getMouseListeners()) {
+            button.removeMouseListener(listener);
         }
     }
     
@@ -387,8 +585,102 @@ public class EditWorkflow extends javax.swing.JFrame {
         }
     }
     
-    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {                                        
-        insertNewFlow();
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {      
+        if (currentPanel == null){
+            insertNewFlow();
+            deactivateDeleteBtn();
+        }
+        else{
+            editFlow();
+        }
+    }
+    
+    private void editFlow(){
+        String nameStr = nameField.getText();
+        String typeStr;
+        String dayToStr;
+        
+        if(oneDay.isSelected()){
+            typeStr = "One-day event";
+            dayToStr = "0";
+        }
+        else{
+            typeStr = "Multiple-day event";
+            dayToStr = toField.getText();
+        }
+        
+        String dayFromStr = fromField.getText();
+        String noteStr = notesArea.getText();
+        if (noteStr.equals("Notes")){
+            noteStr = "";
+        }        
+        String colorStr = (String) colorComboBox.getSelectedItem();
+        
+        //handle user wrong input
+        if (nameStr.equals("Name") || nameStr.equals("")){
+            JOptionPane.showMessageDialog(getContentPane(), "Name is still empty.");
+        }
+        else if (typeStr.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Type is still empty.");
+        }
+        else if (dayFromStr.equals("Day") || dayFromStr.equals("")){
+            JOptionPane.showMessageDialog(getContentPane(), "Day 'from' is still empty.");
+        }
+        else if (!isInteger(dayFromStr)){
+            JOptionPane.showMessageDialog(getContentPane(), "Day 'from' is not valid.");
+        }
+        else if (colorStr.trim().isEmpty()){
+            JOptionPane.showMessageDialog(getContentPane(), "Color is still empty.");
+        }        
+        //only for multiple day event
+        else if ((dayToStr.equals("Day") || dayToStr.equals("")) && typeStr.equals("Multiple-day event")){
+            JOptionPane.showMessageDialog(getContentPane(), "Day 'to' is still empty.");
+        }
+        else if (!isInteger(dayToStr) && typeStr.equals("Multiple-day event")){
+            JOptionPane.showMessageDialog(getContentPane(), "Day 'to' is not valid.");
+        }
+        else{
+            //set day from int and day to int
+            int dayFromInt = Integer.parseInt(beforeAfterDay(dayFromStr, fromComboBox));
+            int dayToInt = Integer.parseInt(beforeAfterDay(dayToStr, toComboBox));
+            
+            if ((dayFromInt > dayToInt) && typeStr.equals("Multiple-day event")){
+                JOptionPane.showMessageDialog(getContentPane(), "Day range is not valid.");
+            }
+            else{
+                flowIDTemp = currentPanel.getId();
+
+                try{
+                   Connection con = ConnectionProvider.getCon();
+                   
+                   String query = "UPDATE flow SET name = ?, type = ?, dayFrom = ?, dayTo = ?, notes = ?, color = ? WHERE id = ?";
+                   PreparedStatement ps = con.prepareStatement(query);
+                   ps.setString(1, nameStr);
+                   ps.setString(2, typeStr);
+                   ps.setInt(3, dayFromInt);
+                   ps.setInt(4, dayToInt);
+                   ps.setString(5, noteStr);
+                   ps.setString(6, colorStr);
+                   ps.setString(7, flowIDTemp);
+
+                   ps.executeUpdate();
+                   //success message
+                   String message = "Flow edited successfully.";              
+                   JOptionPane.showMessageDialog(getContentPane(), message);
+
+                   //clear all the field
+                   clearAllFields();
+
+                   //refresh the flow view on the right
+                   queryFlow();
+                   cloneablePanel.removeAll();
+                   createClonedPanels(flowList, flowList.size());
+
+               }catch(Exception e){
+                   JOptionPane.showMessageDialog(getContentPane(), e);
+               }
+            }   
+        } 
     }
     
     private void getFlowLastID(){
@@ -472,38 +764,63 @@ public class EditWorkflow extends javax.swing.JFrame {
             int dayFromInt = Integer.parseInt(beforeAfterDay(dayFromStr, fromComboBox));
             int dayToInt = Integer.parseInt(beforeAfterDay(dayToStr, toComboBox));
             
-            getFlowLastID();
-            Flow new_flow = new Flow(flowIDTemp, this.workflowID, nameStr, typeStr, dayFromInt, dayToInt, noteStr, colorStr);
-            
-            try{
-               Connection con = ConnectionProvider.getCon();
-               
-               PreparedStatement ps = con.prepareStatement("insert into flow values(?,?,?,?,?,?,?,?)");
-               ps.setString(1, new_flow.getId());
-               ps.setString(2, new_flow.getWorkflowID());
-               ps.setString(3, new_flow.getNameInput());
-               ps.setString(4, new_flow.getTypeInput());
-               ps.setInt(5, new_flow.getDayFromInput());
-               ps.setInt(6, new_flow.getDayToInput());
-               ps.setString(7, new_flow.getNoteInput());
-               ps.setString(8, new_flow.getColorInput());
+            if ((dayFromInt > dayToInt) && typeStr.equals("Multiple-day event")){
+                JOptionPane.showMessageDialog(getContentPane(), "Day range is not valid.");
+            }
+            else{
+                getFlowLastID();
+                Flow new_flow = new Flow(flowIDTemp, this.workflowID, nameStr, typeStr, dayFromInt, dayToInt, noteStr, colorStr);
 
-               ps.executeUpdate();
-               //success message
-               String message = "Flow added successfully.";              
-               JOptionPane.showMessageDialog(getContentPane(), message);
-               
-               //clear all the field
-               clearAllFields();
-               
-               //refresh the flow view on the right
-               queryFlow();
-               cloneablePanel.removeAll();
-               createClonedPanels(flowList, flowList.size());
-               
-           }catch(Exception e){
-               JOptionPane.showMessageDialog(getContentPane(), e);
-           }                
+                try{
+                   Connection con = ConnectionProvider.getCon();
+
+                   PreparedStatement ps = con.prepareStatement("insert into flow values(?,?,?,?,?,?,?,?)");
+                   ps.setString(1, new_flow.getId());
+                   ps.setString(2, new_flow.getWorkflowID());
+                   ps.setString(3, new_flow.getNameInput());
+                   ps.setString(4, new_flow.getTypeInput());
+                   ps.setInt(5, new_flow.getDayFromInput());
+                   ps.setInt(6, new_flow.getDayToInput());
+                   ps.setString(7, new_flow.getNoteInput());
+                   ps.setString(8, new_flow.getColorInput());
+
+                   ps.executeUpdate();
+                   //success message
+                   String message = "Flow added successfully.";              
+                   JOptionPane.showMessageDialog(getContentPane(), message);
+
+                   //clear all the field
+                   clearAllFields();
+
+                   //add the checkpoint by 1 and query to refresh workflow
+                   updateCheckpoint(1);
+                   queryWorkflow();
+                   checkpoint.setText("Total: " + current_workflow.getCheckpoint() + " checkpoints");
+
+                   //refresh the flow view on the right
+                   queryFlow();
+                   cloneablePanel.removeAll();
+                   createClonedPanels(flowList, flowList.size());
+
+               }catch(Exception e){
+                   JOptionPane.showMessageDialog(getContentPane(), e);
+               }
+            }   
+        }
+    }
+    
+    private void updateCheckpoint(int a){
+        try{
+            Connection con = ConnectionProvider.getCon();
+            Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+            PreparedStatement ps = con.prepareStatement("UPDATE workflow SET checkpoint = ? WHERE workflowID = ?");
+            ps.setInt(1, current_workflow.getCheckpoint()+a);
+            ps.setString(2, current_workflow.getId());
+            ps.executeUpdate();
+
+        }catch(SQLException e){
+            e.printStackTrace();
         }
     }
     
@@ -594,7 +911,7 @@ public class EditWorkflow extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> fromComboBox;
     private javax.swing.JTextField fromField;
     private javax.swing.JLabel fromtxt;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel deleteBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea notesArea;
     private javax.swing.JRadioButton multipleDay;
@@ -610,4 +927,5 @@ public class EditWorkflow extends javax.swing.JFrame {
     private javax.swing.JLabel viewtxt;
     private javax.swing.JLabel workflow_name;
     private javax.swing.ButtonGroup optGrp;
+    private App.ButtonCustom generateBtn;
 }

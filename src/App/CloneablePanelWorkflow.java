@@ -132,28 +132,6 @@ public class CloneablePanelWorkflow extends JPanel{
         setComponentBounds(editButton, 95, 189, editButton.getPreferredSize().width+25, editButton.getPreferredSize().height+7);
         add(editButton);
         
-        
-        
-//        JLabel editTitle = new JLabel();
-//        editTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_title.png"))); 
-//        setComponentBounds(editTitle, title.getX() + title.getWidth() + 15, title.getY()+10, 22, 27);
-//        add(editTitle);     
-//        
-//        editTitle.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                //
-//            }
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//                editTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_title_hover.png")));
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//                editTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_title.png")));
-//            }
-//        });
     }
     
     private void updateNameDatabase(JLabel nameLabel){

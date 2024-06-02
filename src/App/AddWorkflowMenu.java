@@ -241,12 +241,6 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
                 hoverButton("/App/img/logout.png", 255, 255, 255, logout_labels);
             }
         });
-        
-        search_field.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                searchLostFocus();
-            }
-        }); 
         search_field.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -551,7 +545,8 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     private void searchLostFocus(){
         cloneablePanel.removeAll();
         createClonedPanels(workflowList, workflowList.size());
-        createAddPanel();
+        createAddPanel();        
+        SwingUtilities.invokeLater(() -> addWorkflowBtn.requestFocusInWindow());
     }
     
     public void goToEdit(String workflowID){

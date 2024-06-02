@@ -27,7 +27,7 @@ public class WrappedLabel extends JLabel {
         FontMetrics fm = g.getFontMetrics();
 
         int lineHeight = fm.getHeight();
-        int x = 0;
+        int x = (getWidth() - getPreferredSize().width) / 2;
         int y = fm.getAscent();
 
         for (String line : getWrappedLines(text, fm)) {
