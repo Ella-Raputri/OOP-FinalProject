@@ -4,10 +4,13 @@
  */
 package App;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,11 +24,21 @@ public class CalendarCell extends JButton{
     private Date date;
     private boolean title;
     private boolean isToday;
+    private boolean isSelected;
     
     public CalendarCell(){
         setContentAreaFilled(false);
         setBorder(null);
         setHorizontalAlignment(JLabel.CENTER);
+        
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!isSelected) {
+                    setAsSelected(true);
+                }
+            }
+        });
     }
     
     public void asTitle(){
@@ -60,6 +73,12 @@ public class CalendarCell extends JButton{
     public void setAsToday(){
         isToday = true;
         setForeground(new Color(0,141,189));
+        repaint();
+    }
+    
+    public void setAsSelected(boolean bool){
+        isSelected = bool;
+        repaint();
     }
     
     @Override
@@ -75,6 +94,24 @@ public class CalendarCell extends JButton{
             g2.fillRoundRect(30, 10, 48, 48, 100, 100);
         }
         super.paintComponent(g);
+    }
+    
+    @Override
+    protected void paintBorder(Graphics g) {
+       if (isSelected) {
+        int borderWidth = 2;
+        Graphics2D g2d = (Graphics2D) g.create();
+        super.paintBorder(g); // Ensure any superclass painting is done
+
+        // Set border color and width
+        g2d.setColor(new Color(214, 214, 214));
+        g2d.setStroke(new BasicStroke(borderWidth)); // Set border width
+        
+        // Draw the rounded rectangle border
+        g2d.drawRoundRect(2, 2, getWidth() - 4, getHeight() - 4, 10, 10); // Adjusted position and size
+
+        g2d.dispose();
+       }
     }
     
 }

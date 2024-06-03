@@ -5,6 +5,8 @@
 package App;
 
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -14,7 +16,8 @@ import java.util.Date;
  */
 public class CalendarPanel extends javax.swing.JLayeredPane {
      private int month;
-     private int year;
+     private int year;    
+     private CalendarCell current_cell = null;
     /**
      * Creates new form CalendarPanel
      */
@@ -54,8 +57,23 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
                 cell.setDate(calendar.getTime());
                 cell.currentMonth(calendar.get(Calendar.MONTH) == month -1, calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY);
                 
+                cell.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (current_cell != cell) {
+                            if (current_cell != null) {
+                                current_cell.setAsSelected(false);
+                            }
+                            cell.setAsSelected(true);
+                            current_cell = cell;
+                        }   
+                    }
+                });
+                
                 if (today.isToday(new CalendarToday(calendar.get(Calendar.DATE), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)))){
                     cell.setAsToday();
+                    cell.setAsSelected(true);
+                    current_cell = cell;
                 }
                 calendar.add(Calendar.DATE, 1);
             }
