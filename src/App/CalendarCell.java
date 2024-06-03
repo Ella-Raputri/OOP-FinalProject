@@ -107,6 +107,10 @@ public class CalendarCell extends JButton{
         repaint();
     }
     
+    public boolean getisSelected(){
+        return isSelected;
+    }
+    
     public void setAsTasks(boolean bool, String color){
         this.colorStr = color;
         hasTask = bool;

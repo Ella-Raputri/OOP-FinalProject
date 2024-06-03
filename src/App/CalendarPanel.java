@@ -25,7 +25,8 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
     /**
      * Creates new form CalendarPanel
      */
-    public CalendarPanel(int month, int year) {
+    public CalendarPanel(int month, int year, CalendarPage home) {
+        this.home = home;
         initComponents();
         this.month = month;
         this.year = year;
@@ -68,16 +69,15 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
                         if (current_cell != cell) {
                             if (current_cell != null) {
                                 current_cell.setAsSelected(false);
-//                                home.queryCurrentTaskList();
-//                                home.createClonedPanels(home.currTasksList, home.currTasksList.size());
+                                home.refresh();
                                 //current_cell.setAsTasks(false, color);
                             }
-                            cell.setAsSelected(true);
-//                            home.queryCurrentTaskList();
-//                            home.createClonedPanels(home.currTasksList, home.currTasksList.size());
                             //cell.setAsTasks(true, color);
                             current_cell = cell;
-                        }   
+                            home.refresh();
+                        }
+                        
+                        
                     }
                 });
                 

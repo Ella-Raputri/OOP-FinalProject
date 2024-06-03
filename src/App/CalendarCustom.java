@@ -20,13 +20,16 @@ public class CalendarCustom extends javax.swing.JPanel {
     private int month;
     private int year;
     public CalendarPanel currentPanel;
+    private CalendarPage home;
     /**
      * Creates new form CalendarCustom
      */
-    public CalendarCustom() {
+    public CalendarCustom(CalendarPage home) {        
         initComponents();
         thisMonth();
-        currentPanel = new CalendarPanel(6, 2024);
+        currentPanel = new CalendarPanel(6, 2024, home);
+        
+        this.home = home;
         slide.show(currentPanel, PanelSlide.AnimateType.TO_RIGHT);
         showMonthYear();
         myinit();
@@ -79,7 +82,7 @@ public class CalendarCustom extends javax.swing.JPanel {
     }
     
     private void updateCalendarPanel(PanelSlide.AnimateType type) {
-        currentPanel = new CalendarPanel(month, year);
+        currentPanel = new CalendarPanel(month, year, home);
         slide.show(currentPanel, type);
         showMonthYear();
     }

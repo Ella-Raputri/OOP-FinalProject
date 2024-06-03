@@ -327,6 +327,14 @@ public class CalendarPage extends javax.swing.JFrame {
         } 
     }
     
+    public void refresh(){
+        queryCurrentTaskList();
+        cloneablePanel.removeAll();
+        createClonedPanels(home.currTasksList, home.currTasksList.size());        
+        renewTaskText();
+    }
+    
+    
     public void renewTaskText(){
         JPanel taskPanel = calendarCustom2.getTaskPanel();
         JLabel tasktxt = new JLabel();
@@ -342,6 +350,8 @@ public class CalendarPage extends javax.swing.JFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/line.png"))); // NOI18N
         taskPanel.add(jLabel1);
         jLabel1.setBounds(30, 50, 232, 43);
+        
+        initAddTaskBtn();
         
         taskPanel.revalidate();
         taskPanel.repaint();
@@ -382,6 +392,7 @@ public class CalendarPage extends javax.swing.JFrame {
     }
     
     public void queryCurrentTaskList(){
+        currTasksList.clear();
         CalendarCell currCell = calendarCustom2.currentPanel.getCurrentCell();
         LocalDate date_cell = currCell.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         
@@ -442,7 +453,7 @@ public class CalendarPage extends javax.swing.JFrame {
         cloneablePanel.setBackground(new Color(31, 139, 217));
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
-        calendarCustom2 = new App.CalendarCustom();
+        calendarCustom2 = new App.CalendarCustom(this.home);
         contentPane.add(calendarCustom2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, -1, -1));
         
         initAddTaskBtn();
@@ -560,7 +571,7 @@ public class CalendarPage extends javax.swing.JFrame {
         logoutBtnTxt = new javax.swing.JLabel();
         insertBtn = new App.ButtonCustom();
         titletxt = new javax.swing.JLabel();
-        calendarCustom2 = new App.CalendarCustom();
+        calendarCustom2 = new App.CalendarCustom(this.home);
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
