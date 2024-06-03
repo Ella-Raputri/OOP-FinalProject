@@ -12,6 +12,7 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
+import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
@@ -25,6 +26,10 @@ public class CalendarCell extends JButton{
     private boolean title;
     private boolean isToday;
     private boolean isSelected;
+    private HashMap<String, Color> color_map = new HashMap<>();
+    public int task_amount = 0;
+    public String colorStr = "Blue";
+    private boolean hasTask;
     
     public CalendarCell(){
         setContentAreaFilled(false);
@@ -39,6 +44,23 @@ public class CalendarCell extends JButton{
                 }
             }
         });
+        
+        color_map.put("Blue", new Color(80, 213, 255));
+        color_map.put("Red", new Color(255, 164, 164));
+        color_map.put("Orange", new Color(255, 182, 128));
+        color_map.put("Yellow", new Color(248, 232, 87));
+        color_map.put("Green", new Color(153, 237, 113));
+        color_map.put("Purple", new Color(218, 157, 255));
+        color_map.put("Pink", new Color(255, 125, 203));
+        color_map.put("Brown", new Color(223, 170, 106));
+    }
+    
+    public void setColorTasks(int amount, String color){
+        this.task_amount = amount;
+        this.colorStr = color;
+        System.out.print(this.colorStr);
+        repaint();
+        getParent().repaint();
     }
     
     public void asTitle(){
@@ -51,6 +73,10 @@ public class CalendarCell extends JButton{
         
     public void setDate(Date date1){
         this.date = date1;
+    }
+    
+    public Date getDate(){
+        return this.date;
     }
     
     public void currentMonth(boolean act, boolean isSunday){
@@ -81,6 +107,12 @@ public class CalendarCell extends JButton{
         repaint();
     }
     
+    public void setAsTasks(boolean bool, String color){
+        this.colorStr = color;
+        hasTask = bool;
+        repaint();
+    }
+    
     @Override
     protected void paintComponent(Graphics g){
         if(title){
@@ -94,11 +126,23 @@ public class CalendarCell extends JButton{
             g2.fillRoundRect(30, 10, 48, 48, 100, 100);
         }
         super.paintComponent(g);
+        if (hasTask && !title ){
+            if (!colorStr.trim().isEmpty()) {
+                g.setColor(color_map.get(colorStr));
+                int dotSize = 10; // Size of the dot
+                int x = getWidth() / 2 - dotSize / 2;
+                int y = getHeight() - dotSize - 5;
+                g.fillOval(x, y, dotSize, dotSize);
+            }
+            else{
+                System.out.print(colorStr);
+            }
+        }        
     }
     
     @Override
     protected void paintBorder(Graphics g) {
-       if (isSelected) {
+       if (isSelected && !title) {
         int borderWidth = 2;
         Graphics2D g2d = (Graphics2D) g.create();
         super.paintBorder(g); // Ensure any superclass painting is done

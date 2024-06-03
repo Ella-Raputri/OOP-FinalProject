@@ -6,6 +6,7 @@ package App;
 
 import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -13,11 +14,20 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
@@ -32,9 +42,10 @@ public class CalendarPage extends javax.swing.JFrame {
     public JPanel cloneablePanel;
     private JScrollPane scrollPane;
     public LinkedList<Task> taskList = new LinkedList<>();
-    private String taskIDTemp;
+    private LinkedList<Task> currTasksList = new LinkedList<>();
     public static int open = 0;
     private CalendarPage home = (CalendarPage) SwingUtilities.getRoot(this);
+   // private HashMap <String, String> monthMap = new HashMap<>();
     /**
      * Creates new form CalendarPage
      */
@@ -44,6 +55,7 @@ public class CalendarPage extends javax.swing.JFrame {
         myinit();
         initComponents();
         initHover();
+        displaySelectedTask();
     }
     
     public CalendarPage(String id) {
@@ -53,6 +65,7 @@ public class CalendarPage extends javax.swing.JFrame {
         myinit();
         initComponents();
         initHover();
+        displaySelectedTask();
     }
     
     public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
@@ -285,7 +298,7 @@ public class CalendarPage extends javax.swing.JFrame {
        taskList.clear();
         try{
             Connection con = ConnectionProvider.getCon();
-            String query = "SELECT * FROM tasks WHERE userID = ?";
+            String query = "SELECT * FROM tasks WHERE userID = ? ORDER BY completed ASC";
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, this.userID);
             
@@ -328,7 +341,43 @@ public class CalendarPage extends javax.swing.JFrame {
         taskPanel.revalidate();
         taskPanel.repaint();
     }
+    
+    private LocalDate convertStrDate(String timeStr){
+        String modify = timeStr;
+        if (timeStr.length() != 10){
+            modify = timeStr.substring(0, 8) + "0" + timeStr.charAt(8);
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(modify, formatter);
         
+        System.out.println("Converted date: " + date);
+        return date;
+    }
+    
+    private void displaySelectedTask(){
+        //get the current cell
+        CalendarCell currCell = calendarCustom2.currentPanel.getCurrentCell();
+        LocalDate date1 = currCell.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        System.out.println(date1);
+        LocalDate date2 = convertStrDate("2024-06-3");
+        
+        if (date1.equals(date2)) {
+            System.out.println("The dates are the same.");
+        } else {
+            System.out.println("The dates are different.");
+        }
+        
+        currCell.setColorTasks(2, "Green");
+        
+        //calendarCustom2.currentPanel.setColor("Pink");
+//        currCell.colorStr = "Blue";
+//        currCell.task_amount = 0;
+       
+         // Repaint the CalendarPanel after updating the cell's color
+//        calendarCustom2.currentPanel.repaint();
+//        calendarCustom2.repaint();
+    }
+    
     private void myinit(){
         queryTask();
         

@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import javax.swing.JPanel;
 
 /**
@@ -18,13 +19,15 @@ import javax.swing.JPanel;
 public class CalendarCustom extends javax.swing.JPanel {
     private int month;
     private int year;
+    public CalendarPanel currentPanel;
     /**
      * Creates new form CalendarCustom
      */
     public CalendarCustom() {
         initComponents();
         thisMonth();
-        slide.show(new CalendarPanel(6, 2024), PanelSlide.AnimateType.TO_RIGHT);
+        currentPanel = new CalendarPanel(6, 2024);
+        slide.show(currentPanel, PanelSlide.AnimateType.TO_RIGHT);
         showMonthYear();
         myinit();
     }
@@ -39,8 +42,7 @@ public class CalendarCustom extends javax.swing.JPanel {
                 }else{
                     month--;
                 }
-                slide.show(new CalendarPanel(month, year), PanelSlide.AnimateType.TO_RIGHT);
-                showMonthYear();
+                updateCalendarPanel(PanelSlide.AnimateType.TO_RIGHT);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -62,8 +64,7 @@ public class CalendarCustom extends javax.swing.JPanel {
                 }else{
                     month++;
                 }
-                slide.show(new CalendarPanel(month, year), PanelSlide.AnimateType.TO_LEFT);
-                showMonthYear();
+                updateCalendarPanel(PanelSlide.AnimateType.TO_LEFT);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -75,6 +76,12 @@ public class CalendarCustom extends javax.swing.JPanel {
                nextBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/next_month.png")));
             }
         });
+    }
+    
+    private void updateCalendarPanel(PanelSlide.AnimateType type) {
+        currentPanel = new CalendarPanel(month, year);
+        slide.show(currentPanel, type);
+        showMonthYear();
     }
     
     private void thisMonth(){
