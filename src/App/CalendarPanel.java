@@ -21,6 +21,7 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
      public String color ;
      private CalendarCell current_cell = null;
      private LinkedList<CalendarCell> cells = new LinkedList<>();
+     private CalendarPage home;
     /**
      * Creates new form CalendarPanel
      */
@@ -67,10 +68,14 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
                         if (current_cell != cell) {
                             if (current_cell != null) {
                                 current_cell.setAsSelected(false);
-                                current_cell.setAsTasks(false, color);
+//                                home.queryCurrentTaskList();
+//                                home.createClonedPanels(home.currTasksList, home.currTasksList.size());
+                                //current_cell.setAsTasks(false, color);
                             }
                             cell.setAsSelected(true);
-                            cell.setAsTasks(true, color);
+//                            home.queryCurrentTaskList();
+//                            home.createClonedPanels(home.currTasksList, home.currTasksList.size());
+                            //cell.setAsTasks(true, color);
                             current_cell = cell;
                         }   
                     }
@@ -79,7 +84,9 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
                 if (today.isToday(new CalendarToday(calendar.get(Calendar.DATE), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)))){
                     cell.setAsToday();
                     cell.setAsSelected(true);
-                    cell.setAsTasks(true, color);
+//                    home.queryCurrentTaskList();
+//                    home.createClonedPanels(home.currTasksList, home.currTasksList.size());
+                    //cell.setAsTasks(true, color);
                     current_cell = cell;
                 }
                 calendar.add(Calendar.DATE, 1);
@@ -89,6 +96,10 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
     
     public void setColor(String color){
         this.color = color;
+    }
+    
+    public void setHome(CalendarPage home1){
+        this.home = home1;
     }
     
     private CalendarToday getToday(){

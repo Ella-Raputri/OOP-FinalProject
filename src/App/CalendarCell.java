@@ -126,18 +126,18 @@ public class CalendarCell extends JButton{
             g2.fillRoundRect(30, 10, 48, 48, 100, 100);
         }
         super.paintComponent(g);
-        if (hasTask && !title ){
-            if (!colorStr.trim().isEmpty()) {
-                g.setColor(color_map.get(colorStr));
-                int dotSize = 10; // Size of the dot
-                int x = getWidth() / 2 - dotSize / 2;
-                int y = getHeight() - dotSize - 5;
-                g.fillOval(x, y, dotSize, dotSize);
-            }
-            else{
-                System.out.print(colorStr);
-            }
-        }        
+//        if (hasTask && !title ){
+//            if (!colorStr.trim().isEmpty()) {
+//                g.setColor(color_map.get(colorStr));
+//                int dotSize = 10; // Size of the dot
+//                int x = getWidth() / 2 - dotSize / 2;
+//                int y = getHeight() - dotSize - 5;
+//                g.fillOval(x, y, dotSize, dotSize);
+//            }
+//            else{
+//                System.out.print(colorStr);
+//            }
+//        }        
     }
     
     @Override
