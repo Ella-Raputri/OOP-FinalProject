@@ -393,11 +393,12 @@ public class CalendarPage extends javax.swing.JFrame {
             String timeTo = list.get(i).getTimeToInput();
             String note = list.get(i).getNoteInput();
             String color = list.get(i).getColorInput();
+            boolean comp = list.get(i).getCompleted();
             
             // Create a new cloned panel
             // Cloneable Panel
             CloneablePanelTask clonedPanel = new CloneablePanelTask(this.home, 0, new Color(31, 139, 217), 1 ,
-                    id, name, type, timeFrom, timeTo, note, color);
+                    id, name, type, timeFrom, timeTo, note, color, comp);
             // Set your custom width and height for the cloned panel
             int panelWidth = 260;
             int panelHeight = 90;

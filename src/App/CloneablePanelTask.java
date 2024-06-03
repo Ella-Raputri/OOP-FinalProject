@@ -8,9 +8,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.font.TextAttribute;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import javax.swing.border.LineBorder;
 /**
  *
@@ -28,12 +30,13 @@ public class CloneablePanelTask extends JPanel{
     private String timeToInput;
     private String noteInput;
     private String colorInput;
-    private boolean isClicked = false;
+    private boolean completedInput;
     private CalendarPage home;
+    
     
 
     public CloneablePanelTask(CalendarPage home, int borderRadius, Color bgColor, int borderWidth, String id, 
-            String nameInput, String typeInput, String timeFromInput, String timeToInput, String noteInput, String colorInput) {
+            String nameInput, String typeInput, String timeFromInput, String timeToInput, String noteInput, String colorInput, boolean completedInput) {
         setLayout(null);
         this.borderRadius = borderRadius;
         this.bgColor = bgColor;
@@ -63,20 +66,13 @@ public class CloneablePanelTask extends JPanel{
                              
         
         // Example content - you can add whatever components you need
-        WrappedLabel title = new WrappedLabel(270);
+        WrappedLabel title = new WrappedLabel(230);
         title.setText(nameInput);        
         title.setForeground(Color.white);
         title.setFont(new Font("Montserrat", 0, 20));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setBounds(18, 10, title.getPreferredSize().width, title.getPreferredSize().height);
-        add(title);       
-        
-        //the color label
-        JLabel color_label = new JLabel();
-        color_label.setBackground(color_map.get(colorInput));
-        color_label.setOpaque(true);
-        setComponentBounds(color_label, 231, 55, 14, 14);
-        add(color_label);
+        add(title);     
         
         //the view more label
         //INSERT INTO `tasks`(`taskID`, `name`, `type`, `timeFrom`, `timeTo`, `notes`, `color`, `userID`) VALUES ('t3','haii','One-day event','18 June 2024','18 June 2024','ddd','Brown','u1')
@@ -88,7 +84,12 @@ public class CloneablePanelTask extends JPanel{
         more_label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                home.goToEditTask(id);
+                if (more_label.isEnabled()){
+                  home.goToEditTask(id);  
+                } else{
+                    JOptionPane.showMessageDialog(home.getContentPane(), "The task has already been completed.");
+                }
+                
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -100,6 +101,66 @@ public class CloneablePanelTask extends JPanel{
             }
         });
         add(more_label);
+        
+        //the color label
+        JLabel color_label = new JLabel();
+        color_label.setBackground(color_map.get(colorInput));
+        color_label.setOpaque(true);
+        if (completedInput == true){
+            color_label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/checkmark.png")));
+            title.setFont(getStrikethrough(new Font("Montserrat", 0, 20)));
+            more_label.setEnabled(false);
+        }
+        setComponentBounds(color_label, 231, 55, 14, 14);
+        color_label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+               handleCheckmarks(color_label, title, more_label);  
+               updateCompletedDatabase();
+            }
+        });
+        add(color_label);
+    }
+    
+    private void handleCheckmarks(JLabel color_label, JLabel title, JLabel more){        
+        if (completedInput){
+            color_label.setIcon(null);
+            title.setFont(new Font("Montserrat", 0, 20));
+            more.setEnabled(true);
+            this.completedInput = false;
+        }else{
+            color_label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/checkmark.png")));
+            title.setFont(getStrikethrough(new Font("Montserrat", 0, 20)));
+            more.setEnabled(false);
+            this.completedInput = true;
+        }
+        
+        revalidate();
+        repaint();
+    }
+    
+    private Font getStrikethrough(Font font){
+        //strikethrough font of the title if it is completed
+        Map attributes = font.getAttributes();
+        attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+        Font newFont = new Font(attributes);
+        return newFont;
+    }
+    
+    private void updateCompletedDatabase(){
+        try{
+            Connection con = ConnectionProvider.getCon();
+
+            String query = "UPDATE tasks SET completed = ? WHERE taskID = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setBoolean(1, this.completedInput);
+            ps.setString(2, this.id);
+
+            ps.executeUpdate();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public String getNameInput() {
@@ -157,12 +218,14 @@ public class CloneablePanelTask extends JPanel{
     public void setColorInput(String colorInput) {
         this.colorInput = colorInput;
     }
-    
-    
-    public void setClicked(boolean click){
-        this.isClicked = click;
-        repaint();
+
+    public boolean isCompletedInput() {
+        return completedInput;
     }
+
+    public void setCompletedInput(boolean completedInput) {
+        this.completedInput = completedInput;
+    }    
     
     public void setComponentBounds(Component component, int x, int y, int width, int height) {
         component.setBounds(x, y, width, height); // Set the position and size of the component
@@ -182,14 +245,9 @@ public class CloneablePanelTask extends JPanel{
     protected void paintBorder(Graphics g) {
         super.paintBorder(g);
         Graphics2D g2d = (Graphics2D) g.create();
-        if (isClicked) {
-            g2d.setColor(new Color(125,201,255));
-            g2d.setStroke(new BasicStroke(2)); // Set border width
-        } else {
-            g2d.setColor(Color.white);
-            g2d.setStroke(new BasicStroke(borderWidth)); // Set border width
-        }
-        
+        g2d.setColor(Color.white);
+        g2d.setStroke(new BasicStroke(borderWidth)); // Set border width
+                
         g2d.drawRoundRect(borderWidth / 2, getHeight() - borderWidth, getWidth() - borderWidth, borderWidth, borderRadius, borderRadius);
         g2d.dispose();
     }
