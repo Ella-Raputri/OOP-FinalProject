@@ -29,21 +29,10 @@ public class CloneablePanelTask extends JPanel{
     private String noteInput;
     private String colorInput;
     private boolean isClicked = false;
+    private CalendarPage home;
     
-    
-    private String appendPlusToDay(int value){
-        if (value > 0){
-            return "+ " + String.valueOf(value);
-        }
-        else if (value == 0){
-            return "- Day";
-        }
-        else{
-            return "- " + String.valueOf(value - 2*value);
-        }
-    }    
 
-    public CloneablePanelTask(int borderRadius, Color bgColor, int borderWidth, String id, 
+    public CloneablePanelTask(CalendarPage home, int borderRadius, Color bgColor, int borderWidth, String id, 
             String nameInput, String typeInput, String timeFromInput, String timeToInput, String noteInput, String colorInput) {
         setLayout(null);
         this.borderRadius = borderRadius;
@@ -56,6 +45,7 @@ public class CloneablePanelTask extends JPanel{
         this.typeInput = typeInput;
         this.noteInput = noteInput;
         this.colorInput = colorInput;
+        this.home = home;
         setOpaque(false);
         
         //hash map that save the color of all possible flow colors
@@ -98,7 +88,7 @@ public class CloneablePanelTask extends JPanel{
         more_label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //
+                home.goToEditTask(id);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -110,15 +100,6 @@ public class CloneablePanelTask extends JPanel{
             }
         });
         add(more_label);
-        
-//        addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                if (!isClicked) {
-//                    setClicked(true);
-//                }
-//            }
-//        });
     }
 
     public String getNameInput() {
