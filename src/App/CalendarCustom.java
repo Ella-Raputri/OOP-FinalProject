@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -36,7 +38,7 @@ public class CalendarCustom extends javax.swing.JPanel {
         slide.show(currentPanel, PanelSlide.AnimateType.TO_RIGHT);
         showMonthYear();
         myinit();
-//        initAddTask();
+        refreshTaskDots();
     }
     
     private void myinit(){
@@ -89,6 +91,7 @@ public class CalendarCustom extends javax.swing.JPanel {
         currentPanel = new CalendarPanel(month, year, home);
         slide.show(currentPanel, type);
         showMonthYear();
+        refreshTaskDots();
     }
     
     private void thisMonth(){
@@ -105,6 +108,35 @@ public class CalendarCustom extends javax.swing.JPanel {
         calendar.set(Calendar.DATE, 1);
         SimpleDateFormat date_format = new SimpleDateFormat("MMMM yyyy");
         month_year.setText(date_format.format(calendar.getTime()));
+    }
+    
+    public void refreshTaskDots(){
+        LinkedList<CalendarCell> panelCells = currentPanel.getCells();
+        
+        for (int i = 0; i < home.taskList.size(); i++){
+            LocalDate date_from = home.convertStrDate(home.taskList.get(i).getTimeFromInput());
+            String color_str = home.taskList.get(i).getColorInput();
+            
+            if (home.taskList.get(i).getTypeInput().equals("One-day event")){    
+                for (CalendarCell cell1 : panelCells){
+                    LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                   if (date_from.equals(date_cell)){
+                        cell1.setHasTasks(true, color_str);
+                    } 
+                }
+                
+            //multiple day event
+            }else{
+                LocalDate date_to = home.convertStrDate(home.taskList.get(i).getTimeToInput());
+                for (CalendarCell cell1 : panelCells){
+                    LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    
+                   if (date_cell.isAfter(date_from.minusDays(1)) && date_cell.isBefore(date_to.plusDays(1))){
+                        cell1.setHasTasks(true, color_str);
+                   } 
+                }
+            }
+        }      
     }
     
     public JPanel getTaskPanel(){

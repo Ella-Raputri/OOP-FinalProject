@@ -292,6 +292,7 @@ public class EditTask extends javax.swing.JFrame {
             home.cloneablePanel.removeAll();
             home.createClonedPanels(home.currTasksList, home.currTasksList.size());
             home.renewTaskText();
+            home.calendarCustom2.refreshTaskDots();
         }
     }
     
@@ -511,6 +512,7 @@ public class EditTask extends javax.swing.JFrame {
                     home.cloneablePanel.removeAll();
                     home.createClonedPanels(home.currTasksList, home.currTasksList.size());
                     home.renewTaskText();
+                    home.calendarCustom2.refreshTaskDots();
 
                }catch(Exception e){
                    JOptionPane.showMessageDialog(getContentPane(), e);

@@ -376,7 +376,7 @@ public class CalendarPage extends javax.swing.JFrame {
         taskPanel.repaint();
     }
     
-    private LocalDate convertStrDate(String timeStr){
+    public LocalDate convertStrDate(String timeStr){
         String modify = timeStr;
         if (timeStr.length() != 10){
             modify = timeStr.substring(0, 8) + "0" + timeStr.charAt(8);
@@ -398,20 +398,11 @@ public class CalendarPage extends javax.swing.JFrame {
         } else {
             System.out.println("The dates are different.");
         }
-        
-        //currCell.setColorTasks(2, "Green");
-        
-        //calendarCustom2.currentPanel.setColor("Pink");
-//        currCell.colorStr = "Blue";
-//        currCell.task_amount = 0;
-       
-         // Repaint the CalendarPanel after updating the cell's color
-//        calendarCustom2.currentPanel.repaint();
-//        calendarCustom2.repaint();
     }
     
     public void queryCurrentTaskList(){
         currTasksList.clear();
+        queryTask();
         CalendarCell currCell = calendarCustom2.currentPanel.getCurrentCell();
         LocalDate date_cell = currCell.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         
@@ -735,7 +726,7 @@ public class CalendarPage extends javax.swing.JFrame {
     private javax.swing.JLabel bg;
     private javax.swing.JLabel calendarBtn;
     private javax.swing.JLabel calendarBtnTxt;
-    private App.CalendarCustom calendarCustom2;
+    public App.CalendarCustom calendarCustom2;
     private javax.swing.JLabel homeBtn;
     private javax.swing.JLabel homeBtnTxt;
     private App.ButtonCustom insertBtn;

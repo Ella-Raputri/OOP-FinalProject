@@ -69,11 +69,12 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
                         if (current_cell != cell) {
                             if (current_cell != null) {
                                 current_cell.setAsSelected(false);
+                                
                                 home.refresh();
                                 //current_cell.setAsTasks(false, color);
                             }
                             //cell.setAsTasks(true, color);
-                            current_cell = cell;
+                            current_cell = cell; 
                             home.refresh();
                         }
                         
@@ -84,6 +85,7 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
                 if (today.isToday(new CalendarToday(calendar.get(Calendar.DATE), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)))){
                     cell.setAsToday();
                     cell.setAsSelected(true);
+                    cell.repaint();
 //                    home.queryCurrentTaskList();
 //                    home.createClonedPanels(home.currTasksList, home.currTasksList.size());
                     //cell.setAsTasks(true, color);

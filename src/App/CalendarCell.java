@@ -27,9 +27,8 @@ public class CalendarCell extends JButton{
     private boolean isToday;
     private boolean isSelected;
     private HashMap<String, Color> color_map = new HashMap<>();
-    public int task_amount = 0;
     public String colorStr = "Blue";
-    private boolean hasTask;
+    private boolean hasTask = false;
     
     public CalendarCell(){
         setContentAreaFilled(false);
@@ -53,14 +52,6 @@ public class CalendarCell extends JButton{
         color_map.put("Purple", new Color(218, 157, 255));
         color_map.put("Pink", new Color(255, 125, 203));
         color_map.put("Brown", new Color(223, 170, 106));
-    }
-    
-    public void setColorTasks(int amount, String color){
-        this.task_amount = amount;
-        this.colorStr = color;
-        System.out.print(this.colorStr);
-        repaint();
-        getParent().repaint();
     }
     
     public void asTitle(){
@@ -111,7 +102,7 @@ public class CalendarCell extends JButton{
         return isSelected;
     }
     
-    public void setAsTasks(boolean bool, String color){
+    public void setHasTasks(boolean bool, String color){
         this.colorStr = color;
         hasTask = bool;
         repaint();
@@ -130,18 +121,18 @@ public class CalendarCell extends JButton{
             g2.fillRoundRect(30, 10, 48, 48, 100, 100);
         }
         super.paintComponent(g);
-//        if (hasTask && !title ){
-//            if (!colorStr.trim().isEmpty()) {
-//                g.setColor(color_map.get(colorStr));
-//                int dotSize = 10; // Size of the dot
-//                int x = getWidth() / 2 - dotSize / 2;
-//                int y = getHeight() - dotSize - 5;
-//                g.fillOval(x, y, dotSize, dotSize);
-//            }
-//            else{
-//                System.out.print(colorStr);
-//            }
-//        }        
+        if (hasTask && !title ){
+            if (!colorStr.trim().isEmpty()) {
+                g.setColor(color_map.get(colorStr));
+                int dotSize = 10; // Size of the dot
+                int x = getWidth() / 2 - dotSize / 2;
+                int y = getHeight() - dotSize - 5;
+                g.fillOval(x, y, dotSize, dotSize);
+            }
+            else{
+                System.out.print(colorStr);
+            }
+        }        
     }
     
     @Override
