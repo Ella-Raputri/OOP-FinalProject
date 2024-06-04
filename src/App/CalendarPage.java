@@ -296,7 +296,12 @@ public class CalendarPage extends javax.swing.JFrame {
     }
     
     private void insertWorkflowBtn(){
-        System.out.println("heyyy");
+        if (CalendarPage.open == 0){
+           CalendarPage.open = 1; 
+           new InsertWorkflowTask(userID, home).setVisible(true);
+        }else{
+           JOptionPane.showMessageDialog(getContentPane(), "One window is already open.");
+        } 
     }
     
     public void queryTask(){

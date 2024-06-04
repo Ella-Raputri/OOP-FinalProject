@@ -70,7 +70,6 @@ public class TextResult extends javax.swing.JFrame {
         copyBtn = new App.ButtonCustom();
         setBtn = new App.ButtonCustom();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(500, 550));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
