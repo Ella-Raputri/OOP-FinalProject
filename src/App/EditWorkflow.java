@@ -128,8 +128,13 @@ public class EditWorkflow extends javax.swing.JFrame {
         backButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                if (open == 0){
+                  setVisible(false);
+                  new AddWorkflowMenu(userID).setVisible(true);  
+                }
+                else{
+                  JOptionPane.showMessageDialog(getContentPane(), "There is one current operation window open.");
+                }                
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -325,7 +330,9 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void generateBtnActionPerformed(){
-        //
+        queryFlow();
+        new TextResult(flowList).setVisible(true);
+        EditWorkflow.open = 1;
     }
     
     private void queryFlow(){
