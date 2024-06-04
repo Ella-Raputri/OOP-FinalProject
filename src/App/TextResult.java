@@ -5,13 +5,26 @@
 package App;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -27,9 +40,9 @@ import javax.swing.ScrollPaneConstants;
  */
 public class TextResult extends javax.swing.JFrame {
     private LinkedList<Flow> flowlist = new LinkedList<>();
-    private JPanel contentPane;
     private JScrollPane scrollPane;
-    private JPanel cloneablePanel;
+    private HashMap <String, String> monthMap = new HashMap<>();
+    private LinkedList<String> dateList = new LinkedList<>();
     /**
      * Creates new form TextResult
      */
@@ -53,12 +66,9 @@ public class TextResult extends javax.swing.JFrame {
         dateField = new PlaceHolderTextField("Date", 5);
         monthComboBox = new javax.swing.JComboBox<>();
         yearField = new PlaceHolderTextField("Year",20);
-        //resultPane = new javax.swing.JPanel();
         resulttxt = new javax.swing.JLabel();
         copyBtn = new App.ButtonCustom();
         setBtn = new App.ButtonCustom();
-        
-        //resultPane.setBackground(Color.white);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -97,13 +107,10 @@ public class TextResult extends javax.swing.JFrame {
         yearField.setToolTipText("");
         getContentPane().add(yearField, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 60, 80, 32));
 
-//        resultPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-//        resultPane.setLayout(null);
 
         resulttxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); // NOI18N
         resulttxt.setText("Results");
         getContentPane().add(resulttxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 140, 100, 30));
-        //resulttxt.setBounds(170, 20, 100, 30);
 
         copyBtn.setForeground(new java.awt.Color(255, 255, 255));
         copyBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/copy.png")));
@@ -124,9 +131,6 @@ public class TextResult extends javax.swing.JFrame {
             }
         });
         getContentPane().add(copyBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 140, 34, 30));
-//        copyBtn.setBounds(280, 20, 34, 30);
-
-//        getContentPane().add(resultPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 500, 430));
 
         setBtn.setForeground(new java.awt.Color(255, 255, 255));
         setBtn.setText("Set");
@@ -149,18 +153,11 @@ public class TextResult extends javax.swing.JFrame {
         getContentPane().add(setBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 60, 60, -1));
         
         // Creating the result panel and adding labels
-        int yPos = 0;
-        int labelHeight = 30;
         resultPane = new JPanel();
         resultPane.setLayout(null);
-        for (Flow result : flowlist) {
-            JLabel label = new JLabel(result.getNameInput());
-            label.setFont(new java.awt.Font("Montserrat", 0, 18)); // Customize the font as needed
-            label.setBounds(10, yPos, 460, labelHeight);
-            resultPane.add(label);
-            yPos += labelHeight + 20;
-        }
         resultPane.setBackground(new Color(246,252,254));
+        getContentPane().add(resultPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 180, 460, 300));
+        //createLabels();
         
 //        scrollPane.getViewport().setBackground(Color.lightGray); // Sets the background color of the viewport
     //    scrollPane.setBackground(Color.gray); // Sets the background color of the scroll pane itself
@@ -170,11 +167,62 @@ public class TextResult extends javax.swing.JFrame {
         scrollPane = new JScrollPane(resultPane);
         scrollPane.setPreferredSize(new Dimension(349, 271)); // Adjust the size as needed
         scrollPane.setBackground(new Color(246,252,254));
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setViewportView(resultPane);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         getContentPane().add(scrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 180, 460, 300));
 
         
         pack();
         setLocationRelativeTo(null);
+    }
+    
+    private void createLabels(){        
+        int yPos = 0;
+        int space0;
+        int space_iter =1;
+        int labelHeight = 30;
+        
+        String currentDate = dateList.getFirst();
+        for (int i = 0; i < flowlist.size(); i++) {
+            if (i == 0 || (!dateList.get(i).equals(currentDate))){
+                currentDate = dateList.get(i);
+                //if (i != 0){
+                    space_iter = 1;
+                //}
+                //if the the date is new 
+                if (i == 0) space0 = 30;
+                else space0 = 0;
+                
+                JLabel date_label = new JLabel(dateList.get(i));
+                date_label.setFont(new java.awt.Font("Montserrat Semibold", 0, 18)); // Customize the font as needed
+                date_label.setBounds(10, yPos, 460, labelHeight);
+                resultPane.add(date_label);
+                yPos += labelHeight + 10;
+                
+                JLabel label = new JLabel(flowlist.get(i).getNameInput());
+                label.setFont(new java.awt.Font("Montserrat", 0, 18)); // Customize the font as needed
+                label.setBounds(10, yPos, 460, labelHeight);
+                resultPane.add(label);
+                yPos += labelHeight + 10;
+            }
+            else{
+                //if the date is not new
+                space_iter +=1;
+                JLabel label = new JLabel(flowlist.get(i).getNameInput());
+                label.setFont(new java.awt.Font("Montserrat", 0, 18)); // Customize the font as needed
+                label.setBounds(10, yPos, 460, labelHeight);
+                resultPane.add(label);
+                yPos += labelHeight + 10;
+            }
+            Dimension newSize = new Dimension(resultPane.getWidth(), 400+space_iter *50);
+            resultPane.setPreferredSize(newSize);
+            resultPane.revalidate(); resultPane.repaint();
+            scrollPane.revalidate(); scrollPane.repaint();
+            
+            // Scroll to show the new panel
+            scrollPane.getVerticalScrollBar().setValue(0);
+        }
     }
     
     
@@ -191,15 +239,97 @@ public class TextResult extends javax.swing.JFrame {
                 } 
             }
         });
+        
+        monthMap.put("January", "01");
+        monthMap.put("February", "02");
+        monthMap.put("March", "03");
+        monthMap.put("April", "04");
+        monthMap.put("May", "05");
+        monthMap.put("June", "06");
+        monthMap.put("July", "07");
+        monthMap.put("August", "08");
+        monthMap.put("September", "09");
+        monthMap.put("October", "10");
+        monthMap.put("November", "11");
+        monthMap.put("December", "12");
     }
     
+    
+    public boolean isValid(String dateStr, DateTimeFormatter dateFormatter) {
+        try {
+            LocalDate.parse(dateStr, dateFormatter);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return true;
+    }
     
     private void setBtnActionPerformed(){
-        //
+        String dateStr = dateField.getText();
+        String monthStr = (String) monthComboBox.getSelectedItem();
+        String yearStr = yearField.getText();
+        
+        String modify = yearStr + "-" + monthMap.get(monthStr) + "-" + dateStr ;
+        if (modify.length() != 10){
+            modify = modify.substring(0, 8) + "0" + modify.charAt(8);
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (isValid(modify, formatter)){
+            LocalDate settedDate = LocalDate.parse(modify, formatter);
+        
+            for (Flow result : flowlist){
+                //if one day event
+                if (result.getTypeInput().equals("One-day event")){
+                    LocalDate day = settedDate.plusDays(result.getDayFromInput());
+                    dateList.add(convertDatetoStr(day));
+                }
+                else{
+                    //if multiple day event
+                    LocalDate dayFrom = settedDate.plusDays(result.getDayFromInput());
+                    LocalDate dayTo = settedDate.plusDays(result.getDayToInput());
+                    String dateFix = convertDatetoStr(dayFrom) + " - " +convertDatetoStr(dayTo);
+                    dateList.add(dateFix);
+                }
+            }
+            createLabels();
+        }else{
+            JOptionPane.showMessageDialog(getContentPane(), "Date is not valid.");
+        }        
     }
     
+    //2024-08-18
+    private String convertDatetoStr(LocalDate date){
+        String curr_date = date.toString();
+        String month = getKeyByValue(monthMap, curr_date.substring(5, 7));
+        String str = curr_date.substring(8,10) + " " + month + " " +curr_date.substring(0,4);                
+        return str;
+    }
+    
+    public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+    for (Entry<T, E> entry : map.entrySet()) {
+        if (Objects.equals(value, entry.getValue())) {
+            return entry.getKey();
+        }
+    }
+    return null;
+}
+    
     private void copyBtnActionPerformed(){
-        //
+        String result = "";
+        HashSet<String> dateSet = new HashSet<>();
+        dateSet.addAll(dateList);
+        
+        for (Component comp : resultPane.getComponents()){
+            JLabel lab = (JLabel) comp;
+            if (dateSet.contains(lab.getText())){
+                result += "\n";
+            }
+            result += lab.getText() + "\n";
+        }
+        System.out.println(result);
+        StringSelection stringSelection = new StringSelection (result);
+        Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
+        clpbrd.setContents (stringSelection, null);
     }
 
     /**
