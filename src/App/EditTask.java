@@ -18,6 +18,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -261,6 +263,7 @@ public class EditTask extends javax.swing.JFrame {
     }
     
     private void deleteBtnActionPerformed(){
+        queryCurrentTask();
         String question = "Do you really want to delete " + thisTask.getNameInput() + "?";
         int a = JOptionPane.showConfirmDialog(getContentPane(), question, "SELECT", JOptionPane.YES_OPTION);
         
@@ -293,6 +296,26 @@ public class EditTask extends javax.swing.JFrame {
             home.createClonedPanels(home.currTasksList, home.currTasksList.size());
             home.renewTaskText();
             home.calendarCustom2.refreshTaskDots();
+            
+            //remove the task dot
+            if (thisTask.getTypeInput().equals("One-day event")){
+                home.calendarCustom2.currentPanel.getCurrentCell().setHasTasks(false, "");
+            }
+            else{
+                LocalDate date_to = home.convertStrDate(thisTask.getTimeToInput());
+                LocalDate date_from = home.convertStrDate(thisTask.getTimeFromInput());
+                
+                for (CalendarCell cell1 : home.calendarCustom2.currentPanel.getCells()){
+                    LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    
+                   if (date_cell.isAfter(date_from.minusDays(1)) && date_cell.isBefore(date_to.plusDays(1))){
+                        cell1.setHasTasks(false, "");
+                   } 
+                }
+            }
+            
+            home.calendarCustom2.currentPanel.revalidate();
+            home.calendarCustom2.currentPanel.repaint();
         }
     }
     
@@ -513,6 +536,9 @@ public class EditTask extends javax.swing.JFrame {
                     home.createClonedPanels(home.currTasksList, home.currTasksList.size());
                     home.renewTaskText();
                     home.calendarCustom2.refreshTaskDots();
+                    
+                    home.calendarCustom2.currentPanel.revalidate();
+                    home.calendarCustom2.currentPanel.repaint();
 
                }catch(Exception e){
                    JOptionPane.showMessageDialog(getContentPane(), e);

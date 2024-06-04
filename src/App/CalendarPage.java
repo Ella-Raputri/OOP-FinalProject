@@ -533,40 +533,6 @@ public class CalendarPage extends javax.swing.JFrame {
         taskPanel.repaint();
     }
     
-//    private void addTaskBtnActionPerformed(){
-//        CalendarPage home = (CalendarPage) SwingUtilities.getRoot(this);
-//        if (CalendarPage.open == 0){
-//           CalendarPage.open = 1; 
-//           new AddNewTask(userID, home).setVisible(true);
-//        }else{
-//           JOptionPane.showMessageDialog(getContentPane(), "One window is already open.");
-//        }               
-//    }
-    
-//    public void initAddTaskBtn(){
-//        addTaskBtn = new App.ButtonCustom();
-//        addTaskBtn.setForeground(Color.white);
-//        addTaskBtn.setText("Add task");
-//        addTaskBtn.setBorderColor(Color.white);
-//        addTaskBtn.setBorderColorNotOver(Color.white);
-//        addTaskBtn.setBorderColorOver(Color.white);
-//        addTaskBtn.setColor(new java.awt.Color(31, 139, 217));
-//        addTaskBtn.setColor2(java.awt.Color.white);
-//        addTaskBtn.setColorClick(new java.awt.Color(125, 201, 255));
-//        addTaskBtn.setColorClick2(java.awt.Color.white);
-//        addTaskBtn.setColorOver(new java.awt.Color(125, 201, 255));
-//        addTaskBtn.setColorOver2(java.awt.Color.white);
-//        addTaskBtn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); 
-//        addTaskBtn.setRadius(0);
-//        
-//        addTaskBtn.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                addTaskBtnActionPerformed();
-//            }
-//        });
-//        addTaskBtn.setBounds(1070, 580, 133, 40); 
-//        //getContentPane().add(addTaskBtn,new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 580, -1, -1));
-//    }
     
     private void initDesign(){
         homeBtnTxt = new javax.swing.JLabel();

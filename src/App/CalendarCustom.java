@@ -139,6 +139,7 @@ public class CalendarCustom extends javax.swing.JPanel {
         }      
     }
     
+    
     public JPanel getTaskPanel(){
         return taskPanel;
     }

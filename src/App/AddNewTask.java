@@ -415,6 +415,8 @@ public class AddNewTask extends javax.swing.JFrame {
                     home.createClonedPanels(home.currTasksList, home.currTasksList.size());
                     home.renewTaskText();
                     home.calendarCustom2.refreshTaskDots();
+                    home.calendarCustom2.currentPanel.revalidate();
+                    home.calendarCustom2.currentPanel.repaint();
 
                }catch(Exception e){
                    JOptionPane.showMessageDialog(getContentPane(), e);
