@@ -29,6 +29,7 @@ public class CalendarCell extends JButton{
     private HashMap<String, Color> color_map = new HashMap<>();
     public String colorStr = "Blue";
     private boolean hasTask = false;
+    private int taskAmount = 0;
     
     public CalendarCell(){
         setContentAreaFilled(false);
@@ -106,6 +107,18 @@ public class CalendarCell extends JButton{
         this.colorStr = color;
         hasTask = bool;
         repaint();
+    }
+    
+    public boolean hasATask (){
+        return this.hasTask;
+    }
+
+    public int getTaskAmount() {
+        return taskAmount;
+    }
+
+    public void setTaskAmount(int taskAmount) {
+        this.taskAmount = taskAmount;
     }
     
     @Override

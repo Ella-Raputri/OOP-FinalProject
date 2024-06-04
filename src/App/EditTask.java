@@ -299,7 +299,11 @@ public class EditTask extends javax.swing.JFrame {
             
             //remove the task dot
             if (thisTask.getTypeInput().equals("One-day event")){
-                home.calendarCustom2.currentPanel.getCurrentCell().setHasTasks(false, "");
+                CalendarCell current = home.calendarCustom2.currentPanel.getCurrentCell();
+                current.setTaskAmount(current.getTaskAmount() -1);
+                if (current.getTaskAmount() <= 0){
+                   current.setHasTasks(false, ""); 
+                }                
             }
             else{
                 LocalDate date_to = home.convertStrDate(thisTask.getTimeToInput());
@@ -309,7 +313,10 @@ public class EditTask extends javax.swing.JFrame {
                     LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     
                    if (date_cell.isAfter(date_from.minusDays(1)) && date_cell.isBefore(date_to.plusDays(1))){
-                        cell1.setHasTasks(false, "");
+                        cell1.setTaskAmount(cell1.getTaskAmount() -1);
+                        if (cell1.getTaskAmount() <= 0){
+                             cell1.setHasTasks(false, ""); 
+                        }
                    } 
                 }
             }

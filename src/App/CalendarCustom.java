@@ -119,9 +119,12 @@ public class CalendarCustom extends javax.swing.JPanel {
             
             if (home.taskList.get(i).getTypeInput().equals("One-day event")){    
                 for (CalendarCell cell1 : panelCells){
-                    LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                   LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                    if (date_from.equals(date_cell)){
-                        cell1.setHasTasks(true, color_str);
+                       if (cell1.hasATask()){
+                           cell1.setTaskAmount(cell1.getTaskAmount() +1);
+                       }
+                       cell1.setHasTasks(true, color_str);
                     } 
                 }
                 
@@ -132,6 +135,9 @@ public class CalendarCustom extends javax.swing.JPanel {
                     LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     
                    if (date_cell.isAfter(date_from.minusDays(1)) && date_cell.isBefore(date_to.plusDays(1))){
+                        if (cell1.hasATask()){
+                           cell1.setTaskAmount(cell1.getTaskAmount() +1);
+                        }
                         cell1.setHasTasks(true, color_str);
                    } 
                 }
