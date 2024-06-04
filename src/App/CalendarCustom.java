@@ -4,13 +4,16 @@
  */
 package App;
 
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -33,6 +36,7 @@ public class CalendarCustom extends javax.swing.JPanel {
         slide.show(currentPanel, PanelSlide.AnimateType.TO_RIGHT);
         showMonthYear();
         myinit();
+//        initAddTask();
     }
     
     private void myinit(){
@@ -106,6 +110,15 @@ public class CalendarCustom extends javax.swing.JPanel {
     public JPanel getTaskPanel(){
         return taskPanel;
     }
+    
+    public void addTaskBtnActionPerformed(){
+        if (CalendarPage.open == 0){
+           CalendarPage.open = 1; 
+           new AddNewTask(home.userID, home).setVisible(true);
+        }else{
+           JOptionPane.showMessageDialog(home.getContentPane(), "One window is already open.");
+        }               
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -119,6 +132,7 @@ public class CalendarCustom extends javax.swing.JPanel {
         slide = new App.PanelSlide();
         taskPanel = new javax.swing.JPanel();
         tasktxt = new javax.swing.JLabel();
+        addBtn = new App.ButtonCustom();
         jLabel1 = new javax.swing.JLabel();
         prevBtn = new javax.swing.JLabel();
         nextBtn = new javax.swing.JLabel();
@@ -147,6 +161,26 @@ public class CalendarCustom extends javax.swing.JPanel {
         taskPanel.add(tasktxt);
         tasktxt.setBounds(90, 20, 100, 39);
 
+        addBtn.setForeground(java.awt.Color.white);
+        addBtn.setText("Add task");
+        addBtn.setBorderColor(java.awt.Color.white);
+        addBtn.setBorderColorNotOver(java.awt.Color.white);
+        addBtn.setBorderColorOver(java.awt.Color.white);
+        addBtn.setColor(new java.awt.Color(31, 139, 217));
+        addBtn.setColor2(java.awt.Color.white);
+        addBtn.setColorClick(new java.awt.Color(125, 201, 255));
+        addBtn.setColorClick2(java.awt.Color.white);
+        addBtn.setColorOver(new java.awt.Color(125, 201, 255));
+        addBtn.setColorOver2(java.awt.Color.white);
+        addBtn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
+        addBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBtnActionPerformed(evt);
+            }
+        });
+        taskPanel.add(addBtn);
+        addBtn.setBounds(120, 470, 133, 40);
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/line.png"))); // NOI18N
         taskPanel.add(jLabel1);
         jLabel1.setBounds(30, 50, 232, 43);
@@ -173,8 +207,13 @@ public class CalendarCustom extends javax.swing.JPanel {
         month_year.setBounds(140, 15, 500, 35);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        addTaskBtnActionPerformed();
+    }//GEN-LAST:event_addBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private App.ButtonCustom addBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel month_year;
     private javax.swing.JLabel nextBtn;

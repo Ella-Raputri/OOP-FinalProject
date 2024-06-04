@@ -275,7 +275,7 @@ public class AddNewTask extends javax.swing.JFrame {
                 int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     setVisible(false);
-                    AddWorkflowMenu.open=0;
+                    CalendarPage.open=0;
                 } 
             }
         });
@@ -410,9 +410,9 @@ public class AddNewTask extends javax.swing.JFrame {
                     setVisible(false);
 
                     home.queryTask();
+                    home.queryCurrentTaskList();
                     home.cloneablePanel.removeAll();
-                    home.createClonedPanels(home.taskList, home.taskList.size());
-                    home.initAddTaskBtn();
+                    home.createClonedPanels(home.currTasksList, home.currTasksList.size());
                     home.renewTaskText();
 
                }catch(Exception e){
