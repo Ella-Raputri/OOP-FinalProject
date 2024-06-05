@@ -5,14 +5,28 @@
 package App;
 
 import DatabaseConnection.ConnectionProvider;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
@@ -20,6 +34,7 @@ import javax.swing.JOptionPane;
  */
 public class HomePage extends javax.swing.JFrame {
     private String userID = "u1";
+    private HashMap<String, Integer> completionRate = new HashMap<>();
     /**
      * Creates new form HomePage
      */
@@ -49,28 +64,8 @@ public class HomePage extends javax.swing.JFrame {
         }
     }
     
-    
-    private void myinit(){
-        try{
-            Connection con = ConnectionProvider.getCon();
-            String query = "SELECT username FROM user WHERE userID = ?";
-             
-            PreparedStatement pst = con.prepareStatement(query);
-            pst.setString(1, this.userID);
-            
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    String user_name = rs.getString(1);
-                    nametxt.setText(user_name);
-                } 
-            }
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        
-        
-        JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
+    private void initHover(){
+         JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
         JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
         JLabel[] aranara_labels = {aranaraBtn, aranaraBtnTxt};
         JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
@@ -253,7 +248,185 @@ public class HomePage extends javax.swing.JFrame {
                 new_window_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/open_new_window.png")));
             }
         });
+    }
+    
+    
+    private void myinit(){
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM user WHERE userID = ?";
+             
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.setString(1, this.userID);
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    String user_name = rs.getString("username");
+                    welcometxt.setText("Welcome, Nara " +user_name);
+                } 
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         
+        initHover();
+        showBarChart();
+        setAnalysisTxt();
+        setTodayTasks();
+    }
+    
+    private void queryTaskCompletions(){
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM task_completion WHERE userID = ?";
+             
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.setString(1, this.userID);
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    int amtMon = rs.getInt("Mon");
+                    int amtTue = rs.getInt("Tue");
+                    int amtWed = rs.getInt("Wed");
+                    int amtThu = rs.getInt("Thu");
+                    int amtFri = rs.getInt("Fri");
+                    int amtSat = rs.getInt("Sat");
+                    int amtSun = rs.getInt("Sun");
+                    
+                    completionRate.put("Mon", amtMon);
+                    completionRate.put("Tue", amtTue);
+                    completionRate.put("Wed", amtWed);
+                    completionRate.put("Thu", amtThu);
+                    completionRate.put("Fri", amtFri);
+                    completionRate.put("Sat", amtSat);
+                    completionRate.put("Sun", amtSun);
+                }                 
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    private void setAnalysisTxt(){
+        String day = LocalDate.now().getDayOfWeek().name();
+        String day_name = day.charAt(0) + day.substring(1,3).toLowerCase();  
+        int todayCompleted = completionRate.get(day_name);
+        
+        if (todayCompleted == 0){
+            analyze_task_txt.setText("You haven't done any task today, Nara.");
+        }else if (todayCompleted ==1){
+            analyze_task_txt.setText("You have completed " + todayCompleted + " task today, Nara.");
+        }
+        else{
+            analyze_task_txt.setText("You have completed " + todayCompleted + " tasks today, Nara.");
+        }
+    }
+    
+    private void setTodayTasks(){
+         try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM tasks WHERE userID = ? ORDER BY completed ASC";
+             
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.setString(1, this.userID);
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    String name = rs.getString("name");
+                    String type = rs.getString("type");
+                    String dateFrom = rs.getString("timeFrom");
+                    String dateTo = rs.getString("timeTo");
+                    
+                    nearest_task.setText(name);
+                    if (type.equals("One-day event")){
+                        nearest_time.setText(convertDate(dateFrom));
+                    }else{
+                        String time = convertDate(dateFrom) + " to " + convertDate(dateTo);
+                        nearest_time.setText(time);
+                    }
+                }                 
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    //2024-06-2
+    private String convertDate(String strDate){
+        String day = strDate.substring(8, strDate.length());
+        String year = strDate.substring(0,4);
+        String month = strDate.substring(5,7);
+        
+        switch (month){
+            case "01":
+                month = "Jan";
+                break;
+            case "02":
+                month = "Feb";
+                break;
+            case "03":
+                month = "Mar";
+                break;
+            case "04":
+                month = "Apr";
+                break;
+            case "05":
+                month = "May";
+                break;
+            case "06":
+                month = "Jun";
+                break;
+            case "07":
+                month = "Jul";
+                break;
+            case "08":
+                month = "Aug";
+                break;
+            case "09":
+                month = "Sep";
+                break;
+            case "10":
+                month = "Oct";
+                break;
+            case "11":
+                month = "Nov";
+                break;
+            case "12":
+                month = "Des";
+                break;
+        }
+        
+        return day + " " + month + " " + year;
+    }
+    
+    private void showBarChart(){
+        queryTaskCompletions();
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        dataset.setValue(completionRate.get("Mon"), "Amount", "Mon");
+        dataset.setValue(completionRate.get("Tue"), "Amount", "Tue");
+        dataset.setValue(completionRate.get("Wed"), "Amount", "Wed");
+        dataset.setValue(completionRate.get("Thu"), "Amount", "Thu");
+        dataset.setValue(completionRate.get("Fri"), "Amount", "Fri");
+        dataset.setValue(completionRate.get("Sat"), "Amount", "Sat");        
+        dataset.setValue(completionRate.get("Sun"), "Amount", "Sun");
+        
+        JFreeChart chart = ChartFactory.createBarChart("Task Completion","Day","Amount", 
+                dataset, PlotOrientation.VERTICAL, false,true,false);
+        
+        CategoryPlot categoryPlot = chart.getCategoryPlot();
+        //categoryPlot.setRangeGridlinePaint(Color.BLUE);
+        categoryPlot.setBackgroundPaint(Color.WHITE);
+        BarRenderer renderer = (BarRenderer) categoryPlot.getRenderer();
+        Color color = new Color(0, 141, 189);
+        renderer.setSeriesPaint(0, color);
+        
+        ChartPanel barChart = new ChartPanel(chart);
+        barChartPanel.removeAll();
+        barChartPanel.add(barChart, BorderLayout.CENTER);
+        barChartPanel.validate();
     }
 
     /**
@@ -273,7 +446,6 @@ public class HomePage extends javax.swing.JFrame {
         analyze_task_txt = new javax.swing.JLabel();
         welcometxt = new javax.swing.JLabel();
         your_daily_txt1 = new javax.swing.JLabel();
-        nametxt = new javax.swing.JLabel();
         your_daily_quote = new javax.swing.JLabel();
         quoteby_txt = new javax.swing.JLabel();
         quotetxt = new javax.swing.JLabel();
@@ -289,6 +461,7 @@ public class HomePage extends javax.swing.JFrame {
         aranaraBtnTxt = new javax.swing.JLabel();
         logoutBtn = new javax.swing.JLabel();
         logoutBtnTxt = new javax.swing.JLabel();
+        barChartPanel = new javax.swing.JPanel();
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -344,11 +517,6 @@ public class HomePage extends javax.swing.JFrame {
         your_daily_txt1.setFont(new java.awt.Font("Montserrat", 0, 24)); // NOI18N
         your_daily_txt1.setText("This is your daily tasks completion chart.");
         getContentPane().add(your_daily_txt1, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, 80, -1, -1));
-
-        nametxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 42)); // NOI18N
-        nametxt.setForeground(new java.awt.Color(0, 141, 189));
-        nametxt.setText("[name]");
-        getContentPane().add(nametxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 17, -1, -1));
 
         your_daily_quote.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); // NOI18N
         your_daily_quote.setForeground(new java.awt.Color(85, 155, 0));
@@ -413,6 +581,9 @@ public class HomePage extends javax.swing.JFrame {
         logoutBtnTxt.setText("Log out");
         getContentPane().add(logoutBtnTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 676, -1, -1));
 
+        barChartPanel.setLayout(new java.awt.BorderLayout());
+        getContentPane().add(barChartPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 150, 570, 190));
+
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/homepage.png"))); // NOI18N
         bg.setText("jLabel1");
         getContentPane().add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, -1));
@@ -469,6 +640,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JLabel aranaraBtn;
     private javax.swing.JLabel aranaraBtnTxt;
     private javax.swing.JLabel aranara_pict;
+    private javax.swing.JPanel barChartPanel;
     private javax.swing.JLabel bg;
     private javax.swing.JLabel calendarBtn;
     private javax.swing.JLabel calendarBtnTxt;
@@ -476,7 +648,6 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JLabel homeBtnTxt;
     private javax.swing.JLabel logoutBtn;
     private javax.swing.JLabel logoutBtnTxt;
-    private javax.swing.JLabel nametxt;
     private javax.swing.JLabel nearest_task;
     private javax.swing.JLabel nearest_time;
     private javax.swing.JLabel new_window_btn;
