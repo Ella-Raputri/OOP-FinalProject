@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -128,11 +129,13 @@ public class CloneablePanelTask extends JPanel{
             title.setFont(new Font("Montserrat", 0, 20));
             more.setEnabled(true);
             this.completedInput = false;
+            updateTaskCompletionDatabase(-1);
         }else{
             color_label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/checkmark.png")));
             title.setFont(getStrikethrough(new Font("Montserrat", 0, 20)));
             more.setEnabled(false);
-            this.completedInput = true;
+            this.completedInput = true;            
+            updateTaskCompletionDatabase(1);
         }
         
         revalidate();
@@ -155,6 +158,50 @@ public class CloneablePanelTask extends JPanel{
             PreparedStatement ps = con.prepareStatement(query);
             ps.setBoolean(1, this.completedInput);
             ps.setString(2, this.id);
+
+            ps.executeUpdate();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    private int getTasksCompletion(){
+        String day = LocalDate.now().getDayOfWeek().name();
+        String col_name = day.charAt(0) + day.substring(1,3).toLowerCase();
+        int result = -1;
+        
+        try{
+            Connection con = ConnectionProvider.getCon();
+
+            String query = "SELECT * FROM task_completion WHERE userID = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, home.userID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    result = rs.getInt(col_name);
+                } 
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    private void updateTaskCompletionDatabase(int a){
+        String day = LocalDate.now().getDayOfWeek().name();
+        String col_name = day.charAt(0) + day.substring(1,3).toLowerCase();        
+        int curr_completion = getTasksCompletion() + a;
+        
+        try{
+            Connection con = ConnectionProvider.getCon();
+
+            String query = "UPDATE task_completion SET " + col_name + " = ? WHERE userID = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, curr_completion);
+            ps.setString(2, home.userID);
 
             ps.executeUpdate();
 

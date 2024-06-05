@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
  * @author Asus
  */
 public class HomePage extends javax.swing.JFrame {
-    private String userID;
+    private String userID = "u1";
     /**
      * Creates new form HomePage
      */
