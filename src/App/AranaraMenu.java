@@ -4,11 +4,18 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
 
@@ -16,8 +23,10 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
  *
  * @author Asus
  */
+/*Aranara picture source: https://weibo.com/6671732232/M9lWyBnCp*/
 public class AranaraMenu extends javax.swing.JFrame {
-    private String userID;
+    private String userID ="u1";
+    private LinkedList<Integer> affections = new LinkedList<>();
     /**
      * Creates new form AranaraMenu
      */
@@ -25,7 +34,7 @@ public class AranaraMenu extends javax.swing.JFrame {
         setResizable(false);
         setTitle("Aranara Page");
         initComponents();
-        myinit();
+        initDesign();
     }
     
     public AranaraMenu (String id){
@@ -33,7 +42,7 @@ public class AranaraMenu extends javax.swing.JFrame {
         setTitle("Aranara Page");
         this.userID = id;
         initComponents();
-        myinit();
+        initDesign();
     }
     
     public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
@@ -46,19 +55,22 @@ public class AranaraMenu extends javax.swing.JFrame {
         }
     }
     
-    private void myinit(){
+    private void initDesign(){
+        AranaraMenu home = (AranaraMenu) SwingUtilities.getRoot(this);
         setLayout(new AbsoluteLayout()); // Set layout manager to AbsoluteLayout
+        
+        queryCurrentAffection();
 
-        AranaraDropShadowPanel panel_arama = new AranaraDropShadowPanel("Arama",0);
+        AranaraDropShadowPanel panel_arama = new AranaraDropShadowPanel("Arama",affections.get(0), this.userID, home);
         panel_arama.setBackground(Color.white);
         panel_arama.setLayout(null); // Ensure DropShadowPanel uses null layout for its children
         
-        AranaraDropShadowPanel panel_ararycan = new AranaraDropShadowPanel("Ararycan",0);
-        panel_ararycan.setBackground(Color.white);
+        AranaraDropShadowPanel panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1),this.userID, home);
+        //panel_ararycan.setBackground(Color.white);
         panel_ararycan.setLayout(null);
         
-        AranaraDropShadowPanel panel_arabalika = new AranaraDropShadowPanel("Arabalika",0);
-        panel_arabalika.setBackground(Color.white);
+        AranaraDropShadowPanel panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2),this.userID, home);
+        //panel_arabalika.setBackground(Color.white);
         panel_arabalika.setLayout(null);
 
         // Manually set the position and size of the DropShadowPanel
@@ -324,6 +336,29 @@ public class AranaraMenu extends javax.swing.JFrame {
             }
         });
         
+    }
+    
+    private void queryCurrentAffection(){
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM user WHERE userID = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, this.userID);
+            
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                int aff_arama = rs.getInt("aff_arama");
+                int aff_ararycan = rs.getInt("aff_ararycan");
+                int aff_arabalika = rs.getInt("aff_arabalika");     
+                
+                affections.add(aff_arama);
+                affections.add(aff_ararycan);
+                affections.add(aff_arabalika);
+            }
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        } 
     }
 
     /**

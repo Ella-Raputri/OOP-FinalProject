@@ -262,7 +262,7 @@ public class HomePage extends javax.swing.JFrame {
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     String user_name = rs.getString("username");
-                    welcometxt.setText("Welcome, Nara " +user_name);
+                    welcometxt.setText("Welcome, Nara " +user_name +"!");
                 } 
             }
 
@@ -533,7 +533,7 @@ public class HomePage extends javax.swing.JFrame {
         quotetxt.setText("[quote]");
         getContentPane().add(quotetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(909, 502, -1, -1));
 
-        aranara_pict.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arama.png"))); // NOI18N
+        aranara_pict.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arama _home.png"))); // NOI18N
         getContentPane().add(aranara_pict, new org.netbeans.lib.awtextra.AbsoluteConstraints(891, 71, -1, -1));
 
         homeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/home_active.png"))); // NOI18N

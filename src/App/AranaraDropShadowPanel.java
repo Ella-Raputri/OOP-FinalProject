@@ -22,46 +22,85 @@ public class AranaraDropShadowPanel extends JPanel {
     private String aranaraName;
     private int aranaraAffection;
     
-    public AranaraDropShadowPanel(String name, int affection) {
+    public AranaraDropShadowPanel(String name, int affection, String userID, AranaraMenu home) {
         this.aranaraName = name;
         this.aranaraAffection = affection;
         
-        setOpaque(false);
-        setLayout(null);
-        
-        //add the name of the aranara
-        JLabel name_label = new JLabel(aranaraName);
-        name_label.setBounds(35, 33, 200, 48); // Set the position and size of the label
-        name_label.setFont(new java.awt.Font("Montserrat SemiBold", 0, 32)); 
-        name_label.setForeground(new java.awt.Color(0,0,0));
-        add(name_label);
-        
-        //add affection text
-        JLabel affection_label = new JLabel ("Affection: " + aranaraAffection + "/100");
-        affection_label.setBounds(35, 100, 220, 36); // Set the position and size of the label
-        affection_label.setFont(new java.awt.Font("Montserrat", 0, 24)); 
-        affection_label.setForeground(new java.awt.Color(0,0,0));
-        add(affection_label);
-        
-        //add button
-        App.ButtonCustom visit_btn = new App.ButtonCustom();
-        visit_btn.setForeground(new java.awt.Color(255, 255, 255));
-        visit_btn.setText("Visit");
-        visit_btn.setBorderColor(new java.awt.Color(31, 139, 217));
-        visit_btn.setBorderColorNotOver(new java.awt.Color(31, 139, 217));
-        visit_btn.setBorderColorOver(new java.awt.Color(109, 207, 251));
-        visit_btn.setColor(new java.awt.Color(31, 139, 217));
-        visit_btn.setColor2(java.awt.Color.white);
-        visit_btn.setColorClick(new java.awt.Color(109, 207, 251));
-        visit_btn.setColorClick2(java.awt.Color.white);
-        visit_btn.setColorOver(new java.awt.Color(109, 207, 251));
-        visit_btn.setColorOver2(java.awt.Color.white);
-        visit_btn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); // NOI18N
-        visit_btn.setRadius(50);
-        visit_btn.setBounds(68, 189, 135, 53);
-        add(visit_btn);
-    }
+        if (name.equals("Arama") || affection > 0){
+            setOpaque(false);
+            setLayout(null);
+            setBackground(Color.white);
 
+            //add the name of the aranara
+            JLabel name_label = new JLabel(aranaraName);
+            name_label.setBounds(35, 33, 200, 48); // Set the position and size of the label
+            name_label.setFont(new java.awt.Font("Montserrat SemiBold", 0, 32)); 
+            name_label.setForeground(new java.awt.Color(0,0,0));
+            add(name_label);
+
+            //add affection text
+            JLabel affection_label = new JLabel ("Affection: " + aranaraAffection + "/100");
+            affection_label.setBounds(35, 100, 220, 36); // Set the position and size of the label
+            affection_label.setFont(new java.awt.Font("Montserrat", 0, 24)); 
+            affection_label.setForeground(new java.awt.Color(0,0,0));
+            add(affection_label);
+
+            //add button
+            App.ButtonCustom visit_btn = new App.ButtonCustom();
+            visit_btn.setForeground(new java.awt.Color(255, 255, 255));
+            visit_btn.setText("Visit");
+            visit_btn.setBorderColor(new java.awt.Color(31, 139, 217));
+            visit_btn.setBorderColorNotOver(new java.awt.Color(31, 139, 217));
+            visit_btn.setBorderColorOver(new java.awt.Color(109, 207, 251));
+            visit_btn.setColor(new java.awt.Color(31, 139, 217));
+            visit_btn.setColor2(java.awt.Color.white);
+            visit_btn.setColorClick(new java.awt.Color(109, 207, 251));
+            visit_btn.setColorClick2(java.awt.Color.white);
+            visit_btn.setColorOver(new java.awt.Color(109, 207, 251));
+            visit_btn.setColorOver2(java.awt.Color.white);
+            visit_btn.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); // NOI18N
+            visit_btn.setRadius(50);
+            visit_btn.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    visitBtnActionPerformed(userID, home);
+                }
+            });
+            visit_btn.setBounds(68, 189, 135, 53);
+            add(visit_btn); 
+        }
+        else{
+            setOpaque(false);
+            setLayout(null);
+            setBackground(new Color(234,234,234));
+            
+            //set the requirements for each aranara
+            int requirement =0;
+            if (name.equals("Ararycan")){
+                requirement = 100;
+            }else if (name.equals("Arabalika")){
+                requirement = 200;
+            }
+            //add the lock icon
+            JLabel lock_label = new JLabel();
+            lock_label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/locked.png")));
+            lock_label.setBounds(105, 68, 66, 88); // Set the position and size of the label\
+            add(lock_label);
+
+            //add the explanation text
+            WrappedLabel explanation = new WrappedLabel(250);
+            explanation.setText("Reach a total affection of "+ requirement + " to unlock");
+            explanation.setBounds(13, 180, 257, 60); // Set the position and size of the label
+            explanation.setFont(new java.awt.Font("Montserrat Medium", 0, 20)); 
+            explanation.setForeground(new java.awt.Color(155, 154, 154));
+            add(explanation);
+        }      
+    }
+    
+    private void visitBtnActionPerformed(String uid, AranaraMenu home){
+        home.setVisible(false);
+        new EditAranara(aranaraName, uid).setVisible(true);
+    }
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
