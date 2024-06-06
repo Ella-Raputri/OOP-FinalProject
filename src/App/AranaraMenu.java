@@ -65,12 +65,22 @@ public class AranaraMenu extends javax.swing.JFrame {
         panel_arama.setBackground(Color.white);
         panel_arama.setLayout(null); // Ensure DropShadowPanel uses null layout for its children
         
-        AranaraDropShadowPanel panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1),this.userID, home);
-        //panel_ararycan.setBackground(Color.white);
+        //panel ararycan
+        AranaraDropShadowPanel panel_ararycan;
+        if (affections.get(0) == 100){
+           panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1)+1,this.userID, home); 
+        }else{
+           panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1),this.userID, home); 
+        }
         panel_ararycan.setLayout(null);
         
-        AranaraDropShadowPanel panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2),this.userID, home);
-        //panel_arabalika.setBackground(Color.white);
+        //panel arabalika
+        AranaraDropShadowPanel panel_arabalika;
+        if (affections.get(0) == 100 && affections.get(1) == 100){
+           panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2)+1,this.userID, home);
+        }else{
+           panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2),this.userID, home);
+        }
         panel_arabalika.setLayout(null);
 
         // Manually set the position and size of the DropShadowPanel

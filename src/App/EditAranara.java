@@ -4,8 +4,13 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -13,7 +18,8 @@ import java.awt.event.MouseEvent;
  */
 public class EditAranara extends javax.swing.JFrame {
     private String userID = "u1";
-    private String aranaraName;
+    private String aranaraName = "Ararycan";
+    private int affection;
     /**
      * Creates new form EditAranara
      */
@@ -22,6 +28,7 @@ public class EditAranara extends javax.swing.JFrame {
         setTitle("Aranara Activity Page");
         initComponents();
         initHover();
+        initBasedOnAranara();
     }
     
     public EditAranara(String aranaraName, String uID) {
@@ -31,8 +38,8 @@ public class EditAranara extends javax.swing.JFrame {
         setTitle("Aranara Activity Page");
         initComponents();
         initHover();
-    }   
-    
+        initBasedOnAranara();
+    }       
     
     private void initHover(){
         backBtn.addMouseListener(new MouseAdapter() {
@@ -54,7 +61,7 @@ public class EditAranara extends javax.swing.JFrame {
         patBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //
+                patBtnActionPerformed();
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -81,6 +88,64 @@ public class EditAranara extends javax.swing.JFrame {
             }
         });
     }
+    
+    private void patBtnActionPerformed(){
+        affection += 1;
+        String col = "aff_" + aranaraName.toLowerCase();
+        try{
+            Connection con = ConnectionProvider.getCon();
+
+            PreparedStatement ps = con.prepareStatement("UPDATE user SET "+ col +" = ? WHERE userID = ?");
+            ps.setInt(1, affection);
+            ps.setString(2, this.userID);
+            ps.executeUpdate();
+            //success message
+
+            //refresh progress bar
+            affProgressBar.setValue(affection);
+            affectiontxt.setText(affection + "/100");
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+    }
+    
+    private void initBasedOnAranara(){
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM user WHERE userID = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, this.userID);
+            
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                if (aranaraName.equals("Arama")){
+                    int aff = rs.getInt("aff_arama"); 
+                    affection = aff;
+                    affectiontxt.setText(aff + "/100");
+                    affProgressBar.setValue(aff);
+                    aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arama.png")));
+                }
+                else if (aranaraName.equals("Ararycan")){
+                   int aff = rs.getInt("aff_ararycan"); 
+                   affection = aff;
+                   affectiontxt.setText(aff + "/100");                   
+                   affProgressBar.setValue(aff);
+                   aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/ararycan.png")));
+                }
+                else if (aranaraName.equals("Arabalika")){
+                   int aff = rs.getInt("aff_arabalika");
+                   affection = aff;
+                   affectiontxt.setText(aff + "/100");                   
+                   affProgressBar.setValue(aff);
+                   aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arabalika.png")));
+                }
+            }
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        } 
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -98,7 +163,7 @@ public class EditAranara extends javax.swing.JFrame {
         affectiontxt = new javax.swing.JLabel();
         pattxt = new javax.swing.JLabel();
         setDefaulttxt = new javax.swing.JLabel();
-        affectiontxt1 = new javax.swing.JLabel();
+        affectionLevel = new javax.swing.JLabel();
         affProgressBar = new javax.swing.JProgressBar();
         bg = new javax.swing.JLabel();
 
@@ -120,8 +185,8 @@ public class EditAranara extends javax.swing.JFrame {
         getContentPane().add(setDefaultBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(967, 567, -1, -1));
 
         affectiontxt.setFont(new java.awt.Font("Montserrat", 0, 16)); // NOI18N
-        affectiontxt.setText("Affection Level");
-        getContentPane().add(affectiontxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 60, -1, -1));
+        affectiontxt.setText("xxx/100");
+        getContentPane().add(affectiontxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 60, -1, -1));
 
         pattxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
         pattxt.setText("Pat");
@@ -131,9 +196,9 @@ public class EditAranara extends javax.swing.JFrame {
         setDefaulttxt.setText("Set As Default");
         getContentPane().add(setDefaulttxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(944, 670, -1, -1));
 
-        affectiontxt1.setFont(new java.awt.Font("Mochiy Pop One", 0, 20)); // NOI18N
-        affectiontxt1.setText("Affection Level");
-        getContentPane().add(affectiontxt1, new org.netbeans.lib.awtextra.AbsoluteConstraints(892, 18, -1, -1));
+        affectionLevel.setFont(new java.awt.Font("Mochiy Pop One", 0, 20)); // NOI18N
+        affectionLevel.setText("Affection Level");
+        getContentPane().add(affectionLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(892, 18, -1, -1));
 
         affProgressBar.setForeground(new java.awt.Color(255, 152, 170));
         affProgressBar.setToolTipText("");
@@ -185,8 +250,8 @@ public class EditAranara extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar affProgressBar;
+    private javax.swing.JLabel affectionLevel;
     private javax.swing.JLabel affectiontxt;
-    private javax.swing.JLabel affectiontxt1;
     private javax.swing.JLabel aranara;
     private javax.swing.JLabel backBtn;
     private javax.swing.JLabel bg;
