@@ -7,25 +7,29 @@ package App;
 import DatabaseConnection.ConnectionProvider;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.WeekFields;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
+import java.util.Locale;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
@@ -65,7 +69,7 @@ public class HomePage extends javax.swing.JFrame {
     }
     
     private void initHover(){
-         JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
+        JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
         JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
         JLabel[] aranara_labels = {aranaraBtn, aranaraBtnTxt};
         JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
@@ -263,9 +267,12 @@ public class HomePage extends javax.swing.JFrame {
                 if (rs.next()) {
                     String user_name = rs.getString("username");
                     welcometxt.setText("Welcome, Nara " +user_name +"!");
+                    
+                    String default_aranara = rs.getString("default_aranara");
+                    String path = "/App/img/"+ default_aranara + "_home.png";                    
+                    aranara_pict.setIcon(new javax.swing.ImageIcon(getClass().getResource(path)));
                 } 
             }
-
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -276,7 +283,69 @@ public class HomePage extends javax.swing.JFrame {
         setTodayTasks();
     }
     
+    private boolean isNewWeek(LocalDate referenceDate, LocalDate currentDate) {
+        // Get the week fields for the default locale
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+
+        // Get the week number of the reference date and current date
+        int referenceWeek = referenceDate.get(weekFields.weekOfWeekBasedYear());
+        int currentWeek = currentDate.get(weekFields.weekOfWeekBasedYear());
+
+        // Get the year of the reference date and current date
+        int referenceYear = referenceDate.get(weekFields.weekBasedYear());
+        int currentYear = currentDate.get(weekFields.weekBasedYear());
+
+        // Check if the year and week number are different
+        return currentYear > referenceYear || (currentYear == referenceYear && currentWeek > referenceWeek);
+    }
+    
+    public LocalDate convertStrDate(String timeStr){
+        String modify = timeStr;
+        if (timeStr.length() != 10){
+            modify = timeStr.substring(0, 8) + "0" + timeStr.charAt(8);
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(modify, formatter);
+        return date;
+    }
+    
+    private void resetTaskCompletions(boolean isReset, LocalDate todayDate){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String todayStr = todayDate.format(formatter);
+        
+        try{
+            Connection con = ConnectionProvider.getCon();
+            
+            if (isReset){
+                String query = "UPDATE user SET Mon = ?, Tue = ?, Wed = ?, Thu = ?, Fri = ?. Sat = ?, Sun = ?, last_online = ? WHERE userID = ?";
+ 
+                PreparedStatement ps = con.prepareStatement(query);
+                ps.setInt(1, 0);
+                ps.setInt(2, 0);
+                ps.setInt(3, 0);
+                ps.setInt(4, 0);
+                ps.setInt(5, 0);
+                ps.setInt(6, 0);
+                ps.setInt(7, 0);
+                ps.setString(8, todayStr);
+                ps.setString(9, userID);
+                ps.executeUpdate();
+                
+            }else{
+                String query = "UPDATE user SET last_online = ? WHERE userID = ?";
+                PreparedStatement ps = con.prepareStatement(query);
+                ps.setString(1, todayStr);
+                ps.setString(2, userID);
+            }
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+    }
+    
+    
     private void queryTaskCompletions(){
+        
         try{
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM task_completion WHERE userID = ?";
@@ -286,6 +355,18 @@ public class HomePage extends javax.swing.JFrame {
             
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
+                    //reset the graph and databaseif it is the new week
+                    String last = rs.getString("last_login");
+                    LocalDate today = LocalDate.now();
+                    LocalDate last_login = convertStrDate(last);
+
+                    if (isNewWeek(last_login, today)){
+                        resetTaskCompletions(true, today);
+                    }else{
+                        resetTaskCompletions(false, today);
+                    }
+                    
+                    //get the amount of tasks 
                     int amtMon = rs.getInt("Mon");
                     int amtTue = rs.getInt("Tue");
                     int amtWed = rs.getInt("Wed");
@@ -417,13 +498,26 @@ public class HomePage extends javax.swing.JFrame {
                 dataset, PlotOrientation.VERTICAL, false,true,false);
         
         CategoryPlot categoryPlot = chart.getCategoryPlot();
-        //categoryPlot.setRangeGridlinePaint(Color.BLUE);
+        categoryPlot.setRangeGridlinePaint(Color.BLUE);
         categoryPlot.setBackgroundPaint(Color.WHITE);
         BarRenderer renderer = (BarRenderer) categoryPlot.getRenderer();
-        Color color = new Color(0, 141, 189);
+        Color color = new Color(31, 139, 217);
         renderer.setSeriesPaint(0, color);
+        renderer.setBarPainter(new StandardBarPainter()); // Disable gradient effect
+        renderer.setMaximumBarWidth(0.08);
+        
+        for(int i=1; i<= completionRate.size(); i++){ 
+            for(String key: completionRate.keySet()){
+                if (completionRate.get(key) == 0){
+                    NumberAxis rangeAxis = (NumberAxis) categoryPlot.getRangeAxis();
+                    rangeAxis.setTickUnit(new NumberTickUnit(1));
+                    rangeAxis.setRange(0.0, 5.0);
+                }
+            }            
+        }
         
         ChartPanel barChart = new ChartPanel(chart);
+        barChart.setPreferredSize(new Dimension(1000, 400));
         barChartPanel.removeAll();
         barChartPanel.add(barChart, BorderLayout.CENTER);
         barChartPanel.validate();
@@ -491,22 +585,20 @@ public class HomePage extends javax.swing.JFrame {
         new_window_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/open_new_window.png"))); // NOI18N
         getContentPane().add(new_window_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1162, 357, -1, -1));
 
-        upcoming_tasks.setFont(new java.awt.Font("Montserrat SemiBold", 0, 24)); // NOI18N
+        upcoming_tasks.setFont(new java.awt.Font("Montserrat SemiBold", 0, 28)); // NOI18N
         upcoming_tasks.setText("Upcoming Tasks");
         getContentPane().add(upcoming_tasks, new org.netbeans.lib.awtextra.AbsoluteConstraints(225, 459, -1, -1));
 
         nearest_time.setFont(new java.awt.Font("Montserrat", 0, 20)); // NOI18N
         nearest_time.setForeground(new java.awt.Color(155, 154, 154));
-        nearest_time.setText("[task time]");
         getContentPane().add(nearest_time, new org.netbeans.lib.awtextra.AbsoluteConstraints(225, 550, -1, -1));
 
-        nearest_task.setFont(new java.awt.Font("Montserrat", 0, 28)); // NOI18N
-        nearest_task.setText("[task name]");
+        nearest_task.setFont(new java.awt.Font("Montserrat", 0, 24)); // NOI18N
+        nearest_task.setText("There is no upcoming tasks.");
         nearest_task.setToolTipText("");
         getContentPane().add(nearest_task, new org.netbeans.lib.awtextra.AbsoluteConstraints(225, 508, -1, -1));
 
         analyze_task_txt.setFont(new java.awt.Font("Montserrat", 0, 24)); // NOI18N
-        analyze_task_txt.setText("[analysis result]");
         getContentPane().add(analyze_task_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(201, 369, 590, -1));
 
         welcometxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 42)); // NOI18N
@@ -533,7 +625,7 @@ public class HomePage extends javax.swing.JFrame {
         quotetxt.setText("[quote]");
         getContentPane().add(quotetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(909, 502, -1, -1));
 
-        aranara_pict.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arama _home.png"))); // NOI18N
+        aranara_pict.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arama_home.png"))); // NOI18N
         getContentPane().add(aranara_pict, new org.netbeans.lib.awtextra.AbsoluteConstraints(891, 71, -1, -1));
 
         homeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/home_active.png"))); // NOI18N

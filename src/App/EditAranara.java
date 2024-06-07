@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,6 +21,8 @@ public class EditAranara extends javax.swing.JFrame {
     private String userID = "u1";
     private String aranaraName = "Ararycan";
     private int affection;
+    private int patAmount;
+    private String patDay;
     /**
      * Creates new form EditAranara
      */
@@ -76,7 +79,7 @@ public class EditAranara extends javax.swing.JFrame {
         setDefaultBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //
+                setDefaultBtnActionPerformed();
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -89,21 +92,85 @@ public class EditAranara extends javax.swing.JFrame {
         });
     }
     
-    private void patBtnActionPerformed(){
-        affection += 1;
-        String col = "aff_" + aranaraName.toLowerCase();
+    private void patBtnActionPerformed(){         
+        if (affection < 100){
+            if (checkValidPat()){
+                affection += 1;
+                String col = "aff_" + aranaraName.toLowerCase();
+                try{
+                    Connection con = ConnectionProvider.getCon();
+
+                    PreparedStatement ps = con.prepareStatement("UPDATE user SET "+ col +" = ? WHERE userID = ?");
+                    ps.setInt(1, affection);
+                    ps.setString(2, this.userID);
+                    ps.executeUpdate();
+                    //success message
+
+                    //refresh progress bar
+                    affProgressBar.setValue(affection);
+                    affectiontxt.setText(affection + "/100");
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                } 
+            }
+        }else{
+            JOptionPane.showMessageDialog(getContentPane(), "My affection is already full, Nara!");
+        }
+    }
+    
+    private boolean checkValidPat(){
+        String day = LocalDate.now().getDayOfWeek().name();
+        String day_name = day.charAt(0) + day.substring(1,3).toLowerCase();
+        //3 kasus, kasus 1 (hari kemarin), kasus 2 hari ini blm full, kasus 3 hari ini udah full
+        
+        if (!day_name.equals(patDay)){
+            patDay = day_name;
+            patAmount = 0;
+            updatePatDatabase();
+            return true;
+        }
+        else{
+            if (patAmount < 2){
+               patAmount += 1;
+               updatePatDatabase();
+               return true;
+            }else{
+                JOptionPane.showMessageDialog(getContentPane(), "Today you have patted me enough, Nara!");
+                return false;
+            }
+        }
+    }
+    
+    private void updatePatDatabase(){ 
         try{
             Connection con = ConnectionProvider.getCon();
 
-            PreparedStatement ps = con.prepareStatement("UPDATE user SET "+ col +" = ? WHERE userID = ?");
-            ps.setInt(1, affection);
-            ps.setString(2, this.userID);
+            PreparedStatement ps = con.prepareStatement("UPDATE user SET pat_day = ?, pat_amount = ? WHERE userID = ?");
+            ps.setString(1, patDay);
+            ps.setInt(2, patAmount);
+            ps.setString(3, userID);
             ps.executeUpdate();
             //success message
 
-            //refresh progress bar
-            affProgressBar.setValue(affection);
-            affectiontxt.setText(affection + "/100");
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+    }
+    
+    
+    private void setDefaultBtnActionPerformed(){
+        String default_aranara = aranaraName.toLowerCase();
+        try{
+            Connection con = ConnectionProvider.getCon();
+
+            PreparedStatement ps = con.prepareStatement("UPDATE user SET default_aranara = ? WHERE userID = ?");
+            ps.setString(1, default_aranara);
+            ps.setString(2, this.userID);
+            ps.executeUpdate();
+            
+            //success message
+            JOptionPane.showMessageDialog(getContentPane(), "Default aranara updated successfully.");
 
         }catch(Exception e){
             JOptionPane.showMessageDialog(getContentPane(), e);
@@ -119,27 +186,16 @@ public class EditAranara extends javax.swing.JFrame {
             
             ResultSet rs = pstmt.executeQuery();
             if(rs.next()){
-                if (aranaraName.equals("Arama")){
-                    int aff = rs.getInt("aff_arama"); 
-                    affection = aff;
-                    affectiontxt.setText(aff + "/100");
-                    affProgressBar.setValue(aff);
-                    aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arama.png")));
-                }
-                else if (aranaraName.equals("Ararycan")){
-                   int aff = rs.getInt("aff_ararycan"); 
-                   affection = aff;
-                   affectiontxt.setText(aff + "/100");                   
-                   affProgressBar.setValue(aff);
-                   aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/ararycan.png")));
-                }
-                else if (aranaraName.equals("Arabalika")){
-                   int aff = rs.getInt("aff_arabalika");
-                   affection = aff;
-                   affectiontxt.setText(aff + "/100");                   
-                   affProgressBar.setValue(aff);
-                   aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arabalika.png")));
-                }
+                String name = aranaraName.toLowerCase();
+                int aff = rs.getInt("aff_"+name);
+                affection = aff;
+                affectiontxt.setText(aff + "/100");
+                affProgressBar.setValue(aff);
+                aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/"+ name +".png")));
+                
+                //get pat amount and day
+                patDay = rs.getString("pat_day");
+                patAmount = rs.getInt("pat_amount");
             }
         }
         catch(Exception e){

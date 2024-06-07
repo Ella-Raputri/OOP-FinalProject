@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
@@ -399,6 +400,8 @@ public class Signup extends javax.swing.JFrame {
         }
         
         if(pass_str.equals(confirm_str) && validatePassword(pass_str)){
+            String day = LocalDate.now().getDayOfWeek().name();
+            String day_name = day.charAt(0) + day.substring(1,3).toLowerCase(); 
             try{
                 //set ID first
                 Connection con = ConnectionProvider.getCon();
@@ -416,7 +419,7 @@ public class Signup extends javax.swing.JFrame {
                 }
 
                 //insert into database
-                String sql = "insert into user values(?,?,?,?,?,?,?)";
+                String sql = "INSERT INTO user VALUES(?,?,?,?,?,?,?,?,?)";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setString(1, idStr);
                 ps.setString(2, username_str);
@@ -425,18 +428,45 @@ public class Signup extends javax.swing.JFrame {
                 ps.setInt(5, 0);
                 ps.setInt(6, 0);
                 ps.setInt(7, 0);
+                ps.setString(8, day_name);
+                ps.setInt(9, 0);
 
                 ps.executeUpdate();
+                
+                updateTaskCompletions(idStr);
+                
                 setVisible(false);
                 new HomePage(idStr).setVisible(true);
 
             }catch(Exception e){
-                JOptionPane.showMessageDialog(getContentPane(), e);
+                e.printStackTrace();
             }
-        }
-                
+        }                
     }//GEN-LAST:event_submitBtnActionPerformed
 
+    private void updateTaskCompletions(String userID){
+        
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "INSERT INTO task_completion VALUES(?,?,?,?,?,?,?,?)";
+             
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.setString(1, userID);
+            pst.setInt(2, 0);
+            pst.setInt(3, 0);
+            pst.setInt(4, 0);
+            pst.setInt(5, 0);
+            pst.setInt(6, 0);
+            pst.setInt(7, 0);
+            pst.setInt(8, 0);
+            
+            pst.executeUpdate();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
     private void username_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_username_fieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_username_fieldActionPerformed
