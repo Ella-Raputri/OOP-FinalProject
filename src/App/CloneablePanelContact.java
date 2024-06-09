@@ -18,6 +18,7 @@ import java.awt.font.TextAttribute;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,9 +40,10 @@ public class CloneablePanelContact extends JPanel{
     private String nameInput;
     private String phoneInput;
     private boolean isClicked = false;   
+    private ContactsList home;
     
 
-    public CloneablePanelContact(int borderRadius, Color bgColor, int borderWidth, String id, 
+    public CloneablePanelContact(ContactsList home, int borderRadius, Color bgColor, int borderWidth, String id, 
             String nameInput, String phoneInput) {
         setLayout(null);
         this.borderRadius = borderRadius;
@@ -50,6 +52,7 @@ public class CloneablePanelContact extends JPanel{
         this.id = id;
         this.nameInput = nameInput;
         this.phoneInput = phoneInput;
+        this.home = home;
         setOpaque(false);
         
         
@@ -81,20 +84,38 @@ public class CloneablePanelContact extends JPanel{
             }
             @Override
             public void mouseEntered(MouseEvent e) {
-                deleteBtn.setForeground(new Color(125, 201, 255));
+                deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_contact_hover.png")));
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                deleteBtn.setForeground(Color.white);
+                deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_contact.png")));
             }
         });
         add(deleteBtn);
     }
     
     private void deleteContact(){
-        
+      String question = "Do you really want to delete " + nameInput + "?";
+      int a = JOptionPane.showConfirmDialog(home.getContentPane(), question, "SELECT", JOptionPane.YES_OPTION);
+
+        if (a == 0){
+            //delete from database
+            try{
+                Connection conn = ConnectionProvider.getCon();
+                String query = "DELETE FROM contact WHERE id = ?";
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setString(1, id);
+
+                ps.executeUpdate();
+                String message = "Contact deleted successfully.";
+                JOptionPane.showMessageDialog(home.getContentPane(), message); 
+                home.reloadSelf();
+
+            }catch(SQLException se){
+                JOptionPane.showMessageDialog(home.getContentPane(), se);
+            }
+        }
     }
-   
     
     public String getNameInput() {
         return nameInput;

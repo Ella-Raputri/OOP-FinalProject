@@ -14,13 +14,16 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.LinkedList;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -31,6 +34,8 @@ public class ContactsList extends javax.swing.JFrame {
     private String userID = "u1";
     private LinkedList<Contact> contactList= new LinkedList<>();
     private CloneablePanelContact currentPanel = null;
+    private String IDtemp;
+    private ContactsList home = (ContactsList) SwingUtilities.getRoot(this);
     /**
      * Creates new form ContactsList
      */
@@ -71,22 +76,12 @@ public class ContactsList extends javax.swing.JFrame {
         queryContact();
          contentPane = new JPanel();
          contentPane.setBackground(Color.white);
-//         {
-//            @Override
-//            protected void paintComponent(Graphics g) {
-//                super.paintComponent(g);
-//                // Load the background image
-//                ImageIcon bgImage = new ImageIcon("src/App/img/default_page.png");
-//                // Draw the background image
-//                g.drawImage(bgImage.getImage(), 0, 0, getWidth(), getHeight(), null);
-//            }
-//        };
         contentPane.setLayout(null); // Use absolute layout
         setContentPane(contentPane);
         
         // Create the scroll pane
         scrollPane = new JScrollPane();
-        scrollPane.setBounds(20, 174, 336, 188); // Set bounds for the scroll pane
+        scrollPane.setBounds(30, 174, 336, 230); // Set bounds for the scroll pane
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
@@ -97,7 +92,7 @@ public class ContactsList extends javax.swing.JFrame {
         cloneablePanel.setLayout(null); // Use absolute layout
         cloneablePanel.setPreferredSize(new Dimension(400, 200)); // Set initial size
         cloneablePanel.setBounds(180, 200, 1200, 1500); // Set bounds for the initial panel
-        cloneablePanel.setBackground(Color.red);
+        cloneablePanel.setBackground(Color.white);
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
         createClonedPanels(contactList, contactList.size());
@@ -116,7 +111,7 @@ public class ContactsList extends javax.swing.JFrame {
             
             // Create a new cloned panel
             // Cloneable Panel
-            CloneablePanelContact clonedPanel = new CloneablePanelContact(20, Color.white, 2 ,id, name, phone);
+            CloneablePanelContact clonedPanel = new CloneablePanelContact(home, 20, Color.white, 2 ,id, name, phone);
             // Set your custom width and height for the cloned panel
             int panelWidth = 255;
             int panelHeight = 60;
@@ -124,7 +119,7 @@ public class ContactsList extends javax.swing.JFrame {
 
             // Calculate the x and y positions based on row and column indices
             int x = 30;
-            int y = 10 + i * (panelHeight + 50);
+            int y = 10 + i * (panelHeight + 20);
 
             // Set the bounds for the cloned panel with your custom size
             clonedPanel.setBounds(x, y, panelWidth, panelHeight);
@@ -137,8 +132,8 @@ public class ContactsList extends javax.swing.JFrame {
                        currentPanel.setIsClicked(false);
                        currentPanel = null;
                        clonedPanel.repaint();
-//                       clearAllFields();
-//                       deactivateDeleteBtn();
+                       nameField.setText("");
+                       phoneField.setText("");
                     }
                     else{
                         if (currentPanel != null ) {
@@ -148,11 +143,12 @@ public class ContactsList extends javax.swing.JFrame {
                         clonedPanel.setIsClicked(true);
                         currentPanel = clonedPanel;
                         clonedPanel.repaint();
-//                        handleEditPanel();
+                        nameField.requestFocus();
+                        nameField.setText(currentPanel.getNameInput());
+                        phoneField.setText(currentPanel.getPhoneInput());
                     }   
                 }
             });
-            
             // Add the cloned panel to the initial panel
             cloneablePanel.add(clonedPanel);
             
@@ -240,7 +236,7 @@ public class ContactsList extends javax.swing.JFrame {
         setBtn.setRadius(5);
         setBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // setBtnActionPerformed(evt);
+                setBtnActionPerformed();
             }
         });
         getContentPane().add(setBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(301, 42, 60, 24));     
@@ -250,6 +246,151 @@ public class ContactsList extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
+    private void getLastID(){
+        LinkedList<String> allIdList = new LinkedList<>();
+        try{
+            Connection con = ConnectionProvider.getCon();
+            Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = st.executeQuery("SELECT id FROM contact");
+            while(rs.next()){
+                String text = rs.getString("id");
+                allIdList.add(text);
+            }
+            
+            if(allIdList.isEmpty()){
+                IDtemp = "c1";
+            }
+            else{
+                String lastId = allIdList.getLast();
+                String temp = "";
+                for(int i=1; i<lastId.length(); i++){
+                    temp = temp + lastId.charAt(i);
+                }
+                int idnow = Integer.parseInt(temp);
+                idnow++;
+                IDtemp = "c" + String.valueOf(idnow);
+            }
+            
+        } catch(Exception e){
+            JFrame jf = new JFrame();
+            jf.setAlwaysOnTop(true);
+            JOptionPane.showMessageDialog(jf, e);
+        }
+    }
+    
+    private boolean isPhoneInteger(String test){
+        try{
+            for (int i = 0; i < test.length(); i++){
+                String s = test.charAt(i) + "";
+                int a = Integer.parseInt(s);
+            }            
+        }
+        catch(NumberFormatException e){
+            return false;
+        }
+        return true;
+    }
+    
+    private void handleAdd(){
+        String nameStr = nameField.getText();
+        String phoneStr = phoneField.getText();
+        
+        if (nameStr.equals("New Name") || nameStr.equals("")){
+            JOptionPane.showMessageDialog(getContentPane(), "Name is still empty.");
+        }
+        else if (phoneStr.equals("Phone Number") || nameStr.equals("")){
+            JOptionPane.showMessageDialog(getContentPane(), "Phone number is still empty.");
+        }
+        else if (!isPhoneInteger(phoneStr)){
+            JOptionPane.showMessageDialog(getContentPane(), "Phone number is not valid.");           
+        }
+        else{
+            getLastID();
+            Contact new_contact = new Contact(IDtemp, nameStr, phoneStr);
+            contactList.add(new_contact);
+            
+            try{
+                Connection con = ConnectionProvider.getCon();
+
+                PreparedStatement ps = con.prepareStatement("INSERT INTO contact VALUES(?,?,?,?)");
+                ps.setString(1, IDtemp);
+                ps.setString(2, userID);
+                ps.setString(3, nameStr);
+                ps.setString(4, phoneStr);
+
+                ps.executeUpdate();
+                //success message
+                String message = "Contact added successfully.";              
+                JOptionPane.showMessageDialog(getContentPane(), message);
+
+                //clear all the field
+                nameField.setText("");
+                phoneField.setText("");
+                
+                reloadSelf();
+
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(getContentPane(), e);
+            }
+        }        
+    }
+    
+    private void handleEdit(){
+        String nameStr = nameField.getText();
+        String phoneStr = phoneField.getText();
+        
+        if (nameStr.equals("New Name") || nameStr.equals("")){
+            JOptionPane.showMessageDialog(getContentPane(), "Name is still empty.");
+        }
+        else if (phoneStr.equals("Phone Number") || nameStr.equals("")){
+            JOptionPane.showMessageDialog(getContentPane(), "Phone number is still empty.");
+        }
+        else if (!isPhoneInteger(phoneStr)){
+            JOptionPane.showMessageDialog(getContentPane(), "Phone number is not valid.");           
+        }
+        else{
+            IDtemp = currentPanel.getId();
+            
+            try{
+                Connection con = ConnectionProvider.getCon();
+                    
+                String query = "UPDATE contact SET name = ?, phone = ? WHERE id = ?";
+                PreparedStatement ps = con.prepareStatement(query);
+                ps.setString(1, nameStr);
+                ps.setString(2, phoneStr);
+                ps.setString(3, IDtemp);
+
+                ps.executeUpdate();
+                //success message
+                String message = "Contact edited successfully.";              
+                JOptionPane.showMessageDialog(getContentPane(), message);
+
+                //clear all the field
+                nameField.setText("");
+                phoneField.setText("");
+
+                //refresh the flow view on the right
+                reloadSelf();
+
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(getContentPane(), e);
+            }
+        }
+    }
+    
+    private void setBtnActionPerformed(){
+        if (currentPanel == null){
+            handleAdd();
+        }else{
+            handleEdit();
+        }        
+    }
+    
+    public void reloadSelf(){
+        queryContact();
+        cloneablePanel.removeAll();
+        createClonedPanels(contactList, contactList.size());
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
