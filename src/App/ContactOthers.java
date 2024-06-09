@@ -4,10 +4,23 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.LinkedList;
 import javax.swing.JOptionPane;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -15,8 +28,8 @@ import javax.swing.JOptionPane;
  */
 public class ContactOthers extends javax.swing.JFrame {
     private String userID = "u1";
-    private int nameCount;
-    private int msgCount;
+    private LinkedList<Contact> contactList = new LinkedList<>();
+    private LinkedList<Message> msgList = new LinkedList<>();
     /**
      * Creates new form ContactOthers
      */
@@ -75,7 +88,7 @@ public class ContactOthers extends javax.swing.JFrame {
         phoneTxt = new javax.swing.JLabel();
         editContact = new javax.swing.JLabel();
         nameBox = new javax.swing.JComboBox();
-        phoneField = new RoundJTextField(30, "");
+        phoneField = new PlaceHolderTextField("Phone", 0);
         editMessage = new javax.swing.JLabel();
         messageTxt = new javax.swing.JLabel();
         messageBox = new javax.swing.JComboBox();
@@ -107,24 +120,7 @@ public class ContactOthers extends javax.swing.JFrame {
         messageTxt.setText("Message");
         getContentPane().add(messageTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 173, -1, -1));
         
-        phoneField.setBackground(new java.awt.Color(234, 234, 234));
-        phoneField.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
-        phoneField.setForeground(new java.awt.Color(155, 154, 154));
-        getContentPane().add(phoneField, new org.netbeans.lib.awtextra.AbsoluteConstraints(93, 104, 257, 32));
-        
-        messageBox.setBackground(new java.awt.Color(234, 234, 234));
-        messageBox.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
-        messageBox.setForeground(new java.awt.Color(155, 154, 154));
-        messageBox.setMaximumRowCount(msgCount);
-        messageBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember" }));
-        getContentPane().add(messageBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 212, 330, 40));
-        
-        nameBox.setBackground(new java.awt.Color(234, 234, 234));
-        nameBox.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
-        nameBox.setForeground(new java.awt.Color(155, 154, 154));
-        nameBox.setMaximumRowCount(nameCount);
-        nameBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember" }));
-        getContentPane().add(nameBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(93, 55, 257, 32));
+        setUpFields();
         
         editContact.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/edit_contact.png"))); // NOI18N
         getContentPane().add(editContact, new org.netbeans.lib.awtextra.AbsoluteConstraints(323, 24, -1, -1));
@@ -147,7 +143,7 @@ public class ContactOthers extends javax.swing.JFrame {
         OKbtn.setRadius(20);
         OKbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // OKbtnActionPerformed(evt);
+                OKbtnActionPerformed();
             }
         });
         getContentPane().add(OKbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(289, 312, 61, 37));
@@ -184,7 +180,124 @@ public class ContactOthers extends javax.swing.JFrame {
                 CalendarPage.open=0;
         }
     }
+    
+    private void queryContact(){
+        contactList.clear();
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM contact WHERE userID = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, userID);
+            
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                String phone = rs.getString("phone");
+                
+                Contact contact = new Contact(id, name, phone);
+                contactList.add(contact);
+            }
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+    }
+    
+    private void queryMsg(){
+        msgList.clear();
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM message_template WHERE userID = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, userID);
+            
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                String id = rs.getString("id");
+                String name = rs.getString("message");
+                
+                Message msg = new Message(id, name);
+                msgList.add(msg);
+            }
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+    }
 
+    private void setUpFields(){
+        queryContact();
+        String[] nameArray = new String[contactList.size()];
+        for (int i = 0 ; i < contactList.size(); i++){
+           nameArray[i] = contactList.get(i).getName();
+        }
+        
+        nameBox.setBackground(new java.awt.Color(234, 234, 234));
+        nameBox.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
+        nameBox.setForeground(new java.awt.Color(155, 154, 154));
+        nameBox.setMaximumRowCount(contactList.size());
+        nameBox.setModel(new javax.swing.DefaultComboBoxModel<>(nameArray));
+        nameBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected index
+                int selectedIndex = nameBox.getSelectedIndex();
+                // Update the label with the selected index
+                phoneField.setText(contactList.get(selectedIndex).getPhone());
+            }
+        });
+        getContentPane().add(nameBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(93, 55, 257, 32));
+        
+        int selectedIndex = nameBox.getSelectedIndex();
+        phoneField.setBackground(new java.awt.Color(234, 234, 234));
+        phoneField.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
+        phoneField.setForeground(new java.awt.Color(155, 154, 154));
+        phoneField.setEnabled(false);
+        phoneField.setBorder(new EmptyBorder(new Insets(2, 15, 5, 10)));
+        phoneField.setText(contactList.get(selectedIndex).getPhone());
+        getContentPane().add(phoneField, new org.netbeans.lib.awtextra.AbsoluteConstraints(93, 104, 257, 32));
+        
+        queryMsg();
+        String[] msgArray = new String[msgList.size()];
+        for (int i = 0 ; i < msgList.size(); i++){
+           msgArray[i] = msgList.get(i).getMsg();
+        }        
+        messageBox.setBackground(new java.awt.Color(234, 234, 234));
+        messageBox.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
+        messageBox.setForeground(new java.awt.Color(155, 154, 154));
+        messageBox.setMaximumRowCount(msgList.size());
+        messageBox.setModel(new javax.swing.DefaultComboBoxModel<>(msgArray));
+        getContentPane().add(messageBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 212, 330, 40));
+    }
+    
+    private void OKbtnActionPerformed(){
+        String phoneNumber = "+" + phoneField.getText(); // Replace with the target phone number
+        String message = (String) messageBox.getSelectedItem(); // Replace with your message
+
+        // Encode the message
+        String encodedMessage = null;
+        try {
+            encodedMessage = java.net.URLEncoder.encode(message, "UTF-8");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        // Create the WhatsApp URL
+        String url = "https://web.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodedMessage;
+
+        // Use the Desktop class to open the URL
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI(url));
+            } catch (IOException | URISyntaxException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            System.err.println("Desktop is not supported. Unable to open the URL.");
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

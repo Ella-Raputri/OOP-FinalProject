@@ -189,6 +189,7 @@ public class ContactsList extends javax.swing.JFrame {
         }
     }
     
+    
     private void initDesign(){
         getContentPane().setBackground(Color.white);
         
