@@ -118,7 +118,7 @@ public class ContactsList extends javax.swing.JFrame {
             
 
             // Calculate the x and y positions based on row and column indices
-            int x = 30;
+            int x = 10;
             int y = 10 + i * (panelHeight + 20);
 
             // Set the bounds for the cloned panel with your custom size
