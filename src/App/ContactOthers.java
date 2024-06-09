@@ -7,13 +7,14 @@ package App;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Asus
  */
 public class ContactOthers extends javax.swing.JFrame {
-    private String userID;
+    private String userID = "u1";
     private int nameCount;
     private int msgCount;
     /**
@@ -26,12 +27,20 @@ public class ContactOthers extends javax.swing.JFrame {
         initDesign();
     }
     
+    public ContactOthers(String uID) {
+        this.userID = uID;
+        setResizable(false);
+        setTitle("Contact Others");
+        initComponents();
+        initDesign();
+    }
+    
     private void initHover(){
         editContact.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//                setVisible(false);
-//                new HomePage(userID).setVisible(true);
+                setVisible(false);
+                new ContactsList(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -46,8 +55,8 @@ public class ContactOthers extends javax.swing.JFrame {
         editMessage.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//                setVisible(false);
-//                new HomePage(userID).setVisible(true);
+                setVisible(false);
+                new MsgTemplate(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -158,7 +167,7 @@ public class ContactOthers extends javax.swing.JFrame {
         cancelBtn.setRadius(20);
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-              //  cancelBtnActionPerformed(evt);
+                cancelBtnActionPerformed();
             }
         });
         getContentPane().add(cancelBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(185, 312, 92, 37));
@@ -166,6 +175,14 @@ public class ContactOthers extends javax.swing.JFrame {
         initHover();
         pack();
         setLocationRelativeTo(null);
+    }
+    
+    private void cancelBtnActionPerformed(){
+        int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                setVisible(false);
+                CalendarPage.open=0;
+        }
     }
 
     /**

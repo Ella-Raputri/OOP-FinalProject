@@ -30,12 +30,20 @@ public class MsgTemplate extends javax.swing.JFrame {
         initDesign();
     }
     
-        private void initHover(){
+    public MsgTemplate(String uID) {
+        this.userID = uID;
+        setResizable(false);
+        setTitle("Message Template");
+        initComponents();
+        initDesign();
+    }
+    
+    private void initHover(){
         backBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//                setVisible(false);
-//                new HomePage(userID).setVisible(true);
+                setVisible(false);
+                new ContactOthers(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {

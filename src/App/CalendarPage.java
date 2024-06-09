@@ -269,9 +269,6 @@ public class CalendarPage extends javax.swing.JFrame {
                 hoverButton("/App/img/logout.png", 255, 255, 255, logout_labels);
             }
         });
-        
-        
-        
         insertBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent me) {
@@ -291,6 +288,26 @@ public class CalendarPage extends javax.swing.JFrame {
                 insertBtn.setBackground(Color.white);
                 insertBtn.setBorderColor(new java.awt.Color(0, 141, 189));
                 insertWorkflowBtn();
+            }
+        });
+        
+        contactBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                contactBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/contact_btn_hover.png")));
+            }
+            @Override
+            public void mouseExited(MouseEvent me) {
+                contactBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/contact_btn.png")));
+            }
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                if (CalendarPage.open == 0){
+                    CalendarPage.open = 1; 
+                    new ContactOthers(userID).setVisible(true);
+                }else{
+                   JOptionPane.showMessageDialog(getContentPane(), "One window is already open.");
+                } 
             }
         });
     }
@@ -554,6 +571,7 @@ public class CalendarPage extends javax.swing.JFrame {
         insertBtn = new App.ButtonCustom();
         titletxt = new javax.swing.JLabel();
         calendarCustom2 = new App.CalendarCustom(this.home);
+        contactBtn = new javax.swing.JLabel();
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -621,6 +639,9 @@ public class CalendarPage extends javax.swing.JFrame {
         titletxt.setText("Calendar");
         getContentPane().add(titletxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 23, -1, -1));
         getContentPane().add(calendarCustom2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, -1, -1));
+        
+        contactBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/contact_btn.png"))); // NOI18N
+        getContentPane().add(contactBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(905, 63, -1, -1));
 
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/default_page.png"))); // NOI18N
         getContentPane().add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -704,7 +725,7 @@ public class CalendarPage extends javax.swing.JFrame {
     private javax.swing.JLabel logoutBtn;
     private javax.swing.JLabel logoutBtnTxt;
     private javax.swing.JLabel titletxt;           
-    //private App.ButtonCustom addTaskBtn;
+    private javax.swing.JLabel contactBtn;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

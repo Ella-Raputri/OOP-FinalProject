@@ -4,13 +4,23 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.LinkedList;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -18,7 +28,9 @@ import javax.swing.border.EmptyBorder;
  * @author Asus
  */
 public class ContactsList extends javax.swing.JFrame {
-
+    private String userID = "u1";
+    private LinkedList<Contact> contactList= new LinkedList<>();
+    private CloneablePanelContact currentPanel = null;
     /**
      * Creates new form ContactsList
      */
@@ -26,15 +38,23 @@ public class ContactsList extends javax.swing.JFrame {
         setResizable(false);
         setTitle("Contacts List");
         initComponents();
-        initDesign();
+        myinit();
+    }
+    
+    public ContactsList(String uID) {
+        this.userID = uID;
+        setResizable(false);
+        setTitle("Contacts List");
+        initComponents();
+        myinit();
     }
     
     private void initHover(){
         backBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//                setVisible(false);
-//                new HomePage(userID).setVisible(true);
+                setVisible(false);
+                new ContactOthers(userID).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -47,7 +67,133 @@ public class ContactsList extends javax.swing.JFrame {
         });
     }
     
-     private void initDesign(){
+    private void myinit(){
+        queryContact();
+         contentPane = new JPanel();
+         contentPane.setBackground(Color.white);
+//         {
+//            @Override
+//            protected void paintComponent(Graphics g) {
+//                super.paintComponent(g);
+//                // Load the background image
+//                ImageIcon bgImage = new ImageIcon("src/App/img/default_page.png");
+//                // Draw the background image
+//                g.drawImage(bgImage.getImage(), 0, 0, getWidth(), getHeight(), null);
+//            }
+//        };
+        contentPane.setLayout(null); // Use absolute layout
+        setContentPane(contentPane);
+        
+        // Create the scroll pane
+        scrollPane = new JScrollPane();
+        scrollPane.setBounds(20, 174, 336, 188); // Set bounds for the scroll pane
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        contentPane.add(scrollPane);
+
+        // Create the cloneable panel
+        cloneablePanel = new JPanel(); // The initial panel inside scroll pane
+        cloneablePanel.setLayout(null); // Use absolute layout
+        cloneablePanel.setPreferredSize(new Dimension(400, 200)); // Set initial size
+        cloneablePanel.setBounds(180, 200, 1200, 1500); // Set bounds for the initial panel
+        cloneablePanel.setBackground(Color.red);
+        scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
+        
+        createClonedPanels(contactList, contactList.size());
+        
+        contentPane.setPreferredSize(new Dimension(400, 480));
+        
+        initDesign(); //initialize all the design components
+    }
+    
+    private void createClonedPanels(LinkedList<Contact> list, int size){
+        
+        for(int i=0; i<size;i++){
+            String id = list.get(i).getId();
+            String name = list.get(i).getName();
+            String phone = list.get(i).getPhone();
+            
+            // Create a new cloned panel
+            // Cloneable Panel
+            CloneablePanelContact clonedPanel = new CloneablePanelContact(20, Color.white, 2 ,id, name, phone);
+            // Set your custom width and height for the cloned panel
+            int panelWidth = 255;
+            int panelHeight = 60;
+            
+
+            // Calculate the x and y positions based on row and column indices
+            int x = 30;
+            int y = 10 + i * (panelHeight + 50);
+
+            // Set the bounds for the cloned panel with your custom size
+            clonedPanel.setBounds(x, y, panelWidth, panelHeight);
+            clonedPanel.setBackground(new Color(246,252,254));
+            
+            clonedPanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (currentPanel == clonedPanel){
+                       currentPanel.setIsClicked(false);
+                       currentPanel = null;
+                       clonedPanel.repaint();
+//                       clearAllFields();
+//                       deactivateDeleteBtn();
+                    }
+                    else{
+                        if (currentPanel != null ) {
+                            currentPanel.setIsClicked(false);
+                            currentPanel.repaint();
+                        }
+                        clonedPanel.setIsClicked(true);
+                        currentPanel = clonedPanel;
+                        clonedPanel.repaint();
+//                        handleEditPanel();
+                    }   
+                }
+            });
+            
+            // Add the cloned panel to the initial panel
+            cloneablePanel.add(clonedPanel);
+            
+            //add the cloned panel to the hash map
+            //panelMap.put(id, clonedPanel);
+            
+            // Adjust preferred size of initial panel to include new panel
+            Dimension newSize = new Dimension(cloneablePanel.getWidth(), y + panelHeight + 10); // Adjusted size
+            cloneablePanel.setPreferredSize(newSize);
+            // Ensure the scroll pane updates its viewport
+            scrollPane.revalidate();
+            scrollPane.repaint();
+            // Scroll to show the new panel
+            scrollPane.getVerticalScrollBar().setValue(0);
+        }
+    }
+    
+    private void queryContact(){
+        contactList.clear();
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM contact WHERE userID = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, userID);
+            
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                String phone = rs.getString("phone");
+                
+                Contact contact = new Contact(id, name, phone);
+                contactList.add(contact);
+            }
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        }
+    }
+    
+    private void initDesign(){
         getContentPane().setBackground(Color.white);
         
         backBtn = new JLabel();

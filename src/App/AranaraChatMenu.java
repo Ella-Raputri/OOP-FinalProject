@@ -47,7 +47,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         hiBtn.setColorClick(new java.awt.Color(234, 234, 234));
         hiBtn.setColorOver(new java.awt.Color(234, 234, 234));
         hiBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
-        hiBtn.setRadius(5);
+        hiBtn.setRadius(20);
         hiBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                // hiBtnActionPerformed(evt);
@@ -65,7 +65,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         taskBtn.setColorClick(new java.awt.Color(234, 234, 234));
         taskBtn.setColorOver(new java.awt.Color(234, 234, 234));
         taskBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
-        taskBtn.setRadius(5);
+        taskBtn.setRadius(20);
         taskBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                // taskBtnActionPerformed(evt);
@@ -83,7 +83,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         wordBtn.setColorClick(new java.awt.Color(234, 234, 234));
         wordBtn.setColorOver(new java.awt.Color(234, 234, 234));
         wordBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
-        wordBtn.setRadius(5);
+        wordBtn.setRadius(20);
         wordBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                // wordBtnActionPerformed(evt);
@@ -101,7 +101,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         excelBtn.setColorClick(new java.awt.Color(234, 234, 234));
         excelBtn.setColorOver(new java.awt.Color(234, 234, 234));
         excelBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
-        excelBtn.setRadius(5);
+        excelBtn.setRadius(20);
         excelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                // excelBtnActionPerformed(evt);
@@ -119,7 +119,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         pptBtn.setColorClick(new java.awt.Color(234, 234, 234));
         pptBtn.setColorOver(new java.awt.Color(234, 234, 234));
         pptBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
-        pptBtn.setRadius(5);
+        pptBtn.setRadius(20);
         pptBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                // pptBtnActionPerformed(evt);
@@ -137,7 +137,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         chromeBtn.setColorClick(new java.awt.Color(234, 234, 234));
         chromeBtn.setColorOver(new java.awt.Color(234, 234, 234));
         chromeBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
-        chromeBtn.setRadius(5);
+        chromeBtn.setRadius(20);
         chromeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                // chromeBtnActionPerformed(evt);
@@ -155,7 +155,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         weatherBtn.setColorClick(new java.awt.Color(234, 234, 234));
         weatherBtn.setColorOver(new java.awt.Color(234, 234, 234));
         weatherBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
-        weatherBtn.setRadius(5);
+        weatherBtn.setRadius(20);
         weatherBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                // weatherBtnActionPerformed(evt);
@@ -173,7 +173,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         gameBtn.setColorClick(new java.awt.Color(234, 234, 234));
         gameBtn.setColorOver(new java.awt.Color(234, 234, 234));
         gameBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
-        gameBtn.setRadius(5);
+        gameBtn.setRadius(20);
         gameBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                // gameBtnActionPerformed(evt);W
