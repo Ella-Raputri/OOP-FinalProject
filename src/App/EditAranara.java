@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -23,6 +24,8 @@ public class EditAranara extends javax.swing.JFrame {
     private int affection;
     private int patAmount;
     private String patDay;
+    private AranaraChatMenu childWindow = null;
+    private EditAranara parent = (EditAranara) SwingUtilities.getRoot(this);
     /**
      * Creates new form EditAranara
      */
@@ -42,7 +45,18 @@ public class EditAranara extends javax.swing.JFrame {
         initComponents();
         initHover();
         initBasedOnAranara();
-    }       
+    }    
+    
+    public EditAranara(String aranaraName, String uID, AranaraChatMenu child) {
+        this.aranaraName = aranaraName;
+        this.userID = uID;
+        this.childWindow = child;
+        setResizable(false);
+        setTitle("Aranara Activity Page");
+        initComponents();
+        initHover();
+        initBasedOnAranara();
+    } 
     
     private void initHover(){
         backBtn.addMouseListener(new MouseAdapter() {
@@ -88,6 +102,46 @@ public class EditAranara extends javax.swing.JFrame {
             @Override
             public void mouseExited(MouseEvent e) {
                 setDefaultBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/set_default.png")));
+            }
+        });
+        
+        backChatBtn.setVisible(false);
+        backChatBtn.setEnabled(false);
+        
+        chatBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new AranaraChatMenu(parent, userID).setVisible(true);
+                backChatBtn.setVisible(true);
+                backChatBtn.setEnabled(true);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                chatBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/chat_hover.png")));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                chatBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/chat.png")));
+            }
+        });
+        
+        backChatBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (childWindow != null){
+                    childWindow.setVisible(false);
+                    backChatBtn.setVisible(false);
+                    backChatBtn.setEnabled(false);
+                    childWindow = null;
+                }
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                backChatBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_chat_hover.png")));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                backChatBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_chat.png")));
             }
         });
     }
@@ -216,9 +270,12 @@ public class EditAranara extends javax.swing.JFrame {
         backBtn = new javax.swing.JLabel();
         patBtn = new javax.swing.JLabel();
         setDefaultBtn = new javax.swing.JLabel();
+        chatBtn = new javax.swing.JLabel();
+        chattxt = new javax.swing.JLabel();
         affectiontxt = new javax.swing.JLabel();
         pattxt = new javax.swing.JLabel();
         setDefaulttxt = new javax.swing.JLabel();
+        backChatBtn = new javax.swing.JLabel();
         affectionLevel = new javax.swing.JLabel();
         affProgressBar = new javax.swing.JProgressBar();
         bg = new javax.swing.JLabel();
@@ -240,6 +297,14 @@ public class EditAranara extends javax.swing.JFrame {
         setDefaultBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/set_default.png"))); // NOI18N
         getContentPane().add(setDefaultBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(967, 567, -1, -1));
 
+        chatBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/chat.png"))); // NOI18N
+        getContentPane().add(chatBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(287, 567, -1, -1));
+
+        chattxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
+        chattxt.setText("Chat");
+        chattxt.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(chattxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 670, -1, -1));
+
         affectiontxt.setFont(new java.awt.Font("Montserrat", 0, 16)); // NOI18N
         affectiontxt.setText("xxx/100");
         getContentPane().add(affectiontxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 60, -1, -1));
@@ -251,6 +316,9 @@ public class EditAranara extends javax.swing.JFrame {
         setDefaulttxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
         setDefaulttxt.setText("Set As Default");
         getContentPane().add(setDefaulttxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(944, 670, -1, -1));
+
+        backChatBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_chat.png"))); // NOI18N
+        getContentPane().add(backChatBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(383, 318, -1, -1));
 
         affectionLevel.setFont(new java.awt.Font("Mochiy Pop One", 0, 20)); // NOI18N
         affectionLevel.setText("Affection Level");
@@ -310,7 +378,10 @@ public class EditAranara extends javax.swing.JFrame {
     private javax.swing.JLabel affectiontxt;
     private javax.swing.JLabel aranara;
     private javax.swing.JLabel backBtn;
+    private javax.swing.JLabel backChatBtn;
     private javax.swing.JLabel bg;
+    private javax.swing.JLabel chatBtn;
+    private javax.swing.JLabel chattxt;
     private javax.swing.JLabel patBtn;
     private javax.swing.JLabel pattxt;
     private javax.swing.JLabel setDefaultBtn;

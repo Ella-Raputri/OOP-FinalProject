@@ -11,11 +11,22 @@ import java.awt.Color;
  * @author Asus
  */
 public class AranaraChatMenu extends javax.swing.JFrame {
-
+    private String userID = "u1";
+    private EditAranara parent;
     /**
      * Creates new form AranaraChatMenu
      */
-    public AranaraChatMenu() {
+    public AranaraChatMenu(EditAranara parent, String userID) {
+        this.userID = userID;
+        this.parent = parent;
+        setUndecorated(true);
+        setResizable(false);
+        initComponents();
+        initDesign();
+    }
+    
+    public AranaraChatMenu() {        
+        setUndecorated(true);
         setResizable(false);
         initComponents();
         initDesign();
@@ -27,7 +38,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         wordBtn = new App.ButtonCustom();
         excelBtn = new App.ButtonCustom();
         pptBtn  = new App.ButtonCustom();
-        chromeBtn = new App.ButtonCustom();
+        timerBtn = new App.ButtonCustom();
         weatherBtn = new App.ButtonCustom();
         gameBtn = new App.ButtonCustom();
         
@@ -40,9 +51,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         hiBtn.setForeground(new java.awt.Color(255, 255, 255));
         hiBtn.setText("");
         hiBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hiBtn.png")));
-        hiBtn.setBorderColor(Color.black);
-        hiBtn.setBorderColorNotOver(Color.black);
-        hiBtn.setBorderColorOver(Color.black);
+        hiBtn.setBorderColor(new java.awt.Color(155, 154, 154));
+        hiBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
+        hiBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
         hiBtn.setColor(Color.white);
         hiBtn.setColorClick(new java.awt.Color(234, 234, 234));
         hiBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -58,9 +69,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         taskBtn.setForeground(new java.awt.Color(255, 255, 255));
         taskBtn.setText("");
         taskBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/taskBtn.png")));
-        taskBtn.setBorderColor(Color.black);
-        taskBtn.setBorderColorNotOver(Color.black);
-        taskBtn.setBorderColorOver(Color.black);
+        taskBtn.setBorderColor(new java.awt.Color(155, 154, 154));
+        taskBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
+        taskBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
         taskBtn.setColor(Color.white);
         taskBtn.setColorClick(new java.awt.Color(234, 234, 234));
         taskBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -76,9 +87,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         wordBtn.setForeground(new java.awt.Color(255, 255, 255));
         wordBtn.setText("");
         wordBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/wordBtn.png")));
-        wordBtn.setBorderColor(Color.black);
-        wordBtn.setBorderColorNotOver(Color.black);
-        wordBtn.setBorderColorOver(Color.black);
+        wordBtn.setBorderColor(new java.awt.Color(155, 154, 154));
+        wordBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
+        wordBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
         wordBtn.setColor(Color.white);
         wordBtn.setColorClick(new java.awt.Color(234, 234, 234));
         wordBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -94,9 +105,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         excelBtn.setForeground(new java.awt.Color(255, 255, 255));
         excelBtn.setText("");
         excelBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/excelBtn.png")));
-        excelBtn.setBorderColor(Color.black);
-        excelBtn.setBorderColorNotOver(Color.black);
-        excelBtn.setBorderColorOver(Color.black);
+        excelBtn.setBorderColor(new java.awt.Color(155, 154, 154));
+        excelBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
+        excelBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
         excelBtn.setColor(Color.white);
         excelBtn.setColorClick(new java.awt.Color(234, 234, 234));
         excelBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -112,9 +123,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         pptBtn.setForeground(new java.awt.Color(255, 255, 255));
         pptBtn.setText("");
         pptBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/pptBtn.png")));
-        pptBtn.setBorderColor(Color.black);
-        pptBtn.setBorderColorNotOver(Color.black);
-        pptBtn.setBorderColorOver(Color.black);
+        pptBtn.setBorderColor(new java.awt.Color(155, 154, 154));
+        pptBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
+        pptBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
         pptBtn.setColor(Color.white);
         pptBtn.setColorClick(new java.awt.Color(234, 234, 234));
         pptBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -127,30 +138,30 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         });
         getContentPane().add(pptBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 377, 128, 119)); 
         
-        chromeBtn.setForeground(new java.awt.Color(255, 255, 255));
-        chromeBtn.setText("");
-        chromeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/chromeBtn.png")));
-        chromeBtn.setBorderColor(Color.black);
-        chromeBtn.setBorderColorNotOver(Color.black);
-        chromeBtn.setBorderColorOver(Color.black);
-        chromeBtn.setColor(Color.white);
-        chromeBtn.setColorClick(new java.awt.Color(234, 234, 234));
-        chromeBtn.setColorOver(new java.awt.Color(234, 234, 234));
-        chromeBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
-        chromeBtn.setRadius(20);
-        chromeBtn.addActionListener(new java.awt.event.ActionListener() {
+        timerBtn.setForeground(new java.awt.Color(255, 255, 255));
+        timerBtn.setText("");
+        timerBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/timerBtn.png")));
+        timerBtn.setBorderColor(new java.awt.Color(155, 154, 154));
+        timerBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
+        timerBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
+        timerBtn.setColor(Color.white);
+        timerBtn.setColorClick(new java.awt.Color(234, 234, 234));
+        timerBtn.setColorOver(new java.awt.Color(234, 234, 234));
+        timerBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
+        timerBtn.setRadius(20);
+        timerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // chromeBtnActionPerformed(evt);
+               // timerBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(chromeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 377, 128, 119)); 
+        getContentPane().add(timerBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 377, 128, 119)); 
         
         weatherBtn.setForeground(new java.awt.Color(255, 255, 255));
         weatherBtn.setText("");
         weatherBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/weatherBtn.png")));
-        weatherBtn.setBorderColor(Color.black);
-        weatherBtn.setBorderColorNotOver(Color.black);
-        weatherBtn.setBorderColorOver(Color.black);
+        weatherBtn.setBorderColor(new java.awt.Color(155, 154, 154));
+        weatherBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
+        weatherBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
         weatherBtn.setColor(Color.white);
         weatherBtn.setColorClick(new java.awt.Color(234, 234, 234));
         weatherBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -166,9 +177,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         gameBtn.setForeground(new java.awt.Color(255, 255, 255));
         gameBtn.setText("");
         gameBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/gameBtn.png")));
-        gameBtn.setBorderColor(Color.black);
-        gameBtn.setBorderColorNotOver(Color.black);
-        gameBtn.setBorderColorOver(Color.black);
+        gameBtn.setBorderColor(new java.awt.Color(155, 154, 154));
+        gameBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
+        gameBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
         gameBtn.setColor(Color.white);
         gameBtn.setColorClick(new java.awt.Color(234, 234, 234));
         gameBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -183,6 +194,10 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         
         
         pack();
+        //setLocationRelativeTo(parent);
+        int parentX = parent.getX();
+        int parentY = parent.getY();
+        setLocation(parentX, parentY);
     }
 
     /**
@@ -250,7 +265,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     private App.ButtonCustom wordBtn;
     private App.ButtonCustom excelBtn;
     private App.ButtonCustom pptBtn;
-    private App.ButtonCustom chromeBtn;
+    private App.ButtonCustom timerBtn;
     private App.ButtonCustom weatherBtn;
     private App.ButtonCustom gameBtn;
     // Variables declaration - do not modify//GEN-BEGIN:variables
