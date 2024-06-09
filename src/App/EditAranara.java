@@ -111,7 +111,8 @@ public class EditAranara extends javax.swing.JFrame {
         chatBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new AranaraChatMenu(parent, userID).setVisible(true);
+                childWindow = new AranaraChatMenu(parent, userID);
+                childWindow.setVisible(true);
                 backChatBtn.setVisible(true);
                 backChatBtn.setEnabled(true);
             }
@@ -129,9 +130,9 @@ public class EditAranara extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (childWindow != null){
-                    childWindow.setVisible(false);
                     backChatBtn.setVisible(false);
                     backChatBtn.setEnabled(false);
+                    childWindow.setVisible(false);
                     childWindow = null;
                 }
             }
@@ -318,7 +319,7 @@ public class EditAranara extends javax.swing.JFrame {
         getContentPane().add(setDefaulttxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(944, 670, -1, -1));
 
         backChatBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_chat.png"))); // NOI18N
-        getContentPane().add(backChatBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(383, 318, -1, -1));
+        getContentPane().add(backChatBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(395, 318, -1, -1));
 
         affectionLevel.setFont(new java.awt.Font("Mochiy Pop One", 0, 20)); // NOI18N
         affectionLevel.setText("Affection Level");
