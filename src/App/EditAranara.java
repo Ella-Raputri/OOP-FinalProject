@@ -5,13 +5,21 @@
 package App;
 
 import DatabaseConnection.ConnectionProvider;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 /**
@@ -20,7 +28,7 @@ import javax.swing.SwingUtilities;
  */
 public class EditAranara extends javax.swing.JFrame {
     private String userID = "u1";
-    private String aranaraName = "Ararycan";
+    public String aranaraName = "Ararycan";
     private int affection;
     private int patAmount;
     private String patDay;
@@ -57,6 +65,10 @@ public class EditAranara extends javax.swing.JFrame {
         initHover();
         initBasedOnAranara();
     } 
+    
+    public void setDialogText(String s){
+        dialog_text.setText(s);
+    }
     
     private void initHover(){
         backBtn.addMouseListener(new MouseAdapter() {
@@ -251,10 +263,12 @@ public class EditAranara extends javax.swing.JFrame {
                 //get pat amount and day
                 patDay = rs.getString("pat_day");
                 patAmount = rs.getInt("pat_amount");
+                dialog_text.setText("Hello Nara, I'm Arama. Opening Microsot Word. Pleaser wait fo r a sencond");
             }
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(getContentPane(), e);
+            e.printStackTrace();
         } 
     }
 
@@ -267,6 +281,9 @@ public class EditAranara extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+        dialog_text = new WrappedLabel(400);
+        dialog_box = new javax.swing.JLabel();
         aranara = new javax.swing.JLabel();
         backBtn = new javax.swing.JLabel();
         patBtn = new javax.swing.JLabel();
@@ -284,6 +301,16 @@ public class EditAranara extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1280, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        dialog_text.setFont(new java.awt.Font("Montserrat", 0, 20));
+        jLayeredPane1.add(dialog_text);
+        dialog_text.setBounds(40, 40, 400, 190);
+
+        dialog_box.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/dialog_box.png"))); // NOI18N
+        jLayeredPane1.add(dialog_box);
+        dialog_box.setBounds(30, 30, 460, 240);
+
+        getContentPane().add(jLayeredPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(756, 174, 510, 310));
 
         aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arama.png"))); // NOI18N
         getContentPane().add(aranara, new org.netbeans.lib.awtextra.AbsoluteConstraints(434, 239, -1, -1));
@@ -383,6 +410,9 @@ public class EditAranara extends javax.swing.JFrame {
     private javax.swing.JLabel bg;
     private javax.swing.JLabel chatBtn;
     private javax.swing.JLabel chattxt;
+    private javax.swing.JLabel dialog_box;    
+    private App.WrappedLabel dialog_text;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JLabel patBtn;
     private javax.swing.JLabel pattxt;
     private javax.swing.JLabel setDefaultBtn;

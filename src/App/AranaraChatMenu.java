@@ -5,6 +5,7 @@
 package App;
 
 import java.awt.Color;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -61,7 +62,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         hiBtn.setRadius(20);
         hiBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // hiBtnActionPerformed(evt);
+                hiBtnActionPerformed();
             }
         });
         getContentPane().add(hiBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 73, 128, 119)); 
@@ -97,7 +98,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         wordBtn.setRadius(20);
         wordBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // wordBtnActionPerformed(evt);
+              openMsApplication("winword", "Word");
             }
         });
         getContentPane().add(wordBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 225, 128, 119)); 
@@ -115,7 +116,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         excelBtn.setRadius(20);
         excelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // excelBtnActionPerformed(evt);
+               openMsApplication("excel", "Excel");
             }
         });
         getContentPane().add(excelBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 225, 128, 119)); 
@@ -133,7 +134,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         pptBtn.setRadius(20);
         pptBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // pptBtnActionPerformed(evt);
+               openMsApplication("powerpnt", "PowerPoint");
             }
         });
         getContentPane().add(pptBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 377, 128, 119)); 
@@ -198,6 +199,27 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         int parentX = parent.getX();
         int parentY = parent.getY();
         setLocation(parentX, parentY);
+    }
+    
+    private void openMsApplication(String app, String name) {
+        try {
+            // Command to open Microsoft Word on Windows
+            String command = "cmd /c start " + app;
+
+            // Execute the command
+            Runtime.getRuntime().exec(command);
+            
+            //set the dialogue box text
+            parent.setDialogText("Opening Microsoft " + name + "... Please wait a moment, Nara!");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error opening " + name + e.getMessage());
+        }
+    }
+    
+    private void hiBtnActionPerformed(){
+        parent.setDialogText("Hello Nara! I");
     }
 
     /**
