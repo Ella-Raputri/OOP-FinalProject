@@ -365,7 +365,7 @@ public class EditAranara extends javax.swing.JFrame {
 
         dialog_text.setFont(new java.awt.Font("Montserrat", 0, 20));
         jLayeredPane1.add(dialog_text);
-        dialog_text.setBounds(50, 40, 400, 190);
+        dialog_text.setBounds(40, 80, 400, 190);
 
         dialog_box.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/dialog_box.png"))); // NOI18N
         jLayeredPane1.add(dialog_box);
