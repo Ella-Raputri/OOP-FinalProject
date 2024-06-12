@@ -8,12 +8,15 @@ import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -21,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 /**
  *
@@ -67,7 +71,26 @@ public class EditAranara extends javax.swing.JFrame {
     } 
     
     public void setDialogText(String s){
+        //refresh if the button is pressed continuously
+        dialog_box.setVisible(false);
+        dialog_text.setVisible(false);
+        
+        //
+        dialog_box.setVisible(true);
+        dialog_text.setVisible(true);
         dialog_text.setText(s);
+        
+        Timer timer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog_box.setVisible(false);
+                dialog_text.setVisible(false);
+            }
+        });
+
+        // Start the timer
+        timer.setRepeats(false); // Make sure the timer only runs once
+        timer.start();
     }
     
     private void initHover(){
@@ -171,7 +194,26 @@ public class EditAranara extends javax.swing.JFrame {
                     ps.setInt(1, affection);
                     ps.setString(2, this.userID);
                     ps.executeUpdate();
-                    //success message
+                    
+                    //dialog message
+                    String[] arama_msg = {"Good day Nara!", "Arama is happy today!", "Hehe, thanks Nara!"};
+
+                    String[] ararycan_msg = {"Ahh! Ararycan is startled.", "Nara is friend of Aranara.", "Nara is the friend of forest."};
+
+                    String[] arabalika_msg = {"Hmph.", "Don't pat Arabalika like that, Nara.", "Hmph. don't disturb Arabalika."};
+
+                    Random random = new Random();
+                    int index = random.nextInt(3);
+
+                    String[] proper = null;
+                    switch (aranaraName) {
+                        case "Arama" -> proper = arama_msg;
+                        case "Ararycan" -> proper = ararycan_msg;
+                        case "Arabalika" -> proper = arabalika_msg;
+                        default -> {
+                        }
+                    }
+                    setDialogText(proper[index]);
 
                     //refresh progress bar
                     affProgressBar.setValue(affection);
@@ -182,7 +224,7 @@ public class EditAranara extends javax.swing.JFrame {
                 } 
             }
         }else{
-            JOptionPane.showMessageDialog(getContentPane(), "My affection is already full, Nara!");
+            setDialogText("My affection is already full, Nara.");
         }
     }
     
@@ -203,7 +245,7 @@ public class EditAranara extends javax.swing.JFrame {
                updatePatDatabase();
                return true;
             }else{
-                JOptionPane.showMessageDialog(getContentPane(), "Today you have patted me enough, Nara!");
+                setDialogText("Today you have patted me enough, Nara.");
                 return false;
             }
         }
@@ -263,7 +305,8 @@ public class EditAranara extends javax.swing.JFrame {
                 //get pat amount and day
                 patDay = rs.getString("pat_day");
                 patAmount = rs.getInt("pat_amount");
-                dialog_text.setText("Hello Nara, I'm Arama. Opening Microsot Word. Pleaser wait fo r a sencond");
+                dialog_box.setVisible(false);
+                dialog_text.setVisible(false);
             }
         }
         catch(Exception e){
@@ -305,7 +348,7 @@ public class EditAranara extends javax.swing.JFrame {
         dialog_text.setFont(new java.awt.Font("Montserrat", 0, 20));
         jLayeredPane1.add(dialog_text);
         dialog_text.setBounds(40, 40, 400, 190);
-
+        
         dialog_box.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/dialog_box.png"))); // NOI18N
         jLayeredPane1.add(dialog_box);
         dialog_box.setBounds(30, 30, 460, 240);
@@ -410,7 +453,7 @@ public class EditAranara extends javax.swing.JFrame {
     private javax.swing.JLabel bg;
     private javax.swing.JLabel chatBtn;
     private javax.swing.JLabel chattxt;
-    private javax.swing.JLabel dialog_box;    
+    private javax.swing.JLabel dialog_box;
     private App.WrappedLabel dialog_text;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JLabel patBtn;

@@ -4,7 +4,13 @@
  */
 package App;
 
+import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.Random;
 import javax.swing.JOptionPane;
 
 /**
@@ -14,6 +20,8 @@ import javax.swing.JOptionPane;
 public class AranaraChatMenu extends javax.swing.JFrame {
     private String userID = "u1";
     private EditAranara parent;
+    private String username;
+    private LinkedList<Task> taskList = new LinkedList<>();
     /**
      * Creates new form AranaraChatMenu
      */
@@ -34,6 +42,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     }
     
     private void initDesign(){
+        queryAllUserInfo();
         hiBtn = new App.ButtonCustom();
         taskBtn = new App.ButtonCustom();
         wordBtn = new App.ButtonCustom();
@@ -80,7 +89,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         taskBtn.setRadius(20);
         taskBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // taskBtnActionPerformed(evt);
+                taskBtnActionPerformed();
             }
         });
         getContentPane().add(taskBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 73, 128, 119)); 
@@ -218,8 +227,80 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         }
     }
     
+    private void queryAllUserInfo(){
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM user WHERE userID = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, this.userID);
+            
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+               //get pat amount and day
+                username = rs.getString("username");
+            }
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+            e.printStackTrace();
+        } 
+    }
+    
+    private void queryTask(){
+       taskList.clear();
+        try{
+            Connection con = ConnectionProvider.getCon();
+            String query = "SELECT * FROM tasks WHERE userID = ? ORDER BY completed ASC";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, this.userID);
+            
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+                String tID = rs.getString("taskID");
+                String tname = rs.getString("name");
+                String ttype = rs.getString("type");
+                String ttimeFrom = rs.getString("timeFrom");
+                String ttimeTo = rs.getString("timeTo");
+                String tnotes = rs.getString("notes");
+                String tcolor = rs.getString("color");
+                boolean tcomp = rs.getBoolean("completed");
+                
+                Task new_task = new Task(tID, tname, ttype, ttimeFrom, ttimeTo, tnotes, tcolor, this.userID, tcomp);
+                taskList.add(new_task);
+            }
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(getContentPane(), e);
+        } 
+    }
+    
     private void hiBtnActionPerformed(){
-        parent.setDialogText("Hello Nara! I");
+        String[] arama_msg = {"Hello Nara! I am Arama.", 
+            "Nice to meet you, Nara " + username + ".", "Oh welcome, good Nara!"};
+        
+        String[] ararycan_msg = {"Hello, Nara. I am Ararycan.", 
+            "Ahhh! Nara " + username + ".", "You are good Nara. Ararycan is not afraid."};
+        
+        String[] arabalika_msg = {"Hmph. I am " + parent.aranaraName + ".", 
+            "Arabalika want to see how strong Nara " + username + "is.", "Hmph. Arabalika wants to practice."};
+        
+        Random random = new Random();
+        int index = random.nextInt(3);
+        
+        String[] proper = null;
+        switch (parent.aranaraName) {
+            case "Arama" -> proper = arama_msg;
+            case "Ararycan" -> proper = ararycan_msg;
+            case "Arabalika" -> proper = arabalika_msg;
+            default -> {
+            }
+        }
+        parent.setDialogText(proper[index]);
+    }
+    
+    private void taskBtnActionPerformed(){        
+        queryTask();
+        
     }
 
     /**
