@@ -7,9 +7,12 @@ package App;
 import DatabaseConnection.ConnectionProvider;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,6 +41,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     private EditAranara parent;
     private String username;
     private LinkedList<Task> taskList = new LinkedList<>();
+    private String game_choice;
+    private String aranara_choice;
     /**
      * Creates new form AranaraChatMenu
      */
@@ -213,7 +218,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         gameBtn.setRadius(20);
         gameBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // gameBtnActionPerformed(evt);W
+                gameBtnActionPerformed();
             }
         });
         getContentPane().add(gameBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 526, 128, 119)); 
@@ -488,6 +493,201 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     
     private static boolean isDigit(String str){
         return str.matches("\\d+");
+    }
+    
+    private void gameBtnActionPerformed(){
+        createGamePanel();
+    }
+    
+    private void aranaraTurn(){
+        String[] move = {"rock", "paper", "scissors"};
+        
+        Random random = new Random();
+        int index = random.nextInt(3);
+        String label_icon_path = "/App/img/dialog_game_" + move[index] + ".png";
+        aranara_choice = move[index];
+        parent.setGameDialogIcon(label_icon_path);
+    }
+    
+    private void judgeGame(){
+        String message = "";
+        if (aranara_choice.equals(game_choice)){
+            message = getGameMsg("draw");
+        }else{
+            //rock case
+            if (game_choice.equals("rock")){
+                if (aranara_choice.equals("paper")){
+                   message = getGameMsg("lose");
+                }else{
+                   message = getGameMsg("win");
+                }
+            }
+            else if (game_choice.equals("paper")){
+                if (aranara_choice.equals("scissors")){
+                   message = getGameMsg("lose");
+                }else{
+                   message = getGameMsg("win");
+                }
+            }
+            else if (game_choice.equals("scissors")){
+                if (aranara_choice.equals("rock")){
+                   message = getGameMsg("lose");
+                }else{
+                   message = getGameMsg("win");
+                }
+            }
+        }
+        
+        parent.setDialogText(message);
+    }
+    
+    private String getGameMsg(String player_result){
+        String message = "";
+        if (player_result.equals("win")){
+           switch (parent.aranaraName) {
+                case "Arama" -> message = "Look's like the winner is Nara" + username;
+                case "Ararycan" -> message = "Ararycan is losing?";
+                case "Arabalika" -> message = "Hmph. Arabalika admits you have some skills.";
+                default -> {}
+            } 
+        }
+        else if (player_result.equals("lose")){
+           switch (parent.aranaraName) {
+                case "Arama" -> message = "Arama wins?! How exciting, Arama is happy!";
+                case "Ararycan" -> message = "Mm. Ararycan thinks it odds that Ararycan wins, but Ararycan is happy!";
+                case "Arabalika" -> message = "Don't be careless, Nara. Let's try again.";
+                default -> {}
+            } 
+        }
+        else if (player_result.equals("draw")){
+           switch (parent.aranaraName) {
+                case "Arama" -> message = "Great mind thinks alike, Nara!";
+                case "Ararycan" -> message = "Mmmm... then who's the winner, Nara?";
+                case "Arabalika" -> message = "Hmph. it's a draw.";
+                default -> {}
+            } 
+        }
+        return message;
+    }
+    
+    private void createGamePanel(){
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(460, 220));
+        panel.setLayout(null);
+        panel.setBackground(Color.white);
+
+        JLabel label = new JLabel("Please choose your move, Nara!");
+        label.setForeground(Color.black);
+        label.setFont(new Font("Montserrat", 0, 24));
+        label.setBounds(23, 33, 400, 29);
+        panel.add(label);
+
+        //the rock button
+        JLabel rockBtn = new JLabel();
+        rockBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/rock.png"))); // NOI18N
+        rockBtn.setBounds(28, 98, 96, 91);
+        panel.add(rockBtn);
+        
+        //the paper button
+        JLabel paperBtn = new JLabel();
+        paperBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/paper.png"))); // NOI18N
+        paperBtn.setBounds(158, 98, 96, 91);        
+        panel.add(paperBtn);
+        
+        //the scissors button
+        JLabel scisBtn = new JLabel();
+        scisBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/scissors.png"))); // NOI18N
+        scisBtn.setBounds(288, 98, 96, 91);
+        panel.add(scisBtn);
+        
+        JDialog dialog = new JDialog(this, "Game", true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.getContentPane().add(panel);
+        dialog.pack();
+        
+        initGameBtnHover(rockBtn, paperBtn, scisBtn, dialog);
+        
+        int parentX = parent.getX();
+        int parentY = parent.getY()+50;
+        dialog.setLocation(parentX, parentY+300);
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);        
+    }
+    
+    private void gameSystem(JDialog dialog){
+        aranaraTurn();
+        dialog.dispose();
+        Timer timer = new Timer(2200, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                judgeGame();
+            }
+        });
+
+        timer.setRepeats(false);
+        timer.start();
+    }
+    
+    private void initGameBtnHover(JLabel rockBtn, JLabel paperBtn, JLabel scisBtn, JDialog dialog){
+        rockBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                game_choice = "rock";
+                paperBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/paper_disabled.png")));
+                paperBtn.setEnabled(false);
+                scisBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/scissors_disabled.png")));
+                scisBtn.setEnabled(false);
+                gameSystem(dialog);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                rockBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/rock_hover.png")));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                rockBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/rock.png")));
+            }
+        });
+        
+        paperBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                game_choice = "paper";
+                rockBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/rock_disabled.png")));
+                rockBtn.setEnabled(false);
+                scisBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/scissors_disabled.png")));
+                scisBtn.setEnabled(false);
+                gameSystem(dialog);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                paperBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/paper_hover.png")));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                paperBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/paper.png")));
+            }
+        });
+        
+        scisBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                game_choice = "scissors";
+                rockBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/rock_disabled.png")));
+                rockBtn.setEnabled(false);
+                paperBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/paper_disabled.png")));
+                paperBtn.setEnabled(false);
+                gameSystem(dialog);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                scisBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/scissors_hover.png")));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                scisBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/scissors.png")));
+            }
+        });
     }
     /**
      * This method is called from within the constructor to initialize the form.

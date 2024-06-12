@@ -70,7 +70,7 @@ public class EditAranara extends javax.swing.JFrame {
         initBasedOnAranara();
     } 
     
-    public void setDialogText(String s){
+    public void setDialogText(String s){            
         //refresh if the button is pressed continuously
         dialog_box.setVisible(false);
         dialog_text.setVisible(false);
@@ -85,6 +85,24 @@ public class EditAranara extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 dialog_box.setVisible(false);
                 dialog_text.setVisible(false);
+            }
+        });
+
+        // Start the timer
+        timer.setRepeats(false); // Make sure the timer only runs once
+        timer.start();
+    }
+    
+    public void setGameDialogIcon(String label_path){
+        dialog_box.setVisible(true);
+        dialog_box.setIcon(new javax.swing.ImageIcon(getClass().getResource(label_path)));        
+        
+        Timer timer = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog_box.setVisible(false);
+                //game_icon.setVisible(false);
+                dialog_box.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/dialog_box.png")));
             }
         });
 
