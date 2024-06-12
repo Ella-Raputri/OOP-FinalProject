@@ -5,7 +5,11 @@
 package App;
 
 import DatabaseConnection.ConnectionProvider;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +20,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.TimerTask;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  *
@@ -166,7 +177,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         timerBtn.setRadius(20);
         timerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // timerBtnActionPerformed(evt);
+                timerBtnActionPerformed();
             }
         });
         getContentPane().add(timerBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 377, 128, 119)); 
@@ -419,6 +430,65 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         return date;
     }
 
+    private void timerBtnActionPerformed(){
+        String timeStr = JOptionPane.showInputDialog(null, "Please enter minutes and seconds in the format of minute:second.", "Time Input", JOptionPane.PLAIN_MESSAGE);
+        
+        if (!timeStr.contains(":")){
+            JOptionPane.showMessageDialog(null, "The inputted time format is not correct.");
+            return;
+        }
+        
+        String[] arrOfStr = timeStr.split(":");
+        //validation minute
+        if (!isDigit(arrOfStr[0]) || !isDigit(arrOfStr[1])){
+            JOptionPane.showMessageDialog(null, "The inputted time is not valid.");
+        }else{
+            if (Integer.parseInt(arrOfStr[0]) < 0 || Integer.parseInt(arrOfStr[1]) < 0){
+                JOptionPane.showMessageDialog(null, "The minute and second has to be greater or equal to 0.");
+            }
+            else if (Integer.parseInt(arrOfStr[1]) >= 60){
+                JOptionPane.showMessageDialog(null, "The second has to be smaller than 0.");
+            }
+            else{
+                setReminder(arrOfStr[0], arrOfStr[1]);
+            }
+        }
+    }
+    
+    private void setReminder(String min, String sec){
+        int timeSec = Integer.parseInt(min) * 60 + Integer.parseInt(sec);
+        parent.setDialogText("Timer starts!");
+        
+        Timer timer = new Timer(timeSec * 1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCustomDialog("Time's up, Nara!");
+            }
+        });
+
+        // Start the timer
+        timer.setRepeats(false); // Make sure the timer only runs once
+        timer.start();
+    }
+    
+    private void showCustomDialog(String message) {
+        // Create an option pane
+        JOptionPane optionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE);
+        
+        // Create a JDialog from the option pane
+        JDialog dialog = optionPane.createDialog(parent, "Notification");
+        
+        // Set the dialog as always on top
+        dialog.setAlwaysOnTop(true);
+        
+        // Show the dialog
+        dialog.setVisible(true);
+        parent.setDialogText("Time's up, Nara!");
+    }
+    
+    private static boolean isDigit(String str){
+        return str.matches("\\d+");
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
