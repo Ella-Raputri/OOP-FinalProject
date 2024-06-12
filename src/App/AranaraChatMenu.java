@@ -9,6 +9,11 @@ import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
 import javax.swing.JOptionPane;
@@ -300,7 +305,118 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     
     private void taskBtnActionPerformed(){        
         queryTask();
+        String[] options = {"today", "tomorrow", "random date"};
+
+        // Show the initial option dialog
+        String choice = (String) JOptionPane.showInputDialog(
+                null,
+                "Choose a date option:",
+                "Date Options",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choice == null) {
+            // User pressed cancel or closed the dialog
+            JOptionPane.showMessageDialog(parent.getContentPane(), "No options selected.");
+            return;
+        }
+
+        switch (choice) {
+            case "today":
+                // Display today's date
+                String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                getSpecificTaskDate(today);
+                break;
+
+            case "tomorrow":
+                // Display tomorrow's date
+                Date tomorrowDate = new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24));
+                String tomorrow = new SimpleDateFormat("yyyy-MM-dd").format(tomorrowDate);
+                getSpecificTaskDate(tomorrow);
+                break;
+
+            case "random date":
+                // Prompt the user to enter a random date
+                String randomDate = JOptionPane.showInputDialog("Please enter a date (yyyy-MM-dd):");
+
+                if (randomDate != null) {
+                    // Validate the date format
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        sdf.setLenient(false);
+                        Date date = sdf.parse(randomDate);
+                        getSpecificTaskDate(randomDate);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "Invalid date format. Please use yyyy-MM-dd.");
+                    }
+                } else {
+                    // User pressed cancel or closed the dialog
+                    System.out.println("No date entered.");
+                }
+                break;
+
+            default:
+                System.out.println("Unexpected option: " + choice);
+        }
+    }
+    
+    private void getSpecificTaskDate(String date){
+        LocalDate input_date = convertStrDate(date);
+        LinkedList<String> result = new LinkedList<>();
         
+        //iterate the taskList
+        for (int i = 0; i < taskList.size(); i++){
+            LocalDate date_from = convertStrDate(taskList.get(i).getTimeFromInput());
+            if (taskList.get(i).getTypeInput().equals("One-day event")){                
+                if (date_from.equals(input_date)){
+                    result.add(taskList.get(i).getNameInput());
+                }
+            //multiple day event
+            }else{
+                LocalDate date_to = convertStrDate(taskList.get(i).getTimeToInput());
+                LocalDate curr_iter = date_from;
+        
+                while (!curr_iter.isAfter(date_to)) {
+                    if (curr_iter.equals(input_date)){
+                        result.add(taskList.get(i).getNameInput());
+                        break;
+                    }
+                    // Increment date by one day
+                    curr_iter = curr_iter.plusDays(1);
+                }
+            }
+        }
+        
+        //show the result in dialogue text
+        if (result.isEmpty()){
+            parent.setDialogText("You don't have any tasks for " + date + ", Nara.");
+        }
+        else{            
+            String message = "For " + date + " task(s), you have ";
+            for (int i = 0; i < result.size(); i++){
+                message += result.get(i);
+                
+                if (i != result.size()-1){
+                    message += ", ";
+                }else{
+                    message += ", Nara.";
+                }
+            }
+            parent.setDialogText(message);
+        } 
+    }
+    
+    private LocalDate convertStrDate(String timeStr){
+        String modify = timeStr;
+        if (timeStr.length() != 10){
+            modify = timeStr.substring(0, 8) + "0" + timeStr.charAt(8);
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(modify, formatter);
+        return date;
     }
 
     /**
