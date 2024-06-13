@@ -13,13 +13,18 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Scanner;
+import org.json.JSONArray;
 
 public class WeatherExample {
     private static final String API_KEY = "53df037de4b6740e159a2d4f1841580f"; // Replace with your OpenWeatherMap API key
     private static final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s";
 
     public static void main(String[] args) {
-        String city = "Jakarta"; // Change this to the city you want to query
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter city:");
+        String city = sc.nextLine();
+        
         getWeather(city);
     }
 
@@ -52,14 +57,24 @@ public class WeatherExample {
 
     public static void parseWeatherResponse(String response) {
         JSONObject jsonObject = new JSONObject(response);
-
+        
         String cityName = jsonObject.getString("name");
         JSONObject main = jsonObject.getJSONObject("main");
+        
+        //get the temperature
         double temperature = main.getDouble("temp");
         double tempInCelsius = temperature - 273.15; // Convert from Kelvin to Celsius
-
+        
+        //get the weather description
+        JSONArray weatherArray = jsonObject.getJSONArray("weather");
+        JSONObject weatherObj = weatherArray.getJSONObject(0);
+        String weatherMain = weatherObj.getString("main");
+        String weatherDesc = weatherObj.getString("description");
+        
         System.out.println("City: " + cityName);
         System.out.println("Temperature: " + String.format("%.2f", tempInCelsius) + " °C");
+        System.out.println("Weather: " + weatherMain);
+        System.out.println("Weather description: " + weatherDesc);
     }
 }
 

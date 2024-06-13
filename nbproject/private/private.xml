@@ -13,7 +13,7 @@
             <url>src/App/EditAranara.java</url>
             <bookmark id="3">
                 <name/>
-                <line>176</line>
+                <line>234</line>
                 <key/>
             </bookmark>
         </file>
@@ -22,6 +22,10 @@
         <group>
             <file>file:/C:/Users/Asus/Documents/NetBeansProjects/OOP-FinalProject/src/App/AranaraChatMenu.java</file>
             <file>file:/C:/Users/Asus/Documents/NetBeansProjects/OOP-FinalProject/src/App/EditAranara.java</file>
+            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/OOP-FinalProject/src/App/CalendarPage.java</file>
+            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/OOP-FinalProject/src/App/Quotes.txt</file>
+            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/OOP-FinalProject/src/App/HomePage.java</file>
+            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/OOP-FinalProject/src/App/WeatherExample.java</file>
         </group>
     </open-files>
 </project-private>

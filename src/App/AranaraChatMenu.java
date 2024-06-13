@@ -5,7 +5,6 @@
 package App;
 
 import DatabaseConnection.ConnectionProvider;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,24 +12,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.TimerTask;
-import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -43,6 +44,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     private LinkedList<Task> taskList = new LinkedList<>();
     private String game_choice;
     private String aranara_choice;
+    private static final String API_KEY = "53df037de4b6740e159a2d4f1841580f"; 
+    private static final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s";
     /**
      * Creates new form AranaraChatMenu
      */
@@ -200,7 +203,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         weatherBtn.setRadius(20);
         weatherBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               // weatherBtnActionPerformed(evt);
+                weatherBtnActionPerformed();
             }
         });
         getContentPane().add(weatherBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 526, 128, 119)); 
@@ -218,7 +221,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         gameBtn.setRadius(20);
         gameBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                gameBtnActionPerformed();
+                createGamePanel();
             }
         });
         getContentPane().add(gameBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 526, 128, 119)); 
@@ -495,10 +498,6 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         return str.matches("\\d+");
     }
     
-    private void gameBtnActionPerformed(){
-        createGamePanel();
-    }
-    
     private void aranaraTurn(){
         String[] move = {"rock", "paper", "scissors"};
         
@@ -688,6 +687,96 @@ public class AranaraChatMenu extends javax.swing.JFrame {
                 scisBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/scissors.png")));
             }
         });
+    }
+    
+    private void weatherBtnActionPerformed(){
+        String city = JOptionPane.showInputDialog("Enter your city: ");
+        getWeather(city);
+    }
+    
+    private void getWeather(String city) {
+        try {
+            String urlString = String.format(WEATHER_URL, city, API_KEY);
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                parseWeatherResponse(response.toString());
+            } else {
+                parent.setDialogText(city + " is not available, Nara!");
+                System.out.println("GET request failed. Response code: " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseWeatherResponse(String response) {
+        JSONObject jsonObject = new JSONObject(response);
+        
+        String cityName = jsonObject.getString("name");
+        JSONObject main = jsonObject.getJSONObject("main");
+        
+        //get the temperature
+        double temperature = main.getDouble("temp");
+        double tempInCelsius = temperature - 273.15; // Convert from Kelvin to Celsius
+        
+        //get the weather description
+        JSONArray weatherArray = jsonObject.getJSONArray("weather");
+        JSONObject weatherObj = weatherArray.getJSONObject(0);
+        String weatherMain = weatherObj.getString("main");
+        String weatherDesc = weatherObj.getString("description");
+        
+        System.out.println("City: " + cityName);
+        System.out.println("Temperature: " + String.format("%.2f", tempInCelsius) + " °C");
+        System.out.println("Weather: " + weatherMain);
+        System.out.println("Weather description: " + weatherDesc);
+        
+        String temper = String.format("%.2f", tempInCelsius) + " °C";
+        String suppMsg = getAranaraMsg(weatherMain);
+        String msg = "The weather in " + cityName + " today is " + weatherMain + " (" + weatherDesc + ") with the temperature of " 
+                + temper + ". " + suppMsg;
+        
+        parent.setDialogText(msg);
+    }
+    
+    private String getAranaraMsg(String main){
+        String msg = "";
+        
+        if(main.equals("Clear")){
+            msg += "A good day for exploring, Nara!";
+        }
+        else if(main.equals("Clouds")){
+            msg += "Better prepare your umbrella, Nara.";
+        }
+        else if(main.equals("Drizzle") || main.equals("Rain") || main.equals("Thunderstorm")){
+            msg += "Don't forget your umbrella, Nara!";
+        }
+        else if(main.equals("Snow")){
+            msg += "It's cold, wear more warm clothes, Nara.";
+        }
+        else if(main.equals("Mist") || main.equals("Fog")){
+            msg += "Be careful when hitting the road, Nara.";
+        }
+        else if(main.equals("Smoke") || main.equals("Sand") || main.equals("Haze") || main.equals("Ash")){
+            msg += "Wear your mask, Nara!";
+        }
+        else if(main.equals("Squall") || main.equals("Tornado")){
+            msg += "Better stay indoor, Nara.";
+        }
+        
+        return msg;
     }
     /**
      * This method is called from within the constructor to initialize the form.

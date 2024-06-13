@@ -5,9 +5,6 @@
 package App;
 
 import DatabaseConnection.ConnectionProvider;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -17,12 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.Random;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -365,7 +357,7 @@ public class EditAranara extends javax.swing.JFrame {
 
         dialog_text.setFont(new java.awt.Font("Montserrat", 0, 20));
         jLayeredPane1.add(dialog_text);
-        dialog_text.setBounds(40, 80, 400, 190);
+        dialog_text.setBounds(45, 80, 400, 190);
 
         dialog_box.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/dialog_box.png"))); // NOI18N
         jLayeredPane1.add(dialog_box);
