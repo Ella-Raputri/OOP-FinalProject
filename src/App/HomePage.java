@@ -10,6 +10,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,14 +21,15 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Random;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
-import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -39,6 +43,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class HomePage extends javax.swing.JFrame {
     private String userID = "u1";
     private HashMap<String, Integer> completionRate = new HashMap<>();
+    private String[] quotes = new String[80];
+    private String[] by = new String[80];
+    private int count = 0;
     /**
      * Creates new form HomePage
      */
@@ -55,6 +62,42 @@ public class HomePage extends javax.swing.JFrame {
         this.userID = ID;
         initComponents();
         myinit();
+    }
+    
+    private void inputQuote() {
+        try {
+            //read the ExampleQuestions file
+            FileReader fr =new FileReader("src/App/Quotes.txt");    
+            BufferedReader reader = new BufferedReader(fr);
+            String eachLine;
+            //while reading each line
+            while ((eachLine = reader.readLine()) != null) {
+                //split each line by the '_' symbol
+                String[] part = eachLine.split("_");
+                if (part.length == 2) {
+                    quotes[count] = part[0]; // the first part is the quote
+                    by[count] = part[1]; // the second part is the answer
+                    count++;
+                } else {
+                    System.out.println("Invalid format in line: " + eachLine);
+                }
+            }
+            reader.close();
+
+        } catch (IOException e) {
+            //exception if file is not available
+            System.out.println("Cannot find file. Please try again."); 
+        }
+    }
+    
+    private void setRandomQuote(){
+        inputQuote();
+        Random random = new Random();
+        int index = random.nextInt(80);
+        quotetxt.setText(quotes[index]);
+        quotetxt.setHorizontalAlignment(SwingConstants.CENTER);
+        quoteby_txt.setText("~" +by[index]);
+        quoteby_txt.setHorizontalAlignment(SwingConstants.RIGHT);
     }
     
     //handle hover button in the navbar
@@ -281,6 +324,7 @@ public class HomePage extends javax.swing.JFrame {
         showBarChart();
         setAnalysisTxt();
         setTodayTasks();
+        setRandomQuote();
     }
     
     private boolean isNewWeek(LocalDate referenceDate, LocalDate currentDate) {
@@ -317,7 +361,7 @@ public class HomePage extends javax.swing.JFrame {
             Connection con = ConnectionProvider.getCon();
             
             if (isReset){
-                String query = "UPDATE user SET Mon = ?, Tue = ?, Wed = ?, Thu = ?, Fri = ?. Sat = ?, Sun = ?, last_online = ? WHERE userID = ?";
+                String query = "UPDATE task_completion SET Mon = ?, Tue = ?, Wed = ?, Thu = ?, Fri = ?, Sat = ?, Sun = ?, last_login = ? WHERE userID = ?";
  
                 PreparedStatement ps = con.prepareStatement(query);
                 ps.setInt(1, 0);
@@ -332,7 +376,7 @@ public class HomePage extends javax.swing.JFrame {
                 ps.executeUpdate();
                 
             }else{
-                String query = "UPDATE user SET last_online = ? WHERE userID = ?";
+                String query = "UPDATE task_completion SET last_login = ? WHERE userID = ?";
                 PreparedStatement ps = con.prepareStatement(query);
                 ps.setString(1, todayStr);
                 ps.setString(2, userID);
@@ -340,6 +384,7 @@ public class HomePage extends javax.swing.JFrame {
 
         }catch(Exception e){
             JOptionPane.showMessageDialog(getContentPane(), e);
+            e.printStackTrace();
         }
     }
     
@@ -359,14 +404,7 @@ public class HomePage extends javax.swing.JFrame {
                     String last = rs.getString("last_login");
                     LocalDate today = LocalDate.now();
                     LocalDate last_login = convertStrDate(last);
-
-                    if (isNewWeek(last_login, today)){
-                        resetTaskCompletions(true, today);
-                    }else{
-                        resetTaskCompletions(false, today);
-                    }
                     
-                    //get the amount of tasks 
                     int amtMon = rs.getInt("Mon");
                     int amtTue = rs.getInt("Tue");
                     int amtWed = rs.getInt("Wed");
@@ -374,6 +412,19 @@ public class HomePage extends javax.swing.JFrame {
                     int amtFri = rs.getInt("Fri");
                     int amtSat = rs.getInt("Sat");
                     int amtSun = rs.getInt("Sun");
+
+                    if (isNewWeek(last_login, today)){
+                        resetTaskCompletions(true, today);
+                        amtMon = 0;
+                        amtTue = 0;
+                        amtWed = 0;
+                        amtThu = 0;
+                        amtFri = 0;
+                        amtSat = 0;
+                        amtSun = 0;
+                    }else{
+                        resetTaskCompletions(false, today);
+                    }
                     
                     completionRate.put("Mon", amtMon);
                     completionRate.put("Tue", amtTue);
@@ -542,7 +593,7 @@ public class HomePage extends javax.swing.JFrame {
         your_daily_txt1 = new javax.swing.JLabel();
         your_daily_quote = new javax.swing.JLabel();
         quoteby_txt = new javax.swing.JLabel();
-        quotetxt = new javax.swing.JLabel();
+        quotetxt = new WrappedLabel(318);
         aranara_pict = new javax.swing.JLabel();
         homeBtn = new javax.swing.JLabel();
         homeBtnTxt = new javax.swing.JLabel();
@@ -618,12 +669,12 @@ public class HomePage extends javax.swing.JFrame {
         quoteby_txt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
         quoteby_txt.setForeground(new java.awt.Color(85, 155, 0));
         quoteby_txt.setText("~[name]");
-        getContentPane().add(quoteby_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(1106, 586, -1, -1));
+        getContentPane().add(quoteby_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(1083, 591, -1, -1));
 
         quotetxt.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         quotetxt.setForeground(new java.awt.Color(58, 58, 58));
         quotetxt.setText("[quote]");
-        getContentPane().add(quotetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(909, 502, -1, -1));
+        getContentPane().add(quotetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(882, 500, -1, -1));
 
         aranara_pict.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arama_home.png"))); // NOI18N
         getContentPane().add(aranara_pict, new org.netbeans.lib.awtextra.AbsoluteConstraints(891, 71, -1, -1));

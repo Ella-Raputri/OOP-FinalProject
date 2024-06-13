@@ -7,26 +7,20 @@ package App;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,12 +41,16 @@ public class TextResult extends javax.swing.JFrame {
      * Creates new form TextResult
      */
     public TextResult() {
+        setResizable(false);
+        setTitle("Generate Workflow to Text");
         initComponents();        
         myinit();
         initDesign();
     }
     
     public TextResult(LinkedList<Flow> flowlist) {
+        setResizable(false);
+        setTitle("Generate Workflow to Text");
         this.flowlist = flowlist;
         initComponents();
         myinit();
@@ -84,7 +82,7 @@ public class TextResult extends javax.swing.JFrame {
 
         dateField.setBackground(new java.awt.Color(234, 234, 234));
         dateField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        dateField.setForeground(new java.awt.Color(155, 154, 154));
+        dateField.setForeground(new java.awt.Color(93, 93, 93));
         dateField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         dateField.setText("Date");
         dateField.setToolTipText("");
@@ -92,7 +90,7 @@ public class TextResult extends javax.swing.JFrame {
 
         monthComboBox.setBackground(new java.awt.Color(234, 234, 234));
         monthComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        monthComboBox.setForeground(new java.awt.Color(155, 154, 154));
+        monthComboBox.setForeground(new java.awt.Color(93, 93, 93));
         monthComboBox.setMaximumRowCount(12);
         monthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember" }));
         monthComboBox.setToolTipText("");
@@ -100,7 +98,7 @@ public class TextResult extends javax.swing.JFrame {
 
         yearField.setBackground(new java.awt.Color(234, 234, 234));
         yearField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        yearField.setForeground(new java.awt.Color(155, 154, 154));
+        yearField.setForeground(new java.awt.Color(93, 93, 93));
         yearField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         yearField.setText("Year");
         yearField.setToolTipText("");
@@ -193,6 +191,7 @@ public class TextResult extends javax.swing.JFrame {
                 if (i == 0) space0 = 30;
                 else space0 = 0;
                 
+                yPos += space0;
                 JLabel date_label = new JLabel(dateList.get(i));
                 date_label.setFont(new java.awt.Font("Montserrat Semibold", 0, 18)); // Customize the font as needed
                 date_label.setBounds(10, yPos, 460, labelHeight);

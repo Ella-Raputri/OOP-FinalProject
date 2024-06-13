@@ -1,6 +1,6 @@
 You have to see the world for yourself to appreciate how beautiful it is._Nahida
 The forest is vast, and dreams are vast, so I am small._Arama
-I was afraid. But the Golden Nara has been to many places. The tiny dandelions and spores with you are all saying that you are a very, very good Nara._Arama
+The tiny dandelions and spores with you are all saying that you are a very, very good Nara._Arama
 M-my sister said that if I'm always half asleep like this, a bad Nara will take me and make porridge out of me..._Araphala
 No problem. I'll wait for you._Arama
 Aranakula is not powerful, but will try to help you!_Aranakula
@@ -10,16 +10,16 @@ When that day comes, Araja hopes that you will find these stories interesting an
 The pattern on the staff grows continuously, like the annual rings of a tree. The more stories it hears, the stronger it becomes._Aravinay
 Go! Go!_Arama
 In the end, all that remains is beautiful. Those who part will come to meet again in Sarva._Arama
-Nara Traveler and Paimon are Aranara's friends. Aranara do not have great power, but if you are in danger, Aranara will try to protect you._Arapandu
-I know! I had it with my friend at the time. So the 'taste of happiness' has to be shared with friends for it to be delicious, right?_Arasaka
+Aranara do not have great power, but if you are in danger, Aranara will try to protect you._Arapandu
+I had it with my friend at the time. So the 'taste of happiness' has to be shared with friends for it to be delicious, right?_Arasaka
 I've observed Nara, and I noticed that they become very good and willing to help other Nara once they hear the word 'treasure'._Arama
-Aranara song gatherers always pursue the beauty of songs. At the end of time, they will leave behind a song that belongs only to themselves._Arama
+Aranara song gatherers always pursue the beauty of songs. At the end, they will leave behind a song that belongs only to themselves._Arama
 Everything in the forest will never be forgotten. Nara, your story will pass on and on among Aranara, Araja knows that._Araja
 You're amazing! You're good Nara who help Aranara. Now, no one will be afraid to let you enter Vanarana._Arama
 We were in the forest together with Nara friend, counting the number of patches of sunlight that fell between the leaves._Arasaka
 'Press forward and sing, even if the path is filled with flame...'_Aradasa
 No matter how many times the sun rises again, your story will not be forgotten. Vana will always remember you._Aravinay
-Dreams are like leaves in a stream. If you want to keep a dream in place, you have to let it grow roots. That way, the dream won't drift away._Arama
+If you want to keep a dream in place, you have to let it grow roots. That way, the dream won't drift away._Arama
 There are too many things in this world that you’ll miss if you don’t get there on time._Nahida
 We only yearn for the skies because we cannot fly._Nahida
 People often say that wisdom isn’t about what you know, but knowing what you can change._Nahida
@@ -35,7 +35,7 @@ Even if life’s all in a jumble, you can sort it out as long as there’s a whi
 Every journey has its final day. Don’t rush._Zhongli
 You should know that all power comes at a price. For every bit of power you gain, so too do you gain more responsibility._Zhongli
 Power is necessary if we are to meet our objectives._Diluc
-Once you establish a relation with someone, you must continue to maintain it; if you lose contact, you must reestablish the relation._Albedo
+Once you establish a relation with someone, you must continue to maintain it._Albedo
 Listen, as long as you stick to your own path, it doesn’t matter what Mother Nature throws at you._Diluc
 A successful day starts from the morning. Let’s give it our all today._Jean
 There’s just never enough time, is there?_Albedo
@@ -56,13 +56,13 @@ If you can change something, change it. If you can’t, don’t waste time think
 If you lie on the grass, you can feel the heartbeat of the world._Ganyu
 Yesterday's experiences make me stronger today._Keqing
 But if the gods haven’t given up on me, I guess that means I shouldn’t give up on me either._Bennett
-One man’s stone is another man’s gem._
+One man’s stone is another man’s gem._Zhongli
 In adventuring, as in business, you always have to seize the opportunity while it’s there._Keqing
 If you feel strongly about something, you should speak up and take action._Keqing
 When your heart is set on something, you get closer to your goal with each passing day._Keqing
 To exist in the first place is a beautiful thing, and that’s enough… isn’t it?_Ganyu
 Beautiful treasures are a cause for great happiness._Ganyu
-Imagine, a world consisting of you and you alone, with no one else to reflect you back at yourself; how awful that would be._Yae Miko
+Imagine, a world consisting of you alone, with no one else to reflect you back at yourself; how awful that would be._Yae Miko
 Direct and clear observation are imperative to a good experiment._Albedo
 Genius? A number of people call me that. But I don't think I'm any "genius"._Albedo
 "The truth of this world"... what could it be?_Albedo

@@ -1,13 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package App;
 
-/**
- *
- * @author asus
- */
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -23,14 +16,21 @@ public class WrappedLabel extends JLabel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        //super.paintComponent(g); // Ensure any background painting is done
+
         String text = getText();
         FontMetrics fm = g.getFontMetrics();
+        String[] lines = getWrappedLines(text, fm);
 
         int lineHeight = fm.getHeight();
-        int x = (getWidth() - getPreferredSize().width) / 2;
-        int y = fm.getAscent();
+        int totalHeight = lines.length * lineHeight;
 
-        for (String line : getWrappedLines(text, fm)) {
+        // Center vertically by calculating the starting y position
+        int y = (getHeight() - totalHeight) / 2 + fm.getAscent();
+
+        for (String line : lines) {
+            int lineWidth = fm.stringWidth(line);
+            int x = (getWidth() - lineWidth) / 2; // Center each line horizontally
             g.drawString(line, x, y);
             y += lineHeight;
         }
@@ -81,13 +81,11 @@ public class WrappedLabel extends JLabel {
 
         // Add the last line if there's any remaining content
         if (currentLine.length() > 0) {
-            wrappedLines.add(currentLine.toString());    
+            wrappedLines.add(currentLine.toString());
         }
 
         return wrappedLines.toArray(new String[0]);
     }
-    
-
 
     @Override
     public Dimension getPreferredSize() {
@@ -108,5 +106,11 @@ public class WrappedLabel extends JLabel {
 
         return new Dimension(maxWidth, totalHeight);
     }
-}
 
+    @Override
+    public void setText(String text) {
+        super.setText(text);
+        revalidate();
+        repaint();
+    }
+}

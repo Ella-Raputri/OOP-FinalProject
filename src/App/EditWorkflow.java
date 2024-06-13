@@ -185,7 +185,7 @@ public class EditWorkflow extends javax.swing.JFrame {
 
         fromField.setBackground(new java.awt.Color(234, 234, 234));
         fromField.setFont(new java.awt.Font("Montserrat", 0, 18)); 
-        fromField.setForeground(new java.awt.Color(155, 154, 154));
+        fromField.setForeground(new java.awt.Color(93, 93, 93));
         fromField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         fromField.setText("Day");
         fromField.setBorder(new EmptyBorder(new Insets(5, 10, 5, 10)));
@@ -193,7 +193,7 @@ public class EditWorkflow extends javax.swing.JFrame {
 
         nameField.setBackground(new java.awt.Color(234, 234, 234));
         nameField.setFont(new java.awt.Font("Montserrat", 0, 18)); 
-        nameField.setForeground(new java.awt.Color(155, 154, 154));
+        nameField.setForeground(new java.awt.Color(93, 93, 93));
         nameField.setBorder(new EmptyBorder(new Insets(5, 15, 5, 10)));
         nameField.setText("Name");
         getContentPane().add(nameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(155, 211, 427, 41));
@@ -204,7 +204,7 @@ public class EditWorkflow extends javax.swing.JFrame {
 
         fromComboBox.setBackground(new java.awt.Color(234, 234, 234));
         fromComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); 
-        fromComboBox.setForeground(new java.awt.Color(155, 154, 154));
+        fromComboBox.setForeground(new java.awt.Color(93, 93, 93));
         fromComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Before", "After" }));
         fromComboBox.setToolTipText("");
         getContentPane().add(fromComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 317, 140, 38));
@@ -219,7 +219,7 @@ public class EditWorkflow extends javax.swing.JFrame {
 
         toField.setBackground(new java.awt.Color(234, 234, 234));
         toField.setFont(new java.awt.Font("Montserrat", 0, 18)); 
-        toField.setForeground(new java.awt.Color(155, 154, 154));
+        toField.setForeground(new java.awt.Color(93, 93, 93));
         toField.setHorizontalAlignment(javax.swing.JTextField.CENTER);        
         toField.setBorder(new EmptyBorder(new Insets(5, 15, 5, 10)));
         toField.setEnabled(false);
@@ -227,7 +227,7 @@ public class EditWorkflow extends javax.swing.JFrame {
 
         colorComboBox.setBackground(new java.awt.Color(234, 234, 234));
         colorComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); 
-        colorComboBox.setForeground(new java.awt.Color(155, 154, 154));
+        colorComboBox.setForeground(new java.awt.Color(93, 93, 93));
         colorComboBox.setMaximumRowCount(10);
         colorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Blue", "Red", "Orange", "Yellow", "Green", "Purple", "Pink", "Brown" }));
         colorComboBox.setToolTipText("");
@@ -235,7 +235,7 @@ public class EditWorkflow extends javax.swing.JFrame {
 
         toComboBox.setBackground(new java.awt.Color(234, 234, 234));
         toComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); 
-        toComboBox.setForeground(new java.awt.Color(155, 154, 154));
+        toComboBox.setForeground(new java.awt.Color(93, 93, 93));
         toComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Before", "After" }));
         toComboBox.setToolTipText("");
         toComboBox.setEnabled(false);
@@ -281,7 +281,7 @@ public class EditWorkflow extends javax.swing.JFrame {
         notesArea.setBackground(new java.awt.Color(234, 234, 234));
         notesArea.setColumns(22);
         notesArea.setFont(new java.awt.Font("Montserrat", 0, 18)); 
-        notesArea.setForeground(new java.awt.Color(155, 154, 154));
+        notesArea.setForeground(new java.awt.Color(93, 93, 93));
         notesArea.setRows(3);
         notesArea.setTabSize(5);
         notesArea.setText("Notes");

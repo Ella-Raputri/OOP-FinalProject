@@ -46,6 +46,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     private String aranara_choice;
     private static final String API_KEY = "53df037de4b6740e159a2d4f1841580f"; 
     private static final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s";
+    private static int open = 0;
     /**
      * Creates new form AranaraChatMenu
      */
@@ -85,9 +86,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         hiBtn.setForeground(new java.awt.Color(255, 255, 255));
         hiBtn.setText("");
         hiBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hiBtn.png")));
-        hiBtn.setBorderColor(new java.awt.Color(155, 154, 154));
-        hiBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
-        hiBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
+        hiBtn.setBorderColor(new java.awt.Color(93, 93, 93));
+        hiBtn.setBorderColorNotOver(new java.awt.Color(93, 93, 93));
+        hiBtn.setBorderColorOver(new java.awt.Color(93, 93, 93));
         hiBtn.setColor(Color.white);
         hiBtn.setColorClick(new java.awt.Color(234, 234, 234));
         hiBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -95,7 +96,12 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         hiBtn.setRadius(20);
         hiBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hiBtnActionPerformed();
+                if (open == 0){
+                   open = 1;
+                   hiBtnActionPerformed();                   
+                }else{
+                   JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
+                }                
             }
         });
         getContentPane().add(hiBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 73, 128, 119)); 
@@ -103,9 +109,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         taskBtn.setForeground(new java.awt.Color(255, 255, 255));
         taskBtn.setText("");
         taskBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/taskBtn.png")));
-        taskBtn.setBorderColor(new java.awt.Color(155, 154, 154));
-        taskBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
-        taskBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
+        taskBtn.setBorderColor(new java.awt.Color(93, 93, 93));
+        taskBtn.setBorderColorNotOver(new java.awt.Color(93, 93, 93));
+        taskBtn.setBorderColorOver(new java.awt.Color(93, 93, 93));
         taskBtn.setColor(Color.white);
         taskBtn.setColorClick(new java.awt.Color(234, 234, 234));
         taskBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -113,7 +119,12 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         taskBtn.setRadius(20);
         taskBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                taskBtnActionPerformed();
+                if (open == 0){
+                   open = 1;
+                   taskBtnActionPerformed();                   
+                }else{
+                   JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
+                }  
             }
         });
         getContentPane().add(taskBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 73, 128, 119)); 
@@ -121,9 +132,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         wordBtn.setForeground(new java.awt.Color(255, 255, 255));
         wordBtn.setText("");
         wordBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/wordBtn.png")));
-        wordBtn.setBorderColor(new java.awt.Color(155, 154, 154));
-        wordBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
-        wordBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
+        wordBtn.setBorderColor(new java.awt.Color(93, 93, 93));
+        wordBtn.setBorderColorNotOver(new java.awt.Color(93, 93, 93));
+        wordBtn.setBorderColorOver(new java.awt.Color(93, 93, 93));
         wordBtn.setColor(Color.white);
         wordBtn.setColorClick(new java.awt.Color(234, 234, 234));
         wordBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -131,7 +142,12 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         wordBtn.setRadius(20);
         wordBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-              openMsApplication("winword", "Word");
+                if (open == 0){
+                   open = 1;
+                   openMsApplication("winword", "Word");                 
+                }else{
+                   JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
+                }                
             }
         });
         getContentPane().add(wordBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 225, 128, 119)); 
@@ -139,17 +155,22 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         excelBtn.setForeground(new java.awt.Color(255, 255, 255));
         excelBtn.setText("");
         excelBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/excelBtn.png")));
-        excelBtn.setBorderColor(new java.awt.Color(155, 154, 154));
-        excelBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
-        excelBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
+        excelBtn.setBorderColor(new java.awt.Color(93, 93, 93));
+        excelBtn.setBorderColorNotOver(new java.awt.Color(93, 93, 93));
+        excelBtn.setBorderColorOver(new java.awt.Color(93, 93, 93));
         excelBtn.setColor(Color.white);
         excelBtn.setColorClick(new java.awt.Color(234, 234, 234));
         excelBtn.setColorOver(new java.awt.Color(234, 234, 234));
         excelBtn.setFont(new java.awt.Font("Montserrat Semibold", 0, 14)); // NOI18N
         excelBtn.setRadius(20);
         excelBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-               openMsApplication("excel", "Excel");
+            public void actionPerformed(java.awt.event.ActionEvent evt) {               
+               if (open == 0){
+                   open = 1;
+                   openMsApplication("excel", "Excel");                   
+                }else{
+                   JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
+                }  
             }
         });
         getContentPane().add(excelBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 225, 128, 119)); 
@@ -157,9 +178,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         pptBtn.setForeground(new java.awt.Color(255, 255, 255));
         pptBtn.setText("");
         pptBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/pptBtn.png")));
-        pptBtn.setBorderColor(new java.awt.Color(155, 154, 154));
-        pptBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
-        pptBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
+        pptBtn.setBorderColor(new java.awt.Color(93, 93, 93));
+        pptBtn.setBorderColorNotOver(new java.awt.Color(93, 93, 93));
+        pptBtn.setBorderColorOver(new java.awt.Color(93, 93, 93));
         pptBtn.setColor(Color.white);
         pptBtn.setColorClick(new java.awt.Color(234, 234, 234));
         pptBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -167,7 +188,12 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         pptBtn.setRadius(20);
         pptBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               openMsApplication("powerpnt", "PowerPoint");
+                if (open == 0){
+                   open = 1;
+                   openMsApplication("powerpnt", "PowerPoint");                   
+                }else{
+                   JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
+                }                 
             }
         });
         getContentPane().add(pptBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 377, 128, 119)); 
@@ -175,9 +201,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         timerBtn.setForeground(new java.awt.Color(255, 255, 255));
         timerBtn.setText("");
         timerBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/timerBtn.png")));
-        timerBtn.setBorderColor(new java.awt.Color(155, 154, 154));
-        timerBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
-        timerBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
+        timerBtn.setBorderColor(new java.awt.Color(93, 93, 93));
+        timerBtn.setBorderColorNotOver(new java.awt.Color(93, 93, 93));
+        timerBtn.setBorderColorOver(new java.awt.Color(93, 93, 93));
         timerBtn.setColor(Color.white);
         timerBtn.setColorClick(new java.awt.Color(234, 234, 234));
         timerBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -185,7 +211,12 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         timerBtn.setRadius(20);
         timerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                timerBtnActionPerformed();
+                if (open == 0){
+                   open = 1;
+                   timerBtnActionPerformed();                   
+                }else{
+                   JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
+                }                  
             }
         });
         getContentPane().add(timerBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 377, 128, 119)); 
@@ -193,9 +224,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         weatherBtn.setForeground(new java.awt.Color(255, 255, 255));
         weatherBtn.setText("");
         weatherBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/weatherBtn.png")));
-        weatherBtn.setBorderColor(new java.awt.Color(155, 154, 154));
-        weatherBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
-        weatherBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
+        weatherBtn.setBorderColor(new java.awt.Color(93, 93, 93));
+        weatherBtn.setBorderColorNotOver(new java.awt.Color(93, 93, 93));
+        weatherBtn.setBorderColorOver(new java.awt.Color(93, 93, 93));
         weatherBtn.setColor(Color.white);
         weatherBtn.setColorClick(new java.awt.Color(234, 234, 234));
         weatherBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -203,7 +234,12 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         weatherBtn.setRadius(20);
         weatherBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                weatherBtnActionPerformed();
+                if (open == 0){
+                   open = 1;
+                   weatherBtnActionPerformed();                  
+                }else{
+                   JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
+                }                  
             }
         });
         getContentPane().add(weatherBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 526, 128, 119)); 
@@ -211,9 +247,9 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         gameBtn.setForeground(new java.awt.Color(255, 255, 255));
         gameBtn.setText("");
         gameBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/gameBtn.png")));
-        gameBtn.setBorderColor(new java.awt.Color(155, 154, 154));
-        gameBtn.setBorderColorNotOver(new java.awt.Color(155, 154, 154));
-        gameBtn.setBorderColorOver(new java.awt.Color(155, 154, 154));
+        gameBtn.setBorderColor(new java.awt.Color(93, 93, 93));
+        gameBtn.setBorderColorNotOver(new java.awt.Color(93, 93, 93));
+        gameBtn.setBorderColorOver(new java.awt.Color(93, 93, 93));
         gameBtn.setColor(Color.white);
         gameBtn.setColorClick(new java.awt.Color(234, 234, 234));
         gameBtn.setColorOver(new java.awt.Color(234, 234, 234));
@@ -221,7 +257,12 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         gameBtn.setRadius(20);
         gameBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                createGamePanel();
+                if (open == 0){
+                   open = 1;
+                   gameBtnActionPerformed();                   
+                }else{
+                   JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
+                }                  
             }
         });
         getContentPane().add(gameBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 526, 128, 119)); 
@@ -249,6 +290,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error opening " + name + e.getMessage());
         }
+        open = 0;
     }
     
     private void queryAllUserInfo(){
@@ -320,6 +362,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             }
         }
         parent.setDialogText(proper[index]);
+        
+        open = 0;
     }
     
     private void taskBtnActionPerformed(){        
@@ -380,6 +424,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             default:
                 System.out.println("Unexpected option: " + choice);
         }
+        
+        open =0;
     }
     
     private void getSpecificTaskDate(String date){
@@ -461,6 +507,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
                 setReminder(arrOfStr[0], arrOfStr[1]);
             }
         }
+        
+        open =0;
     }
     
     private void setReminder(String min, String sec){
@@ -567,6 +615,11 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             } 
         }
         return message;
+    }
+    
+    private void gameBtnActionPerformed(){
+        createGamePanel();
+        open = 0;
     }
     
     private void createGamePanel(){
@@ -692,6 +745,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     private void weatherBtnActionPerformed(){
         String city = JOptionPane.showInputDialog("Enter your city: ");
         getWeather(city);
+        open = 0;
     }
     
     private void getWeather(String city) {

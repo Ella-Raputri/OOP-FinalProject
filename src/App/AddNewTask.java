@@ -104,9 +104,9 @@ public class AddNewTask extends javax.swing.JFrame {
 
         nameField.setBackground(new java.awt.Color(234, 234, 234));
         nameField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        nameField.setForeground(new java.awt.Color(155, 154, 154));
+        nameField.setForeground(new java.awt.Color(93, 93, 93));
         nameField.setText("Name");
-        nameField.setBorder(new EmptyBorder(new Insets(5, 15, 5, 10)));
+        nameField.setBorder(new EmptyBorder(new Insets(5, 10, 5, 10)));
         nameField.setCaretPosition(0);
         getContentPane().add(nameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 427, 41));
 
@@ -135,7 +135,7 @@ public class AddNewTask extends javax.swing.JFrame {
         noteArea.setBackground(new java.awt.Color(234, 234, 234));
         noteArea.setColumns(22);
         noteArea.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        noteArea.setForeground(new java.awt.Color(155, 154, 154));
+        noteArea.setForeground(new java.awt.Color(93, 93, 93));
         noteArea.setRows(3);
         noteArea.setTabSize(5);
         noteArea.setText("Notes");
@@ -150,7 +150,7 @@ public class AddNewTask extends javax.swing.JFrame {
 
         monthFromComboBox.setBackground(new java.awt.Color(234, 234, 234));
         monthFromComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        monthFromComboBox.setForeground(new java.awt.Color(155, 154, 154));
+        monthFromComboBox.setForeground(new java.awt.Color(93, 93, 93));
         monthFromComboBox.setMaximumRowCount(12);
         monthFromComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember" }));
         monthFromComboBox.setToolTipText("");
@@ -182,7 +182,7 @@ public class AddNewTask extends javax.swing.JFrame {
 
         fromYearField.setBackground(new java.awt.Color(234, 234, 234));
         fromYearField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        fromYearField.setForeground(new java.awt.Color(155, 154, 154));
+        fromYearField.setForeground(new java.awt.Color(93, 93, 93));
         fromYearField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         fromYearField.setText("Year");
         fromYearField.setToolTipText("");
@@ -195,7 +195,7 @@ public class AddNewTask extends javax.swing.JFrame {
 
         colorComboBox.setBackground(new java.awt.Color(234, 234, 234));
         colorComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        colorComboBox.setForeground(new java.awt.Color(155, 154, 154));
+        colorComboBox.setForeground(new java.awt.Color(93, 93, 93));
         colorComboBox.setMaximumRowCount(10);
         colorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Blue", "Red", "Orange", "Yellow", "Green", "Purple", "Pink", "Brown" }));
         colorComboBox.setToolTipText("");
@@ -203,7 +203,7 @@ public class AddNewTask extends javax.swing.JFrame {
 
         fromDateField.setBackground(new java.awt.Color(234, 234, 234));
         fromDateField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        fromDateField.setForeground(new java.awt.Color(155, 154, 154));
+        fromDateField.setForeground(new java.awt.Color(93, 93, 93));
         fromDateField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         fromDateField.setText("Date");
         fromDateField.setToolTipText("");
@@ -216,7 +216,7 @@ public class AddNewTask extends javax.swing.JFrame {
 
         toDateField.setBackground(new java.awt.Color(234, 234, 234));
         toDateField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        toDateField.setForeground(new java.awt.Color(155, 154, 154));
+        toDateField.setForeground(new java.awt.Color(93, 93, 93));
         toDateField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         toDateField.setText("Date");
         toDateField.setToolTipText("");
@@ -229,7 +229,7 @@ public class AddNewTask extends javax.swing.JFrame {
 
         monthToComboBox.setBackground(new java.awt.Color(234, 234, 234));
         monthToComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        monthToComboBox.setForeground(new java.awt.Color(155, 154, 154));
+        monthToComboBox.setForeground(new java.awt.Color(93, 93, 93));
         monthToComboBox.setMaximumRowCount(12);
         monthToComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember" }));
         monthToComboBox.setToolTipText("");
@@ -237,7 +237,7 @@ public class AddNewTask extends javax.swing.JFrame {
 
         toYearField.setBackground(new java.awt.Color(234, 234, 234));
         toYearField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        toYearField.setForeground(new java.awt.Color(155, 154, 154));
+        toYearField.setForeground(new java.awt.Color(93, 93, 93));
         toYearField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         toYearField.setText("Year");
         toYearField.setToolTipText("");

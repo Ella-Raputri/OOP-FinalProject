@@ -298,21 +298,6 @@ public class AranaraMenu extends javax.swing.JFrame {
             }
         });
         
-        aranaraBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new AranaraPage(userID).setVisible(true);
-            }
-        });
-        aranaraBtnTxt.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new AranaraPage(userID).setVisible(true);
-            }
-        });
-        
         logoutBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

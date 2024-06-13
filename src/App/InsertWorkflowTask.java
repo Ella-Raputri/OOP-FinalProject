@@ -69,7 +69,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
 
         dateField.setBackground(new java.awt.Color(234, 234, 234));
         dateField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        dateField.setForeground(new java.awt.Color(155, 154, 154));
+        dateField.setForeground(new java.awt.Color(93, 93, 93));
         dateField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         dateField.setText("Date");
         dateField.setToolTipText("");
@@ -77,7 +77,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
 
         monthComboBox.setBackground(new java.awt.Color(234, 234, 234));
         monthComboBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        monthComboBox.setForeground(new java.awt.Color(155, 154, 154));
+        monthComboBox.setForeground(new java.awt.Color(93, 93, 93));
         monthComboBox.setMaximumRowCount(12);
         monthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember" }));
         monthComboBox.setToolTipText("");
@@ -85,7 +85,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
 
         yearField.setBackground(new java.awt.Color(234, 234, 234));
         yearField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        yearField.setForeground(new java.awt.Color(155, 154, 154));
+        yearField.setForeground(new java.awt.Color(93, 93, 93));
         yearField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         yearField.setText("Year");
         yearField.setToolTipText("");
@@ -98,7 +98,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         String[] workflowOptions = queryAllWorkflow();
         workflowBox.setBackground(new java.awt.Color(234, 234, 234));
         workflowBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        workflowBox.setForeground(new java.awt.Color(155, 154, 154));
+        workflowBox.setForeground(new java.awt.Color(93, 93, 93));
         workflowBox.setMaximumRowCount(12);
         workflowBox.setModel(new javax.swing.DefaultComboBoxModel<>(workflowOptions));
         workflowBox.setToolTipText("");
