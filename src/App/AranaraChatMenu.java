@@ -47,6 +47,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     private static final String API_KEY = "53df037de4b6740e159a2d4f1841580f"; 
     private static final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s";
     private static int open = 0;
+    private SfxPlayer sfx = new SfxPlayer("src/App/sound/select.wav", 0.4f);;
     /**
      * Creates new form AranaraChatMenu
      */
@@ -92,6 +93,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (open == 0){
                    open = 1;
+                   sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                   sfx.play();
                    hiBtnActionPerformed();                   
                 }else{
                    JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
@@ -115,6 +118,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (open == 0){
                    open = 1;
+                   sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                   sfx.play();
                    taskBtnActionPerformed();                   
                 }else{
                    JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
@@ -138,6 +143,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (open == 0){
                    open = 1;
+                   sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                   sfx.play();
                    openMsApplication("winword", "Word");                 
                 }else{
                    JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
@@ -161,6 +168,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {               
                if (open == 0){
                    open = 1;
+                   sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                   sfx.play();
                    openMsApplication("excel", "Excel");                   
                 }else{
                    JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
@@ -184,6 +193,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (open == 0){
                    open = 1;
+                   sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                   sfx.play();
                    openMsApplication("powerpnt", "PowerPoint");                   
                 }else{
                    JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
@@ -207,6 +218,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (open == 0){
                    open = 1;
+                   sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                   sfx.play();
                    timerBtnActionPerformed();                   
                 }else{
                    JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
@@ -230,6 +243,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (open == 0){
                    open = 1;
+                   sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                   sfx.play();
                    weatherBtnActionPerformed();                  
                 }else{
                    JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
@@ -253,6 +268,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (open == 0){
                    open = 1;
+                   sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                   sfx.play();
                    gameBtnActionPerformed();                   
                 }else{
                    JOptionPane.showMessageDialog(getContentPane(), "One button window is already opened.");
@@ -591,6 +608,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
                 case "Arabalika" -> message = "Hmph. Arabalika admits you have some skills.";
                 default -> {}
             } 
+            sfx.loadSound("src/App/sound/win.wav", 0.8f);
+            sfx.play();
         }
         else if (player_result.equals("lose")){
            switch (parent.aranaraName) {
@@ -599,6 +618,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
                 case "Arabalika" -> message = "Don't be careless, Nara. Let's try again.";
                 default -> {}
             } 
+           sfx.loadSound("src/App/sound/lose.wav", 0.8f);
+           sfx.play();
         }
         else if (player_result.equals("draw")){
            switch (parent.aranaraName) {
@@ -607,6 +628,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
                 case "Arabalika" -> message = "Hmph. it's a draw.";
                 default -> {}
             } 
+            sfx.loadSound("src/App/sound/draw.wav", 0.8f);
+            sfx.play();
         }
         return message;
     }
@@ -679,6 +702,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 game_choice = "rock";
+                sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                sfx.play();
                 paperBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/paper_disabled.png")));
                 paperBtn.setEnabled(false);
                 scisBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/scissors_disabled.png")));
@@ -699,6 +724,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 game_choice = "paper";
+                sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                sfx.play();
                 rockBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/rock_disabled.png")));
                 rockBtn.setEnabled(false);
                 scisBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/scissors_disabled.png")));
@@ -719,6 +746,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 game_choice = "scissors";
+                sfx.loadSound("src/App/sound/select.wav", 0.8f);
+                sfx.play();
                 rockBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/rock_disabled.png")));
                 rockBtn.setEnabled(false);
                 paperBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/paper_disabled.png")));

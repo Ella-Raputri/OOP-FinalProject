@@ -445,7 +445,7 @@ public class HomePage extends javax.swing.JFrame {
     private void setTodayTasks(){
          try{
             Connection con = ConnectionProvider.getCon();
-            String query = "SELECT * FROM tasks WHERE userID = ? ORDER BY completed ASC";
+            String query = "SELECT * FROM tasks WHERE userID = ? ORDER BY completed, timeFrom ASC";
              
             PreparedStatement pst = con.prepareStatement(query);
             pst.setString(1, this.userID);

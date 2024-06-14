@@ -17,11 +17,10 @@ public class SfxPlayer {
     private FloatControl volumeControl;
 
     public SfxPlayer(String filePath, float defaultVolume) {
-        loadSound(filePath);
-        setVolume(defaultVolume);
+        loadSound(filePath, defaultVolume);
     }
 
-    public void loadSound(String filePath) {        
+    public void loadSound(String filePath, float volume) {        
         try {
             // Open an audio input stream.
             File soundFile = new File(filePath);
@@ -35,6 +34,7 @@ public class SfxPlayer {
 
             // Get the volume control from the clip
             volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            setVolume(volume);
 
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();

@@ -31,6 +31,7 @@ public class EditAranara extends javax.swing.JFrame {
     private AranaraChatMenu childWindow = null;
     private EditAranara parent = (EditAranara) SwingUtilities.getRoot(this);
     private MusicPlayer player;
+    private SfxPlayer sfxplay = new SfxPlayer("src/App/sound/select.wav", 0.8f);;
     /**
      * Creates new form EditAranara
      */
@@ -117,7 +118,9 @@ public class EditAranara extends javax.swing.JFrame {
         
         patBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {                
+                sfxplay.loadSound("src/App/sound/select.wav", 0.8f);
+                sfxplay.play();
                 patBtnActionPerformed();
             }
             @Override
@@ -133,6 +136,8 @@ public class EditAranara extends javax.swing.JFrame {
         setDefaultBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                sfxplay.loadSound("src/App/sound/select.wav", 0.8f);
+                sfxplay.play();
                 setDefaultBtnActionPerformed();
             }
             @Override
@@ -151,6 +156,8 @@ public class EditAranara extends javax.swing.JFrame {
         chatBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                sfxplay.loadSound("src/App/sound/chat.wav", 0.8f);
+                sfxplay.play();
                 childWindow = new AranaraChatMenu(parent, userID);
                 childWindow.setVisible(true);
                 backChatBtn.setVisible(true);
@@ -170,6 +177,8 @@ public class EditAranara extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (childWindow != null){
+                    sfxplay.loadSound("src/App/sound/chat.wav", 0.8f);
+                    sfxplay.play();
                     backChatBtn.setVisible(false);
                     backChatBtn.setEnabled(false);
                     childWindow.setVisible(false);
