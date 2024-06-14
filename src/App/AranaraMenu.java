@@ -25,7 +25,7 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
  */
 /*Aranara picture source: https://weibo.com/6671732232/M9lWyBnCp*/
 public class AranaraMenu extends javax.swing.JFrame {
-    private String userID ="u1";
+    private String userID;
     private LinkedList<Integer> affections = new LinkedList<>();
     private MusicPlayer player;
     /**

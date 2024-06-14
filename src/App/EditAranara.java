@@ -23,8 +23,8 @@ import javax.swing.Timer;
  * @author Asus
  */
 public class EditAranara extends javax.swing.JFrame {
-    private String userID = "u1";
-    public String aranaraName = "Ararycan";
+    private String userID;
+    public String aranaraName;
     private int affection;
     private int patAmount;
     private String patDay;

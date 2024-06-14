@@ -13,8 +13,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
@@ -35,7 +33,7 @@ import javax.swing.event.DocumentListener;
  * @author Asus
  */
 public class AddWorkflowMenu extends javax.swing.JFrame {
-    private String userID = "u1";
+    private String userID;
     private JPanel contentPane;
     public JPanel cloneablePanel;
     private JScrollPane scrollPane;

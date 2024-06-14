@@ -6,6 +6,8 @@ package App;
 
 import DatabaseConnection.ConnectionProvider;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,7 +25,7 @@ import javax.swing.JOptionPane;
  * @author Asus
  */
 public class InsertWorkflowTask extends javax.swing.JFrame {
-    private String userID ="u6";
+    private String userID;
     private String lastID;
     private LinkedList <Workflow> workflowList = new LinkedList <>();
     private LinkedList <Flow> flowList = new LinkedList <>();
@@ -33,18 +35,28 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
      * Creates new form InsertWorkflowTask
      */
     public InsertWorkflowTask(String userID, CalendarPage home) {
+        setResizable(false);
+        setTitle("Insert Workflow to Tasks");
         this.userID = userID;
         this.home = home;
         initComponents();
         initDesign();
     }
     
-    public InsertWorkflowTask() {
-        initComponents();
-        initDesign();
-    }
     
     private void initDesign(){
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Custom close operation logic
+                int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    setVisible(false);
+                    CalendarPage.open=0;
+                } 
+            }
+        });
         getContentPane().setBackground(Color.white);
         chooseDatetxt = new javax.swing.JLabel();
         d_day = new javax.swing.JLabel();
@@ -372,38 +384,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InsertWorkflowTask.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InsertWorkflowTask.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InsertWorkflowTask.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InsertWorkflowTask.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new InsertWorkflowTask().setVisible(true);
-            }
-        });
-    }
-    
+   
     
     private javax.swing.JLabel chooseDatetxt;
     private javax.swing.JLabel d_day;
