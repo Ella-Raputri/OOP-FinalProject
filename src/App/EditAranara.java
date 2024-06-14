@@ -310,7 +310,7 @@ public class EditAranara extends javax.swing.JFrame {
                 affection = aff;
                 affectiontxt.setText(aff + "/100");
                 affProgressBar.setValue(aff);
-                aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/"+ name +".png")));
+                aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/"+ name +"_animated.gif")));
                 
                 //get pat amount and day
                 patDay = rs.getString("pat_day");

@@ -12,11 +12,12 @@ import java.awt.event.MouseEvent;
  * @author Asus
  */
 public class WelcomePage extends javax.swing.JFrame {
-
+    private MusicPlayer musicPlayer; 
     /**
      * Creates new form WelcomePage
      */
-    public WelcomePage() {
+    public WelcomePage(MusicPlayer player) {
+        musicPlayer = player;
         setTitle("Welcome Page");
         initComponents();
         myinit();
@@ -28,7 +29,7 @@ public class WelcomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new Signup().setVisible(true);
+                new Signup(musicPlayer).setVisible(true);
             }
             
             @Override
@@ -48,7 +49,7 @@ public class WelcomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new Login().setVisible(true);
+                new Login(musicPlayer).setVisible(true);
             }
             
             @Override
@@ -83,7 +84,6 @@ public class WelcomePage extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(1280, 720));
         setMinimumSize(new java.awt.Dimension(1280, 720));
-        setPreferredSize(new java.awt.Dimension(1280, 720));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         loginText.setFont(new java.awt.Font("Montserrat SemiBold", 0, 52)); // NOI18N
@@ -141,7 +141,9 @@ public class WelcomePage extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new WelcomePage().setVisible(true);
+                MusicPlayer player = new MusicPlayer("src/App/sound/EnchantingBedtimeStories.wav", 0.9f);
+                player.play();
+                new WelcomePage(player).setVisible(true);
             }
         });
     }
