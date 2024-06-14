@@ -46,17 +46,13 @@ public class HomePage extends javax.swing.JFrame {
     private String[] quotes = new String[80];
     private String[] by = new String[80];
     private int count = 0;
+    private MusicPlayer player;
     /**
      * Creates new form HomePage
      */
-    public HomePage() {
-        setResizable(false);
-        setTitle("Home Page");
-        initComponents();
-        myinit();
-    }
     
-    public HomePage(String ID){
+    public HomePage(String ID, MusicPlayer player){
+        this.player = player;
         setResizable(false);
         setTitle("Home Page");
         this.userID = ID;
@@ -117,26 +113,12 @@ public class HomePage extends javax.swing.JFrame {
         JLabel[] aranara_labels = {aranaraBtn, aranaraBtnTxt};
         JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
 
-        homeBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new HomePage(userID).setVisible(true);
-            }
-        });
-        homeBtnTxt.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new HomePage(userID).setVisible(true);
-            }
-        }); 
-        
+       
         addWorkflowBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                new AddWorkflowMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -152,7 +134,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                new AddWorkflowMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -168,7 +150,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                new AddWorkflowMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -185,7 +167,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new CalendarPage(userID).setVisible(true);
+                new CalendarPage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -201,7 +183,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new CalendarPage(userID).setVisible(true);
+                new CalendarPage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -218,7 +200,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraMenu(userID).setVisible(true);
+                new AranaraMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -234,7 +216,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraMenu(userID).setVisible(true);
+                new AranaraMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -251,7 +233,9 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new WelcomePage().setVisible(true);
+                player.loadMusic("src/App/sound/EnchantingBedtimeStories.wav");
+                player.play();
+                new WelcomePage(player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -267,7 +251,9 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new WelcomePage().setVisible(true);
+                player.loadMusic("src/App/sound/EnchantingBedtimeStories.wav");
+                player.play();
+                new WelcomePage(player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -284,7 +270,7 @@ public class HomePage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraMenu().setVisible(true);
+                new AranaraMenu(userID, player).setVisible(true);
             }            
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -737,43 +723,43 @@ public class HomePage extends javax.swing.JFrame {
 
     private void viewMoreBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewMoreBtnActionPerformed
         setVisible(false);
-        new CalendarPage().setVisible(true);
+        new CalendarPage(userID, player).setVisible(true);
     }//GEN-LAST:event_viewMoreBtnActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new HomePage().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new HomePage().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addWorkflowBtn;

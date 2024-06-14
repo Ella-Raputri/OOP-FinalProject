@@ -17,7 +17,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.LinkedList;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -29,7 +28,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 /**
  *
@@ -46,6 +44,7 @@ public class EditWorkflow extends javax.swing.JFrame {
     private LinkedList<Flow> flowList = new LinkedList<>();
     private String flowIDTemp;
     private CloneablePanelFlow currentPanel = null;
+    private MusicPlayer player;
     
     
     public EditWorkflow() {
@@ -56,7 +55,8 @@ public class EditWorkflow extends javax.swing.JFrame {
         initDesign();
     }
     
-    public EditWorkflow(String workflowid, String userid) {
+    public EditWorkflow(String workflowid, String userid, MusicPlayer player) {
+        this.player = player;
         this.workflowID = workflowid;
         this.userID = userid;
         setResizable(false);
@@ -130,7 +130,7 @@ public class EditWorkflow extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (open == 0){
                   setVisible(false);
-                  new AddWorkflowMenu(userID).setVisible(true);  
+                  new AddWorkflowMenu(userID, player).setVisible(true);  
                 }
                 else{
                   JOptionPane.showMessageDialog(getContentPane(), "There is one current operation window open.");

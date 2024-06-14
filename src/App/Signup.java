@@ -437,7 +437,9 @@ public class Signup extends javax.swing.JFrame {
                 updateTaskCompletions(idStr);
                 
                 setVisible(false);
-                new HomePage(idStr).setVisible(true);
+                musicPlayer.loadMusic("src/App/sound/MelodyofHiddenSeeds.wav");
+                musicPlayer.play();
+                new HomePage(idStr, musicPlayer).setVisible(true);
 
             }catch(Exception e){
                 e.printStackTrace();

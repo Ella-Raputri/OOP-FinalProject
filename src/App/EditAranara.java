@@ -30,18 +30,12 @@ public class EditAranara extends javax.swing.JFrame {
     private String patDay;
     private AranaraChatMenu childWindow = null;
     private EditAranara parent = (EditAranara) SwingUtilities.getRoot(this);
+    private MusicPlayer player;
     /**
      * Creates new form EditAranara
      */
-    public EditAranara() {
-        setResizable(false);
-        setTitle("Aranara Activity Page");
-        initComponents();
-        initHover();
-        initBasedOnAranara();
-    }
-    
-    public EditAranara(String aranaraName, String uID) {
+    public EditAranara(String aranaraName, String uID, MusicPlayer player) {
+        this.player = player;
         this.aranaraName = aranaraName;
         this.userID = uID;
         setResizable(false);
@@ -51,7 +45,8 @@ public class EditAranara extends javax.swing.JFrame {
         initBasedOnAranara();
     }    
     
-    public EditAranara(String aranaraName, String uID, AranaraChatMenu child) {
+    public EditAranara(String aranaraName, String uID, AranaraChatMenu child, MusicPlayer player) {
+        this.player = player;
         this.aranaraName = aranaraName;
         this.userID = uID;
         this.childWindow = child;
@@ -108,7 +103,7 @@ public class EditAranara extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraMenu(userID).setVisible(true);
+                new AranaraMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -288,6 +283,21 @@ public class EditAranara extends javax.swing.JFrame {
             ps.setString(2, this.userID);
             ps.executeUpdate();
             
+            String bgmPath = "src/App/sound/";
+                            
+            if (default_aranara.equals("arama")){
+                bgmPath += "MelodyofHiddenSeeds.wav";
+            }
+            else if (default_aranara.equals("ararycan")){
+                bgmPath += "IveNeverForgotten.wav"; 
+            }else if (default_aranara.equals("arabalika")){
+                bgmPath += "ForRiddlesForWonders.wav"; 
+            }
+            
+            player.stop();
+            player.loadMusic(bgmPath);
+            player.play();
+            
             //success message
             JOptionPane.showMessageDialog(getContentPane(), "Default aranara updated successfully.");
 
@@ -421,37 +431,37 @@ public class EditAranara extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EditAranara().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new EditAranara().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar affProgressBar;

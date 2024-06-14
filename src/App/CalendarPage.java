@@ -48,21 +48,14 @@ public class CalendarPage extends javax.swing.JFrame {
     public LinkedList<Task> currTasksList = new LinkedList<>();
     public static int open = 0;
     private CalendarPage home = (CalendarPage) SwingUtilities.getRoot(this);
+    private MusicPlayer player;
    // private HashMap <String, String> monthMap = new HashMap<>();
     /**
      * Creates new form CalendarPage
      */
-    public CalendarPage() {
-        setResizable(false);
-        setTitle("Calendar Page");        
-        myinit();
-        initComponents();
-        initDesign();
-        initHover();
-        displaySelectedTask();
-    }
     
-    public CalendarPage(String id) {
+    public CalendarPage(String id, MusicPlayer mp) {
+        this.player = mp;
         setResizable(false);
         setTitle("Calendar Page");
         this.userID = id;
@@ -103,7 +96,7 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new HomePage(userID).setVisible(true);
+                new HomePage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -119,7 +112,7 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new HomePage(userID).setVisible(true);
+                new HomePage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -136,7 +129,7 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                new AddWorkflowMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -152,7 +145,7 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                new AddWorkflowMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -168,7 +161,7 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                new AddWorkflowMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -181,34 +174,12 @@ public class CalendarPage extends javax.swing.JFrame {
             }
         });
     
-        calendarBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                hoverButton("/App/img/calendar_active.png", 0, 141, 189, calendar_labels);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                hoverButton("/App/img/calendar.png", 255, 255, 255, calendar_labels);
-            }
-        });
-        calendarBtnTxt.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                hoverButton("/App/img/calendar_active.png", 0, 141, 189, calendar_labels);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                hoverButton("/App/img/calendar.png", 255, 255, 255, calendar_labels);
-            }
-        });
         
         aranaraBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraMenu(userID).setVisible(true);
+                new AranaraMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -224,7 +195,7 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraMenu(userID).setVisible(true);
+                new AranaraMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -241,7 +212,9 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new WelcomePage().setVisible(true);
+                player.loadMusic("src/App/sound/EnchantingBedtimeStories.wav");
+                player.play();
+                new WelcomePage(player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -257,7 +230,9 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new WelcomePage().setVisible(true);
+                player.loadMusic("src/App/sound/EnchantingBedtimeStories.wav");
+                player.play();
+                new WelcomePage(player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -678,37 +653,37 @@ public class CalendarPage extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CalendarPage().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new CalendarPage().setVisible(true);
+//            }
+//        });
+//    }
     
     private javax.swing.JLabel addWorkflowBtn;
     private javax.swing.JLabel addWorkflowBtnTxt;

@@ -41,17 +41,13 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     private JScrollPane scrollPane;
     public static int open = 0;
     public LinkedList<Workflow> workflowList = new LinkedList<>();
+    private MusicPlayer player;
     /**
      * Creates new form AddWorkflowPage
      */
-    public AddWorkflowMenu() {
-        setResizable(false);
-        setTitle("Add Workflow Page");
-        myinit();
-        initComponents();
-    }
     
-    public AddWorkflowMenu(String id) {
+    public AddWorkflowMenu(String id, MusicPlayer player) {
+        this.player = player;
         setResizable(false);
         setTitle("Add Workflow Page");
         this.userID = id;
@@ -80,7 +76,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new HomePage(userID).setVisible(true);
+                new HomePage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -96,7 +92,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new HomePage(userID).setVisible(true);
+                new HomePage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -109,45 +105,11 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             }
         }); 
         
-        addWorkflowBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                hoverButton("/App/img/add_workflow.png", 255, 255, 255, add_workflow_labels);
-            }
-        });
-        addWorkflowBtnTxt.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                hoverButton("/App/img/add_workflow.png", 255, 255, 255, add_workflow_labels);
-            }
-        });      
-        addWorkflowBtnTxt1.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                hoverButton("/App/img/add_workflow_active.png", 0, 141, 189, add_workflow_labels);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                hoverButton("/App/img/add_workflow.png", 255, 255, 255, add_workflow_labels);
-            }
-        });
-    
         calendarBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new CalendarPage(userID).setVisible(true);
+                new CalendarPage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -163,7 +125,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new CalendarPage(userID).setVisible(true);
+                new CalendarPage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -180,7 +142,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraMenu(userID).setVisible(true);
+                new AranaraMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -196,7 +158,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AranaraMenu(userID).setVisible(true);
+                new AranaraMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -213,7 +175,9 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new WelcomePage().setVisible(true);
+                player.loadMusic("src/App/sound/EnchantingBedtimeStories.wav");
+                player.play();
+                new WelcomePage(player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -229,7 +193,9 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new WelcomePage().setVisible(true);
+                player.loadMusic("src/App/sound/EnchantingBedtimeStories.wav");
+                player.play();
+                new WelcomePage(player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -548,12 +514,12 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     
     public void goToEdit(String workflowID){
         setVisible(false);
-        new EditWorkflow(workflowID, userID).setVisible(true);
+        new EditWorkflow(workflowID, userID, player).setVisible(true);
     }
     
     public void reload(){
         setVisible(false);
-        new AddWorkflowMenu(this.userID).setVisible(true);
+        new AddWorkflowMenu(this.userID, this.player).setVisible(true);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -582,38 +548,38 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
 
     /**
      * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddWorkflowMenu().setVisible(true);
-            }
-        });
-    }
+//     */
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new AddWorkflowMenu().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

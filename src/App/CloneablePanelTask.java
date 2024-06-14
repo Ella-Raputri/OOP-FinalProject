@@ -12,9 +12,7 @@ import java.awt.font.TextAttribute;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import javax.swing.border.LineBorder;
 /**
  *
  * @author asus
@@ -67,7 +65,7 @@ public class CloneablePanelTask extends JPanel{
                              
         
         // Example content - you can add whatever components you need
-        WrappedLabel title = new WrappedLabel(230);
+        WrappedLabel title = new WrappedLabel(220);
         title.setText(nameInput);        
         title.setForeground(Color.white);
         title.setFont(new Font("Montserrat", 0, 20));

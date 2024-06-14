@@ -20,17 +20,16 @@ public class WrappedLabel extends JLabel {
 
         String text = getText();
         FontMetrics fm = g.getFontMetrics();
-        String[] lines = getWrappedLines(text, fm);
+//        String[] lines = getWrappedLines(text, fm);
 
         int lineHeight = fm.getHeight();
-        int totalHeight = lines.length * lineHeight;
+        int x = (getWidth() - getPreferredSize().width) / 2;
+        int y = fm.getAscent();
 
         // Center vertically by calculating the starting y position
-        int y = (getHeight() - totalHeight) / 2 + fm.getAscent();
+        //int y = (getHeight() - totalHeight) / 2 + fm.getAscent();
 
-        for (String line : lines) {
-            int lineWidth = fm.stringWidth(line);
-            int x = (getWidth() - lineWidth) / 2; // Center each line horizontally
+        for (String line : getWrappedLines(text, fm)) {
             g.drawString(line, x, y);
             y += lineHeight;
         }

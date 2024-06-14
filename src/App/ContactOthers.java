@@ -27,7 +27,7 @@ import javax.swing.border.EmptyBorder;
  * @author Asus
  */
 public class ContactOthers extends javax.swing.JFrame {
-    private String userID = "u1";
+    private String userID = "u6";
     private LinkedList<Contact> contactList = new LinkedList<>();
     private LinkedList<Message> msgList = new LinkedList<>();
     /**
@@ -255,7 +255,11 @@ public class ContactOthers extends javax.swing.JFrame {
         phoneField.setForeground(new java.awt.Color(155, 154, 154));
         phoneField.setEnabled(false);
         phoneField.setBorder(new EmptyBorder(new Insets(2, 15, 5, 10)));
-        phoneField.setText(contactList.get(selectedIndex).getPhone());
+        if (contactList.isEmpty()){
+            phoneField.setText("None");
+        }else{
+            phoneField.setText(contactList.get(selectedIndex).getPhone());
+        }        
         getContentPane().add(phoneField, new org.netbeans.lib.awtextra.AbsoluteConstraints(93, 104, 257, 32));
         
         queryMsg();

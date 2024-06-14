@@ -328,8 +328,22 @@ public class Login extends javax.swing.JFrame {
                         
                         //check password
                         if (pass_str.equals(pass)){
+                            String default_aranara = rs.getString("default_aranara");
+                            String bgmPath = "src/App/sound/";
+                            
+                            if (default_aranara.equals("arama")){
+                                bgmPath += "MelodyofHiddenSeeds.wav";
+                            }
+                            else if (default_aranara.equals("ararycan")){
+                                bgmPath += "IveNeverForgotten.wav"; 
+                            }else if (default_aranara.equals("arabalika")){
+                                bgmPath += "ForRiddlesForWonders.wav"; 
+                            }
+                            
                            setVisible(false);
-                           new HomePage(id).setVisible(true);
+                           musicPlayer.loadMusic(bgmPath);
+                           musicPlayer.play();
+                           new HomePage(id, musicPlayer).setVisible(true);
                         }
                         else{
                             JOptionPane.showMessageDialog(getContentPane(), "Password is incorrect.");
@@ -341,6 +355,7 @@ public class Login extends javax.swing.JFrame {
 
             }catch(Exception e){
                 JOptionPane.showMessageDialog(getContentPane(), e);
+                e.printStackTrace();
             }
         }
         

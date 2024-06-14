@@ -27,17 +27,13 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
 public class AranaraMenu extends javax.swing.JFrame {
     private String userID ="u1";
     private LinkedList<Integer> affections = new LinkedList<>();
+    private MusicPlayer player;
     /**
      * Creates new form AranaraMenu
      */
-    public AranaraMenu() {
-        setResizable(false);
-        setTitle("Aranara Page");
-        initComponents();
-        initDesign();
-    }
     
-    public AranaraMenu (String id){
+    public AranaraMenu (String id, MusicPlayer player){
+        this.player = player;
         setResizable(false);
         setTitle("Aranara Page");
         this.userID = id;
@@ -61,25 +57,25 @@ public class AranaraMenu extends javax.swing.JFrame {
         
         queryCurrentAffection();
 
-        AranaraDropShadowPanel panel_arama = new AranaraDropShadowPanel("Arama",affections.get(0), this.userID, home);
+        AranaraDropShadowPanel panel_arama = new AranaraDropShadowPanel("Arama",affections.get(0), this.userID, home, player);
         panel_arama.setBackground(Color.white);
         panel_arama.setLayout(null); // Ensure DropShadowPanel uses null layout for its children
         
         //panel ararycan
         AranaraDropShadowPanel panel_ararycan;
         if (affections.get(0) == 100){
-           panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1)+1,this.userID, home); 
+           panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1)+1,this.userID, home, player); 
         }else{
-           panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1),this.userID, home); 
+           panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1),this.userID, home, player); 
         }
         panel_ararycan.setLayout(null);
         
         //panel arabalika
         AranaraDropShadowPanel panel_arabalika;
         if (affections.get(0) == 100 && affections.get(1) == 100){
-           panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2)+1,this.userID, home);
+           panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2)+1,this.userID, home, player);
         }else{
-           panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2),this.userID, home);
+           panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2),this.userID, home, player);
         }
         panel_arabalika.setLayout(null);
 
@@ -187,7 +183,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new HomePage(userID).setVisible(true);
+                new HomePage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -203,7 +199,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new HomePage(userID).setVisible(true);
+                new HomePage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -220,7 +216,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                new AddWorkflowMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -236,7 +232,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                new AddWorkflowMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -252,7 +248,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new AddWorkflowMenu(userID).setVisible(true);
+                new AddWorkflowMenu(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -269,7 +265,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new CalendarPage(userID).setVisible(true);
+                new CalendarPage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -285,7 +281,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new CalendarPage(userID).setVisible(true);
+                new CalendarPage(userID, player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -302,7 +298,9 @@ public class AranaraMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new WelcomePage().setVisible(true);
+                player.loadMusic("src/App/sound/EnchantingBedtimeStories.wav");
+                player.play();
+                new WelcomePage(player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -318,7 +316,9 @@ public class AranaraMenu extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
-                new WelcomePage().setVisible(true);
+                player.loadMusic("src/App/sound/EnchantingBedtimeStories.wav");
+                player.play();
+                new WelcomePage(player).setVisible(true);
             }
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -384,37 +384,37 @@ public class AranaraMenu extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AranaraMenu().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new AranaraMenu().setVisible(true);
+//            }
+//        });
+//    }
 
     
     private javax.swing.JLabel addWorkflowBtn;

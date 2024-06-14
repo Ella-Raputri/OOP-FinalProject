@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
  * @author Asus
  */
 public class InsertWorkflowTask extends javax.swing.JFrame {
-    private String userID ="u1";
+    private String userID ="u6";
     private String lastID;
     private LinkedList <Workflow> workflowList = new LinkedList <>();
     private LinkedList <Flow> flowList = new LinkedList <>();
@@ -96,6 +96,10 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         getContentPane().add(chooseWorkflowtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, -1, -1));
         
         String[] workflowOptions = queryAllWorkflow();
+        String[] optionIfEmpty = {"None"};
+        if (workflowOptions == null){
+            workflowOptions = optionIfEmpty;
+        }
         workflowBox.setBackground(new java.awt.Color(234, 234, 234));
         workflowBox.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         workflowBox.setForeground(new java.awt.Color(93, 93, 93));

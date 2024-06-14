@@ -22,7 +22,7 @@ public class AranaraDropShadowPanel extends JPanel {
     private String aranaraName;
     private int aranaraAffection;
     
-    public AranaraDropShadowPanel(String name, int affection, String userID, AranaraMenu home) {
+    public AranaraDropShadowPanel(String name, int affection, String userID, AranaraMenu home, MusicPlayer player) {
         this.aranaraName = name;
         this.aranaraAffection = affection;
         
@@ -62,7 +62,7 @@ public class AranaraDropShadowPanel extends JPanel {
             visit_btn.setRadius(50);
             visit_btn.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    visitBtnActionPerformed(userID, home);
+                    visitBtnActionPerformed(userID, home, player);
                 }
             });
             visit_btn.setBounds(68, 189, 135, 53);
@@ -96,9 +96,9 @@ public class AranaraDropShadowPanel extends JPanel {
         }      
     }
     
-    private void visitBtnActionPerformed(String uid, AranaraMenu home){
+    private void visitBtnActionPerformed(String uid, AranaraMenu home, MusicPlayer player){
         home.setVisible(false);
-        new EditAranara(aranaraName, uid).setVisible(true);
+        new EditAranara(aranaraName, uid, player).setVisible(true);
     }
     
     @Override
