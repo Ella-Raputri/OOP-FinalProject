@@ -57,6 +57,21 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
                 } 
             }
         });
+        
+        
+        monthMap.put("January", "01");
+        monthMap.put("February", "02");
+        monthMap.put("March", "03");
+        monthMap.put("April", "04");
+        monthMap.put("May", "05");
+        monthMap.put("June", "06");
+        monthMap.put("July", "07");
+        monthMap.put("August", "08");
+        monthMap.put("September", "09");
+        monthMap.put("October", "10");
+        monthMap.put("November", "11");
+        monthMap.put("December", "12");
+        
         getContentPane().setBackground(Color.white);
         chooseDatetxt = new javax.swing.JLabel();
         d_day = new javax.swing.JLabel();
@@ -70,6 +85,13 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(450, 350));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = currentDate.format(formatter);
+        String year = formattedDate.substring(0,4);
+        String month = formattedDate.substring(5,7);
+        String date = formattedDate.substring(8,10);
 
         chooseDatetxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
         chooseDatetxt.setText("Choose Date");
@@ -83,7 +105,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         dateField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         dateField.setForeground(new java.awt.Color(93, 93, 93));
         dateField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        dateField.setText("Date");
+        dateField.setText(date);
         dateField.setToolTipText("");
         getContentPane().add(dateField, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 60, 60, 32));
 
@@ -93,13 +115,14 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         monthComboBox.setMaximumRowCount(12);
         monthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember" }));
         monthComboBox.setToolTipText("");
+        monthComboBox.setSelectedIndex(Integer.parseInt(month)-1);
         getContentPane().add(monthComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 60, -1, 32));
 
         yearField.setBackground(new java.awt.Color(234, 234, 234));
         yearField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         yearField.setForeground(new java.awt.Color(93, 93, 93));
         yearField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        yearField.setText("Year");
+        yearField.setText(year);
         yearField.setToolTipText("");
         getContentPane().add(yearField, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 60, 80, 32));
         
@@ -184,20 +207,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         return true;
     }
     
-    private LocalDate conditioningDate(){
-        monthMap.put("January", "01");
-        monthMap.put("February", "02");
-        monthMap.put("March", "03");
-        monthMap.put("April", "04");
-        monthMap.put("May", "05");
-        monthMap.put("June", "06");
-        monthMap.put("July", "07");
-        monthMap.put("August", "08");
-        monthMap.put("September", "09");
-        monthMap.put("October", "10");
-        monthMap.put("November", "11");
-        monthMap.put("December", "12");
-        
+    private LocalDate conditioningDate(){        
         String dateStr = dateField.getText();
         String monthStr = (String) monthComboBox.getSelectedItem();
         String yearStr = yearField.getText();

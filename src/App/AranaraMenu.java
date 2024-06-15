@@ -63,8 +63,11 @@ public class AranaraMenu extends javax.swing.JFrame {
         
         //panel ararycan
         AranaraDropShadowPanel panel_ararycan;
-        if (affections.get(0) == 100){
-           panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1)+1,this.userID, home, player); 
+        if (affections.get(0) >= 60){
+            if (affections.get(1) == 0){
+               affections.set(1, affections.get(1)+1); 
+            }            
+           panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1),this.userID, home, player); 
         }else{
            panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1),this.userID, home, player); 
         }
@@ -72,8 +75,11 @@ public class AranaraMenu extends javax.swing.JFrame {
         
         //panel arabalika
         AranaraDropShadowPanel panel_arabalika;
-        if (affections.get(0) == 100 && affections.get(1) == 100){
-           panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2)+1,this.userID, home, player);
+        if ((affections.get(0) + affections.get(1)) >= 120){
+            if (affections.get(2) == 0){
+               affections.set(2, affections.get(2)+1); 
+            }            
+            panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2),this.userID, home, player);
         }else{
            panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2),this.userID, home, player);
         }

@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,8 +43,8 @@ public class AddNewTask extends javax.swing.JFrame {
         this.home = home;
         this.userID = userID;
         initComponents();
-        initDesign();
         myinit();
+        initDesign();
     }
 
     /**
@@ -78,11 +80,17 @@ public class AddNewTask extends javax.swing.JFrame {
         optGrp.add(oneDay); optGrp.add(multipleDay);
         
         setTitle("Add Task");
-        setAlwaysOnTop(true);
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(500, 577));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = currentDate.format(formatter);
+        String year = formattedDate.substring(0,4);
+        String month = formattedDate.substring(5,7);
+        String date = formattedDate.substring(8,10);
 
         oneDay.setBackground(new java.awt.Color(255, 255, 255));
         oneDay.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
@@ -122,7 +130,7 @@ public class AddNewTask extends javax.swing.JFrame {
         getContentPane().add(multipleDay, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 140, -1, -1));
 
         theDay_from.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
-        theDay_from.setText("From");
+        theDay_from.setText("Date");
         getContentPane().add(theDay_from, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 195, -1, -1));
 
         theDay_to.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
@@ -151,6 +159,7 @@ public class AddNewTask extends javax.swing.JFrame {
         monthFromComboBox.setMaximumRowCount(12);
         monthFromComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember" }));
         monthFromComboBox.setToolTipText("");
+        monthFromComboBox.setSelectedIndex(Integer.parseInt(month)-1);
         getContentPane().add(monthFromComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 190, 150, 38));
 
         titletxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 32)); // NOI18N
@@ -181,13 +190,8 @@ public class AddNewTask extends javax.swing.JFrame {
         fromYearField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         fromYearField.setForeground(new java.awt.Color(93, 93, 93));
         fromYearField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        fromYearField.setText("Year");
+        fromYearField.setText(year);
         fromYearField.setToolTipText("");
-//        fromYearField.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                fromYearFieldActionPerformed(evt);
-//            }
-//        });
         getContentPane().add(fromYearField, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 190, 90, 38));
 
         colorComboBox.setBackground(new java.awt.Color(234, 234, 234));
@@ -202,13 +206,8 @@ public class AddNewTask extends javax.swing.JFrame {
         fromDateField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         fromDateField.setForeground(new java.awt.Color(93, 93, 93));
         fromDateField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        fromDateField.setText("Date");
+        fromDateField.setText(date);
         fromDateField.setToolTipText("");
-//        fromDateField.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                fromDateFieldActionPerformed(evt);
-//            }
-//        });
         getContentPane().add(fromDateField, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 190, 60, 38));
 
         toDateField.setBackground(new java.awt.Color(234, 234, 234));
@@ -217,11 +216,6 @@ public class AddNewTask extends javax.swing.JFrame {
         toDateField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         toDateField.setText("Date");
         toDateField.setToolTipText("");
-//        toDateField.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                toDateFieldActionPerformed(evt);
-//            }
-//        });
         getContentPane().add(toDateField, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 245, 60, 38));
 
         monthToComboBox.setBackground(new java.awt.Color(234, 234, 234));
@@ -238,11 +232,6 @@ public class AddNewTask extends javax.swing.JFrame {
         toYearField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         toYearField.setText("Year");
         toYearField.setToolTipText("");
-//        toYearField.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                toYearFieldActionPerformed(evt);
-//            }
-//        });
         getContentPane().add(toYearField, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 245, 90, 38));
         
         toDateField.setEnabled(false);

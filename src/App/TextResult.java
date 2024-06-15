@@ -64,6 +64,13 @@ public class TextResult extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(500, 550));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = currentDate.format(formatter);
+        String year = formattedDate.substring(0,4);
+        String month = formattedDate.substring(5,7);
+        String date = formattedDate.substring(8,10);
 
         choosetxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
         choosetxt.setText("Choose Date");
@@ -77,7 +84,7 @@ public class TextResult extends javax.swing.JFrame {
         dateField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         dateField.setForeground(new java.awt.Color(93, 93, 93));
         dateField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        dateField.setText("Date");
+        dateField.setText(date);
         dateField.setToolTipText("");
         getContentPane().add(dateField, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 60, 60, 32));
 
@@ -87,13 +94,14 @@ public class TextResult extends javax.swing.JFrame {
         monthComboBox.setMaximumRowCount(12);
         monthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Desember" }));
         monthComboBox.setToolTipText("");
+        monthComboBox.setSelectedIndex(Integer.parseInt(month)-1);
         getContentPane().add(monthComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 60, -1, 32));
 
         yearField.setBackground(new java.awt.Color(234, 234, 234));
         yearField.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         yearField.setForeground(new java.awt.Color(93, 93, 93));
         yearField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        yearField.setText("Year");
+        yearField.setText(year);
         yearField.setToolTipText("");
         getContentPane().add(yearField, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 60, 80, 32));
 

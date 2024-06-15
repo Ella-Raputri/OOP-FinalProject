@@ -259,7 +259,7 @@ public class EditAranara extends javax.swing.JFrame {
                updatePatDatabase();
                return true;
             }else{
-                setDialogText("Today you have patted me enough, Nara.");
+                setDialogText("Today you have patted the Aranaras enough, Nara.");
                 return false;
             }
         }

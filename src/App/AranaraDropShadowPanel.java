@@ -76,9 +76,9 @@ public class AranaraDropShadowPanel extends JPanel {
             //set the requirements for each aranara
             int requirement =0;
             if (name.equals("Ararycan")){
-                requirement = 100;
+                requirement = 60;
             }else if (name.equals("Arabalika")){
-                requirement = 200;
+                requirement = 120;
             }
             //add the lock icon
             JLabel lock_label = new JLabel();
