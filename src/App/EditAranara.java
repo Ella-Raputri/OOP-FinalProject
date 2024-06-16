@@ -99,6 +99,20 @@ public class EditAranara extends javax.swing.JFrame {
         timer.start();
     }
     
+    private void setHeartIcon(){
+        heart_icon.setVisible(true);
+        Timer timer = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                heart_icon.setVisible(false);
+            }
+        });
+
+        // Start the timer
+        timer.setRepeats(false); // Make sure the timer only runs once
+        timer.start();
+    }
+    
     private void initHover(){
         backBtn.addMouseListener(new MouseAdapter() {
             @Override
@@ -196,7 +210,8 @@ public class EditAranara extends javax.swing.JFrame {
         });
     }
     
-    private void patBtnActionPerformed(){         
+    private void patBtnActionPerformed(){   
+        setHeartIcon();
         if (affection < 100){
             if (checkValidPat()){
                 affection += 1;
@@ -356,6 +371,7 @@ public class EditAranara extends javax.swing.JFrame {
         jLayeredPane1 = new javax.swing.JLayeredPane();
         dialog_text = new WrappedLabel(400);
         dialog_box = new javax.swing.JLabel();
+        heart_icon = new javax.swing.JLabel();
         aranara = new javax.swing.JLabel();
         backBtn = new javax.swing.JLabel();
         patBtn = new javax.swing.JLabel();
@@ -383,6 +399,10 @@ public class EditAranara extends javax.swing.JFrame {
         dialog_box.setBounds(30, 30, 460, 240);
 
         getContentPane().add(jLayeredPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(756, 174, 510, 310));
+
+        heart_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hearts.gif"))); // NOI18N
+        getContentPane().add(heart_icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 284, -1, -1));
+        heart_icon.setVisible(false);
 
         aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/arama.png"))); // NOI18N
         getContentPane().add(aranara, new org.netbeans.lib.awtextra.AbsoluteConstraints(434, 239, -1, -1));
@@ -484,6 +504,7 @@ public class EditAranara extends javax.swing.JFrame {
     private javax.swing.JLabel chattxt;
     private javax.swing.JLabel dialog_box;
     private App.WrappedLabel dialog_text;
+    private javax.swing.JLabel heart_icon;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JLabel patBtn;
     private javax.swing.JLabel pattxt;
