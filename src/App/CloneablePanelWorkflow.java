@@ -25,7 +25,7 @@ public class CloneablePanelWorkflow extends JPanel{
     private String titleInput;
     private int checkpointInput;
 
-    public CloneablePanelWorkflow(int borderRadius, Color bgColor, int borderWidth, String id, String titleInput, int checkpointInput) {
+    public CloneablePanelWorkflow(int borderRadius, Color bgColor, int borderWidth, String id, String titleInput, int checkpointInput, AddWorkflowMenu home) {
         setLayout(null);
         this.borderRadius = borderRadius;
         this.bgColor = bgColor;
@@ -78,6 +78,7 @@ public class CloneablePanelWorkflow extends JPanel{
                 title.setVisible(true);
                 titleField.setVisible(false);                
                 setComponentBounds(title, 25, 27, title.getPreferredSize().width, title.getPreferredSize().height);
+                home.reload();
             }
         });
         

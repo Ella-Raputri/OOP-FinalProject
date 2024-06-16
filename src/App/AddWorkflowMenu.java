@@ -377,6 +377,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     }
     
     public void createClonedPanels(LinkedList<Workflow> list, int totalElement){
+        AddWorkflowMenu home = (AddWorkflowMenu) SwingUtilities.getRoot(this);
         int row=0, column=0;
         for(int i=0; i<totalElement;i++){
             String id = list.get(i).getId();
@@ -385,7 +386,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             
             // Create a new cloned panel
             // Cloneable Panel
-            CloneablePanelWorkflow clonedPanel = new CloneablePanelWorkflow(20, Color.white, 2 ,id, title, checkpoint);
+            CloneablePanelWorkflow clonedPanel = new CloneablePanelWorkflow(20, Color.white, 2 ,id, title, checkpoint, home);
             // Set your custom width and height for the cloned panel
             int panelWidth = 292;
             int panelHeight = 278;
