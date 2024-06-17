@@ -170,7 +170,7 @@ public class CalendarCustom extends javax.swing.JPanel {
         taskPanel = new javax.swing.JPanel();
         tasktxt = new javax.swing.JLabel();
         addBtn = new App.ButtonCustom();
-        jLabel1 = new javax.swing.JLabel();
+        line = new javax.swing.JLabel();
         prevBtn = new javax.swing.JLabel();
         nextBtn = new javax.swing.JLabel();
         month_year = new javax.swing.JLabel();
@@ -218,9 +218,9 @@ public class CalendarCustom extends javax.swing.JPanel {
         taskPanel.add(addBtn);
         addBtn.setBounds(120, 470, 133, 40);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/line.png"))); // NOI18N
-        taskPanel.add(jLabel1);
-        jLabel1.setBounds(30, 50, 232, 43);
+        line.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/line.png"))); // NOI18N
+        taskPanel.add(line);
+        line.setBounds(30, 50, 232, 43);
 
         add(taskPanel);
         taskPanel.setBounds(780, -5, 280, 540);
@@ -251,7 +251,7 @@ public class CalendarCustom extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private App.ButtonCustom addBtn;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel line;
     private javax.swing.JLabel month_year;
     private javax.swing.JLabel nextBtn;
     private javax.swing.JLabel prevBtn;

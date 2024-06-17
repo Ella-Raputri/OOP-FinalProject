@@ -108,7 +108,7 @@ public class AranaraMenu extends javax.swing.JFrame {
         aranaraBtnTxt = new javax.swing.JLabel();
         logoutBtn = new javax.swing.JLabel();
         logoutBtnTxt = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
         bg = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -160,10 +160,10 @@ public class AranaraMenu extends javax.swing.JFrame {
         logoutBtnTxt.setText("Log out");
         getContentPane().add(logoutBtnTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 676, -1, -1));
 
-        jLabel1.setFont(new java.awt.Font("Montserrat SemiBold", 0, 48)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 141, 189));
-        jLabel1.setText("Your Virtual Pet Aranara");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(193, 41, -1, -1));
+        titleLabel.setFont(new java.awt.Font("Montserrat SemiBold", 0, 48)); // NOI18N
+        titleLabel.setForeground(new java.awt.Color(0, 141, 189));
+        titleLabel.setText("Your Virtual Pet Aranara");
+        getContentPane().add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(193, 41, -1, -1));
 
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/default_page.png"))); // NOI18N
         getContentPane().add(bg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -433,7 +433,7 @@ public class AranaraMenu extends javax.swing.JFrame {
     private javax.swing.JLabel calendarBtnTxt;
     private javax.swing.JLabel homeBtn;
     private javax.swing.JLabel homeBtnTxt;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel logoutBtn;
     private javax.swing.JLabel logoutBtnTxt;
     // Variables declaration - do not modify//GEN-BEGIN:variables

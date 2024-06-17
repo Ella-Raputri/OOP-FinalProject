@@ -57,13 +57,12 @@ public class EditTask extends javax.swing.JFrame {
     private void initDesign(){
         getContentPane().setBackground(Color.white);
         
-        jComboBox1 = new javax.swing.JComboBox<>();
         oneDay = new javax.swing.JRadioButton();
         nameField = new PlaceHolderTextField("Name",10);
         multipleDay = new javax.swing.JRadioButton();
         theDay_from = new javax.swing.JLabel();
         theDay_to = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        noteScrollPane = new javax.swing.JScrollPane();
         noteArea = new PlaceHolderJTextArea("Notes");
         colortxt = new javax.swing.JLabel();
         monthFromComboBox = new javax.swing.JComboBox<>();
@@ -78,8 +77,6 @@ public class EditTask extends javax.swing.JFrame {
         toYearField = new PlaceHolderTextField("Year",20);
         optGrp = new javax.swing.ButtonGroup();
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        
         optGrp.add(oneDay); optGrp.add(multipleDay);
         
         setTitle("Add Task");
@@ -160,9 +157,9 @@ public class EditTask extends javax.swing.JFrame {
         noteArea.setTabSize(5);
         noteArea.setText("Notes");
         noteArea.setBorder(new EmptyBorder(new Insets(5, 10, 5, 10)));
-        jScrollPane1.setViewportView(noteArea);
+        noteScrollPane.setViewportView(noteArea);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, -1, -1));
+        getContentPane().add(noteScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, -1, -1));
 
         colortxt.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         colortxt.setText("Color");
@@ -580,8 +577,7 @@ public class EditTask extends javax.swing.JFrame {
     private javax.swing.JLabel colortxt;
     private javax.swing.JTextField fromDateField;
     private javax.swing.JTextField fromYearField;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane noteScrollPane;
     private javax.swing.JComboBox<String> monthFromComboBox;
     private javax.swing.JComboBox<String> monthToComboBox;
     private javax.swing.JRadioButton multipleDay;

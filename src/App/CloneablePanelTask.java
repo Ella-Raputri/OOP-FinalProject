@@ -18,7 +18,6 @@ import java.util.Map;
  * @author asus
  */
 public class CloneablePanelTask extends JPanel{ 
-    private static int panelCount = 0; 
     private static int borderRadius;
     private static Color bgColor;
     private static int borderWidth;

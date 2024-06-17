@@ -25,7 +25,6 @@ import javax.swing.JPanel;
  * @author Asus
  */
 public class CloneablePanelMsg extends JPanel{ 
-    private static int panelCount = 0; 
     private static int borderRadius;
     private static Color bgColor;
     private static int borderWidth;

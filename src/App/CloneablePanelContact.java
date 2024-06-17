@@ -31,8 +31,7 @@ import javax.swing.SwingConstants;
  *
  * @author Asus
  */
-public class CloneablePanelContact extends JPanel{ 
-    private static int panelCount = 0; 
+public class CloneablePanelContact extends JPanel{  
     private static int borderRadius;
     private static Color bgColor;
     private static int borderWidth;

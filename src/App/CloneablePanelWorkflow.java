@@ -17,7 +17,6 @@ import java.util.LinkedList;
  * @author asus
  */
 public class CloneablePanelWorkflow extends JPanel{ 
-    private static int panelCount = 0; 
     private static int borderRadius;
     private static Color bgColor;
     private static int borderWidth;

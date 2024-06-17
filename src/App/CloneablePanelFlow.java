@@ -12,8 +12,7 @@ import java.util.HashMap;
  *
  * @author asus
  */
-public class CloneablePanelFlow extends JPanel{ 
-    private static int panelCount = 0; 
+public class CloneablePanelFlow extends JPanel{  
     private static int borderRadius;
     private static Color bgColor;
     private static int borderWidth;

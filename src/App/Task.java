@@ -44,8 +44,8 @@ public class Task {
         return userID;
     }
 
-    public void setUserID(String wid) {
-        this.userID = wid;
+    public void setUserID(String uid) {
+        this.userID = uid;
     }
 
     public String getNameInput() {
