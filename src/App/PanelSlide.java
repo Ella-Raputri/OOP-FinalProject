@@ -95,7 +95,7 @@ public class PanelSlide extends javax.swing.JPanel {
                 remove(comExit);
                 comExit = comShow;
             }
-        //animate from left to right
+        //animate from right to left
         } else {
             if (comShow.getLocation().x > 0) {
                 //move the new and existing component to the left

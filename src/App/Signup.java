@@ -44,6 +44,8 @@ public class Signup extends javax.swing.JFrame {
     }
     
     private void setBottomBorder(javax.swing.JTextField field, int colorR, int colorG, int colorB){
+        //set the bottom border for the textfield
+        //so that it only has the bottom border
         Color border_color = new java.awt.Color(colorR, colorG, colorB);
         Border bottomBorder = BorderFactory.createMatteBorder(0,0,1,0,border_color);
         field.setBorder(bottomBorder);
@@ -51,9 +53,11 @@ public class Signup extends javax.swing.JFrame {
         field.setBackground(new java.awt.Color(0,0,0,0));
     }
     
+    //valid password pattern is at least 8 characters containing both alphabet and numbers
     public static final Pattern VALID_PASSWORD_REGEX = 
     Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", Pattern.CASE_INSENSITIVE);
     
+    //validate the password by checking whether it matches the regex pattern or not
     public static boolean validatePassword(String passwordStr) {
         Matcher matcher = VALID_PASSWORD_REGEX.matcher(passwordStr);
         return matcher.matches();
@@ -73,41 +77,42 @@ public class Signup extends javax.swing.JFrame {
         confirm_field.setEchoChar((char)8226);
         confirm_field.setFont(new java.awt.Font("Montserrat", 1, 22));
         
-        //set the hover and click action for signup button
+        //set the hover and click action for login button
         loginBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { //when clicked
                 setVisible(false);
                 new Login(musicPlayer).setVisible(true);
             }
             
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 loginBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hover_smallButton.png")));
                 logintxt.setForeground(new java.awt.Color(252, 239, 220));
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) {//when not hovered
                 loginBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/smallButton.png")));      
                 logintxt.setForeground(new java.awt.Color(112, 79, 40));
             }
         });
+        //the login txt is also part of the login button
         logintxt.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { //when clicked
                 setVisible(false);
                 new Login(musicPlayer).setVisible(true);
             }
             
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 loginBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hover_smallButton.png")));
                 logintxt.setForeground(new java.awt.Color(252, 239, 220));
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered
                 loginBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/smallButton.png")));      
                 logintxt.setForeground(new java.awt.Color(112, 79, 40));
             }
@@ -115,16 +120,19 @@ public class Signup extends javax.swing.JFrame {
         
         //set the click action for hide and show password
         show_pass.addMouseListener(new MouseAdapter() {
+            //by default, the password will not be shown
             boolean showPass = false;
 
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (!showPass){
+            public void mouseClicked(MouseEvent e) { //if clicked
+                if (!showPass){ //if the passqord is not shown yet
+                    //set the password to be visible
                     show_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hide_password.png")));
                     password_field.setEchoChar((char)0);
                     password_field.setFont(new java.awt.Font("Montserrat", Font.PLAIN, 24));
                     showPass = true;
                 }else{
+                    //if the password already visible, set it to be hidden again
                     show_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/show_password.png")));
                     password_field.setEchoChar((char)8226);
                     password_field.setFont(new java.awt.Font("Montserrat", 1, 22));
@@ -133,16 +141,20 @@ public class Signup extends javax.swing.JFrame {
             }
         });
         show_conf.addMouseListener(new MouseAdapter() {
+            //by default the password confirmation will be hidden
             boolean showConf = false;
 
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { //if clicked
+                //if the password confirmation is not shown yet
                 if (!showConf){
+                    //set it to be not hidden
                     show_conf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hide_password.png")));
                     confirm_field.setEchoChar((char)0);
                     confirm_field.setFont(new java.awt.Font("Montserrat", Font.PLAIN, 24));
                     showConf = true;
                 }else{
+                    //set it to be hidden again
                     show_conf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/show_password.png")));
                     confirm_field.setEchoChar((char)8226);
                     confirm_field.setFont(new java.awt.Font("Montserrat", 1, 24));
@@ -151,71 +163,74 @@ public class Signup extends javax.swing.JFrame {
             }
         });
     
+        //for every character update in the username field
         username_field.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate(DocumentEvent e) { //when insert
                 recolorField(username_field, usernametxt);
             }
             @Override
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate(DocumentEvent e) { //when remove
                 recolorField(username_field, usernametxt);
             }
             @Override
-            public void changedUpdate(DocumentEvent e) {
+            public void changedUpdate(DocumentEvent e) { //when change
                 recolorField(username_field, usernametxt);
             }
         });
         username_field.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // When "Enter" is pressed in textField1, move focus to textField2
+                // When "Enter" is pressed in username_field, move focus to password_field
                 password_field.requestFocusInWindow();
             }
         });
         
+        //for every character update in password field
         password_field.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate(DocumentEvent e) { //when insert
                 recolorField(password_field, passwordtxt);
                 checkPassConfirm();
             }
             @Override
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate(DocumentEvent e) { //when remove
                 recolorField(password_field, passwordtxt);
                 checkPassConfirm();
             }
             @Override
-            public void changedUpdate(DocumentEvent e) {
+            public void changedUpdate(DocumentEvent e) { //when change
                 recolorField(password_field, passwordtxt);
                 checkPassConfirm();
             }
         });
         password_field.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // When "Enter" is pressed in textField1, move focus to textField2
+                // When "Enter" is pressed in password field, move focus to confirm field
                 confirm_field.requestFocusInWindow();
             }
         });
         
+        //for every character update in confirm field
         confirm_field.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate(DocumentEvent e) { //when insert
                 recolorField(confirm_field, confirmtxt);
                 checkPassConfirm();
             }
             @Override
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate(DocumentEvent e) { //when remove
                 recolorField(confirm_field, confirmtxt);
                 checkPassConfirm();
             }
             @Override
-            public void changedUpdate(DocumentEvent e) {
+            public void changedUpdate(DocumentEvent e) { //when change
                 recolorField(confirm_field, confirmtxt);
                 checkPassConfirm();
             }
         });
         confirm_field.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // When "Enter" is pressed in textField1, move focus to textField2
+                // When "Enter" is pressed in confirm field, submit the inputted data
                 submitBtnActionPerformed(e);
             }
         });
@@ -363,6 +378,7 @@ public class Signup extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        //back to the welcome page when back button is pressed
         setVisible(false);
         new WelcomePage(musicPlayer).setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
@@ -376,31 +392,34 @@ public class Signup extends javax.swing.JFrame {
     }//GEN-LAST:event_password_fieldActionPerformed
 
     private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
+        //get the data from the textfields
         String username_str = username_field.getText();
         String pass_str = password_field.getText();
         String confirm_str = confirm_field.getText();
         
-        if(username_str.trim().isEmpty()){
+        //validation
+        if(username_str.trim().isEmpty()){ //if username is still empty
             JOptionPane.showMessageDialog(getContentPane(), "Username is still empty.");
         }
-        else if(pass_str.trim().isEmpty()){
+        else if(pass_str.trim().isEmpty()){ //if password is still empty
             JOptionPane.showMessageDialog(getContentPane(), "Password is still empty.");
         }
-        else if(confirm_str.trim().isEmpty()){
+        else if(confirm_str.trim().isEmpty()){ //if confirm password is still empty
             JOptionPane.showMessageDialog(getContentPane(), "Confirm Password is still empty.");
         }
         else{           
-           if(!(pass_str.equals(confirm_str))){
+           if(!(pass_str.equals(confirm_str))){ //if password and confirm password is not the same
                JOptionPane.showMessageDialog(getContentPane(), "Password and Confirm Password is not the same.");
            }
            else{
-               if(!(validatePassword(pass_str))){
+               if(!(validatePassword(pass_str))){ //if password pattern is not valid
                     JOptionPane.showMessageDialog(getContentPane(), "Password must have 8 characters with at least one number and one character");
                }
            }
         }
         
-        if(pass_str.equals(confirm_str) && validatePassword(pass_str)){
+        if(pass_str.equals(confirm_str) && validatePassword(pass_str)){ //if all requirements met
+            //get today day name
             String day = LocalDate.now().getDayOfWeek().name();
             String day_name = day.charAt(0) + day.substring(1,3).toLowerCase(); 
             try{
@@ -410,13 +429,14 @@ public class Signup extends javax.swing.JFrame {
                 ResultSet rs = st.executeQuery("SELECT COUNT(userID) FROM user");
                 String idStr ="";
                 if(rs.first()){
+                    //if there exists other users before you, your ID will be the last ID + 1
                     String id = rs.getString(1);                    
                     int idInt = Integer.parseInt(id);
                     idInt = idInt+1;
                     idStr = "u" + String.valueOf(idInt);
                 }
                 else{
-                    idStr = "u1";
+                    idStr = "u1"; //if you are the first user
                 }
 
                 //insert into database
@@ -436,7 +456,11 @@ public class Signup extends javax.swing.JFrame {
                 
                 updateTaskCompletions(idStr);
                 
+                //after sign up, auto redirect to the homepage
                 setVisible(false);
+                
+                //because it is their first signup, then the default aranara will be arama
+                //set the background music to play arama song
                 musicPlayer.loadMusic("src/App/sound/MelodyofHiddenSeeds.wav");
                 musicPlayer.play();
                 new HomePage(idStr, musicPlayer).setVisible(true);
@@ -448,8 +472,10 @@ public class Signup extends javax.swing.JFrame {
     }//GEN-LAST:event_submitBtnActionPerformed
 
     private void updateTaskCompletions(String userID){
-        
+        //update the task completion database
         try{
+            //insert all value to be 0 to the task completon database
+            //because the user is new and does not complete any task before
             Connection con = ConnectionProvider.getCon();
             String query = "INSERT INTO task_completion VALUES(?,?,?,?,?,?,?,?)";
              
@@ -475,30 +501,33 @@ public class Signup extends javax.swing.JFrame {
     }//GEN-LAST:event_username_fieldActionPerformed
 
     private void username_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_username_fieldFocusLost
-        // TODO add your handling code here:
+        // recolor username field when focus lost
         recolorField(username_field, usernametxt);
     }//GEN-LAST:event_username_fieldFocusLost
 
     private void password_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_password_fieldFocusLost
-        // TODO add your handling code here
+        // recolor field and check pasword and confirm field valid or not
         recolorField(password_field, passwordtxt);
         checkPassConfirm();
     }//GEN-LAST:event_password_fieldFocusLost
 
     private void confirm_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_confirm_fieldFocusLost
-        // TODO add your handling code here:
+        // recolor field and check pasword and confirm field valid or not
         recolorField(confirm_field, confirmtxt);
         checkPassConfirm();
     }//GEN-LAST:event_confirm_fieldFocusLost
     
     private void recolorField(JTextField field, JLabel label){
+        //get text of the field
         String text = field.getText();
+        //if the text is empty, set the color to be red
         if(text.trim().isEmpty()){
-            label.setForeground(Color.red);
-            setBottomBorder(field, 255, 0, 0);
-            field.setForeground(Color.red);
+            label.setForeground(Color.red); //red text color
+            setBottomBorder(field, 255, 0, 0); //red border
+            field.setForeground(Color.red); //red text color
         }
         else{
+            // if not, then like default, it is black (text and border)
             label.setForeground(Color.black);
             setBottomBorder(field, 0, 0, 0);
             field.setForeground(Color.black);
@@ -506,9 +535,13 @@ public class Signup extends javax.swing.JFrame {
     }
     
     private void checkPassConfirm(){
+        //get the text in password and confirm password field
         String text = password_field.getText();
         String textConfirm = confirm_field.getText();
+        
+        //if both text is not the same
         if(!(text.equals(textConfirm))){
+            //set both fields border and text color to be red
             passwordtxt.setForeground(Color.red);
             setBottomBorder(password_field, 255, 0, 0);
             password_field.setForeground(Color.red);
@@ -518,19 +551,20 @@ public class Signup extends javax.swing.JFrame {
             confirm_field.setForeground(Color.red);
         }
         else if(!(validatePassword(text))){
+            //if the password is not valid
+            //set the password border and text to be red
             passwordtxt.setForeground(Color.red);
             setBottomBorder(password_field, 255, 0, 0);
-            password_field.setForeground(Color.red);
-            
-            confirmtxt.setForeground(Color.red);
-            setBottomBorder(confirm_field, 255, 0, 0);
-            confirm_field.setForeground(Color.red);
+            password_field.setForeground(Color.red);            
         }
         else{
+            //set the color to be default again, which is black
+            //for password field
             passwordtxt.setForeground(Color.black);
             setBottomBorder(password_field, 0, 0, 0);
             password_field.setForeground(Color.black);
             
+            //for confirm field
             confirmtxt.setForeground(Color.black);
             setBottomBorder(confirm_field, 0, 0, 0);
             confirm_field.setForeground(Color.black);
@@ -539,37 +573,6 @@ public class Signup extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(Signup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(Signup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(Signup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(Signup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new Signup().setVisible(true);
-//            }
-//        });
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel alr_have_txt;

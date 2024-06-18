@@ -12,10 +12,12 @@ import java.awt.event.MouseEvent;
  * @author Asus
  */
 public class WelcomePage extends javax.swing.JFrame {
+    //attributes
     private MusicPlayer musicPlayer; 
     /**
      * Creates new form WelcomePage
      */
+    //constructor
     public WelcomePage(MusicPlayer player) {
         musicPlayer = player;
         setTitle("Welcome Page");
@@ -25,41 +27,43 @@ public class WelcomePage extends javax.swing.JFrame {
     }
     
     private void myinit(){
+        //sign up button mouse listeners
         signUpButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { //when clicked
                 setVisible(false);
                 new Signup(musicPlayer).setVisible(true);
             }
             
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 signUpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hover_button.png")));
                 signUpText.setForeground(new java.awt.Color(252, 239, 220));
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered
                 signUpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/button.png")));      
                 signUpText.setForeground(new java.awt.Color(112, 79, 40));
             }
         });
         
+        //login button mouse listeners
         loginButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { //when clicked
                 setVisible(false);
                 new Login(musicPlayer).setVisible(true);
             }
             
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 loginButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/hover_button.png")));
                 loginText.setForeground(new java.awt.Color(252, 239, 220));
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered
                 loginButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/button.png")));      
                 loginText.setForeground(new java.awt.Color(112, 79, 40));
             }
