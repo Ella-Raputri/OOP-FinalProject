@@ -656,7 +656,7 @@ public class HomePage extends javax.swing.JFrame {
         quoteby_txt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
         quoteby_txt.setForeground(new java.awt.Color(85, 155, 0));
         quoteby_txt.setText("~[name]");
-        getContentPane().add(quoteby_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(1083, 591, -1, -1));
+        getContentPane().add(quoteby_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(885, 591, -1, -1));
 
         quotetxt.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         quotetxt.setForeground(new java.awt.Color(58, 58, 58));

@@ -16,7 +16,7 @@ import javax.swing.JTextArea;
  * @author Asus
  */
 public class PlaceHolderJTextArea extends JTextArea{
-    
+    //attribute
     private String placeholder;
 
     public PlaceHolderJTextArea(String placeholder) {
@@ -27,9 +27,13 @@ public class PlaceHolderJTextArea extends JTextArea{
         addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
+                //if focus gained and the intial field is empty (only placeholder), 
+                //then delete all placeholder text
                 if (getText().equals(placeholder) || getText().equals("")){
                   setText("");
                 }else{
+                   //if in ex: editTask, the initial field has text that is not placeholder
+                   //then dont delete it
                   setText(getText());
                 }
                 repaint();
@@ -50,7 +54,6 @@ public class PlaceHolderJTextArea extends JTextArea{
         if (getText().isEmpty() && !isFocusOwner()) {
             Graphics2D g2d = (Graphics2D) g.create();
             g2d.setColor(Color.GRAY); // Set the color for the placeholder text
-            //g2d.setFont(getFont().deriveFont(Font.ITALIC)); // Set the font for the placeholder text
             int padding = (getHeight() - getFont().getSize()) / 2;
             
             g2d.drawString(placeholder, getInsets().left, padding);

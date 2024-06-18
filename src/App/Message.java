@@ -9,14 +9,17 @@ package App;
  * @author Asus
  */
 public class Message {
+    //attributes
     private String id;
     private String msg;
     
+    //constructor
     public Message (String id, String msg){
         this.id = id;
         this.msg = msg;
     }
 
+    //getters and setters
     public String getId() {
         return id;
     }

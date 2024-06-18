@@ -9,11 +9,13 @@ package App;
  * @author Asus
  */
 public class Workflow {
+    //attributes
     private String title;
     private int checkpoint;
     private String id;
     private String userID;
 
+    //constructor
     public Workflow(String title, int checkpoint, String id, String userid) {
         this.title = title;
         this.checkpoint = checkpoint;
@@ -21,6 +23,7 @@ public class Workflow {
         this.userID = userid;
     }
 
+    //getters and setters
     public String getTitle() {
         return title;
     }

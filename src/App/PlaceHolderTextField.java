@@ -5,7 +5,6 @@
 package App;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.FocusAdapter;
@@ -16,6 +15,7 @@ import javax.swing.JTextField;
  * @author Asus
  */
 public class PlaceHolderTextField extends JTextField{
+    //attribute
     private String placeholder;
     private int adder;
 
@@ -29,8 +29,12 @@ public class PlaceHolderTextField extends JTextField{
             @Override
             public void focusGained(FocusEvent e) {
                 if (getText().equals(placeholder) || getText().equals("")){
+                    //if focus gained and the intial field is empty (only placeholder), 
+                    //then delete all placeholder text
                   setText("");
                 }else{
+                    //if in ex: editTask, the initial field has text that is not placeholder
+                   //then dont delete it
                   setText(getText());
                 }
                 repaint();
@@ -51,7 +55,6 @@ public class PlaceHolderTextField extends JTextField{
         if (getText().isEmpty() && !isFocusOwner()) {
             Graphics2D g2d = (Graphics2D) g.create();
             g2d.setColor(Color.GRAY); // Set the color for the placeholder text
-            //g2d.setFont(getFont().deriveFont(Font.ITALIC)); // Set the font for the placeholder text
             int padding = (getHeight() - getFont().getSize()) / 2;
             
             g2d.drawString(placeholder, getInsets().left+this.adder, getHeight() - padding - 1);

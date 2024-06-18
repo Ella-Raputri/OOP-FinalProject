@@ -3,7 +3,6 @@ package App;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -20,7 +19,7 @@ public class RoundJTextField extends JTextField {
     
     public RoundJTextField(int size, String placeholder) {
         super(size);
-        setOpaque(false); // As suggested by @AVD in comment.
+        setOpaque(false); 
         this.placeholder = placeholder;
         
         // Remove the default border
@@ -29,6 +28,7 @@ public class RoundJTextField extends JTextField {
         addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
+                //when focus gained, delete all text inside the text field
                 setText("");
                 repaint();
             }

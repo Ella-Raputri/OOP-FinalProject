@@ -18,9 +18,11 @@ import java.util.Map;
  * @author asus
  */
 public class CloneablePanelTask extends JPanel{ 
+    //display attributes
     private static int borderRadius;
     private static Color bgColor;
     private static int borderWidth;
+    //task attributes
     private String id;
     private String nameInput;
     private String typeInput;
@@ -29,10 +31,10 @@ public class CloneablePanelTask extends JPanel{
     private String noteInput;
     private String colorInput;
     private boolean completedInput;
-    private CalendarPage home;
-    
-    
+    //parent frame
+    private CalendarPage home;  
 
+    //constructor
     public CloneablePanelTask(CalendarPage home, int borderRadius, Color bgColor, int borderWidth, String id, 
             String nameInput, String typeInput, String timeFromInput, String timeToInput, String noteInput, String colorInput, boolean completedInput) {
         setLayout(null);
@@ -60,10 +62,9 @@ public class CloneablePanelTask extends JPanel{
         color_map.put("Green", new Color(153, 237, 113));
         color_map.put("Purple", new Color(218, 157, 255));
         color_map.put("Pink", new Color(255, 125, 203));
-        color_map.put("Brown", new Color(223, 170, 106));
-                             
+        color_map.put("Brown", new Color(223, 170, 106));                             
         
-        // Example content - you can add whatever components you need
+        // init the title label
         WrappedLabel title = new WrappedLabel(220);
         title.setText(nameInput);        
         title.setForeground(Color.white);
@@ -72,82 +73,93 @@ public class CloneablePanelTask extends JPanel{
         title.setBounds(18, 10, title.getPreferredSize().width, title.getPreferredSize().height);
         add(title);     
         
-        //the view more label
-        //INSERT INTO `tasks`(`taskID`, `name`, `type`, `timeFrom`, `timeTo`, `notes`, `color`, `userID`) VALUES ('t3','haii','One-day event','18 June 2024','18 June 2024','ddd','Brown','u1')
+        //the view more or edit label in form of ...
         JLabel more_label = new JLabel();
         more_label.setForeground(Color.white);
         more_label.setFont(new Font("Montserrat", 0, 36));
         more_label.setText("...");
         setComponentBounds(more_label, 226, -20, 23, 54);
         more_label.addMouseListener(new MouseAdapter() {
+            //the behaviour of this label
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (more_label.isEnabled()){
+                if (more_label.isEnabled()){ //if it is not disabled
+                  //then when we click it, we can edit the corresponding task
                   home.goToEditTask(id);  
                 } else{
+                    // if disabled, then show the error messagee
                     JOptionPane.showMessageDialog(home.getContentPane(), "The task has already been completed.");
                 }
                 
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when mouse hover
                 more_label.setForeground(new Color(125, 201, 255));
             }
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when mouse not hover
                 more_label.setForeground(Color.white);
             }
         });
         add(more_label);
         
-        //the color label
+        //init the color label
         JLabel color_label = new JLabel();
         color_label.setBackground(color_map.get(colorInput));
         color_label.setOpaque(true);
+        
+        //if the task is completed, then set the color label to be ticked
         if (completedInput == true){
             color_label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/checkmark.png")));
-            title.setFont(getStrikethrough(new Font("Montserrat", 0, 20)));
-            more_label.setEnabled(false);
+            title.setFont(getStrikethrough(new Font("Montserrat", 0, 20))); //set strikethrough to task title
+            more_label.setEnabled(false);//disable the view more label
         }
         setComponentBounds(color_label, 231, 55, 14, 14);
         color_label.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { //ithe color label is clicked
+                //set ticked or not
                handleCheckmarks(color_label, title, more_label);  
+               //update the database based on this data
                updateCompletedDatabase();
             }
         });
         add(color_label);
     }
     
-    private void handleCheckmarks(JLabel color_label, JLabel title, JLabel more){        
+    private void handleCheckmarks(JLabel color_label, JLabel title, JLabel more){     
+        //if the color label is ticked (the task is completed) and it is clicked again
         if (completedInput){
+            //set the icon become null 
             color_label.setIcon(null);
             title.setFont(new Font("Montserrat", 0, 20));
-            more.setEnabled(true);
-            this.completedInput = false;
-            updateTaskCompletionDatabase(-1);
+            more.setEnabled(true); //enable the view more label again
+            this.completedInput = false; //set the task to be not completed
+            updateTaskCompletionDatabase(-1); //update task completion table database to be minus by 1 for today
         }else{
+            //if the task is not completed and it is clicked 
+            //set checkmark
             color_label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/checkmark.png")));
-            title.setFont(getStrikethrough(new Font("Montserrat", 0, 20)));
-            more.setEnabled(false);
-            this.completedInput = true;            
-            updateTaskCompletionDatabase(1);
+            title.setFont(getStrikethrough(new Font("Montserrat", 0, 20))); //set the title to be strikethrough
+            more.setEnabled(false); //disable the view more label
+            this.completedInput = true;      //set compeleted to be true      
+            updateTaskCompletionDatabase(1); //update task completion table database to be added by 1 for today
         }
-        
+        //revalidate and repaint the color label
         revalidate();
         repaint();
     }
     
     private Font getStrikethrough(Font font){
-        //strikethrough font of the title if it is completed
+        //get strikethrough font of the title 
         Map attributes = font.getAttributes();
         attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
         Font newFont = new Font(attributes);
-        return newFont;
+        return newFont; //return the new font style
     }
     
     private void updateCompletedDatabase(){
+        //update the tasks database based on taskID to set whether the task is completed or not
         try{
             Connection con = ConnectionProvider.getCon();
 
@@ -164,19 +176,24 @@ public class CloneablePanelTask extends JPanel{
     }
     
     private int getTasksCompletion(){
+        //get today day name
         String day = LocalDate.now().getDayOfWeek().name();
+        //condition the column name based on today day name
         String col_name = day.charAt(0) + day.substring(1,3).toLowerCase();
         int result = -1;
         
         try{
+            //query all the task_completion database
             Connection con = ConnectionProvider.getCon();
 
             String query = "SELECT * FROM task_completion WHERE userID = ?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, home.userID);
-
+            
             try (ResultSet rs = ps.executeQuery()) {
+                //if the col name is today day name
                 if (rs.next()) {
+                    //set today task completion as the value inside the colname
                     result = rs.getInt(col_name);
                 } 
             }
@@ -188,11 +205,16 @@ public class CloneablePanelTask extends JPanel{
     }
     
     private void updateTaskCompletionDatabase(int a){
+        //get today day name
         String day = LocalDate.now().getDayOfWeek().name();
-        String col_name = day.charAt(0) + day.substring(1,3).toLowerCase();        
+        //get column name based on today day name
+        String col_name = day.charAt(0) + day.substring(1,3).toLowerCase();   
+        //get the current completion rate and add it with a 
+        //a = 1 if user complete a new task and conversely a = -1
         int curr_completion = getTasksCompletion() + a;
         
         try{
+            //update the task_completion database based on the column name and user ID
             Connection con = ConnectionProvider.getCon();
 
             String query = "UPDATE task_completion SET " + col_name + " = ? WHERE userID = ?";

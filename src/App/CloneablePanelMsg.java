@@ -25,11 +25,14 @@ import javax.swing.JPanel;
  * @author Asus
  */
 public class CloneablePanelMsg extends JPanel{ 
+    //panel display attributes
     private static int borderRadius;
     private static Color bgColor;
     private static int borderWidth;
+    //message attributes
     private String id;
     private String msgInput;
+    //behaviour attributes
     private boolean isClicked = false;   
     private MsgTemplate home;
     
@@ -46,7 +49,7 @@ public class CloneablePanelMsg extends JPanel{
         setOpaque(false);
         
         
-        // the name label
+        // init the name label
         WrappedLabel msg = new WrappedLabel(250);
         msg.setText(msgInput);        
         msg.setForeground(Color.black);
@@ -55,21 +58,22 @@ public class CloneablePanelMsg extends JPanel{
         msg.setPreferredSize(new Dimension(300, msg.getPreferredSize().height));
         add(msg);   
         
-        //the delete button
+        //init the delete button
         JLabel deleteBtn = new JLabel();
         deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_contact.png")));
         deleteBtn.setBounds(270, 10, deleteBtn.getPreferredSize().width, deleteBtn.getPreferredSize().height);
+        //the delete button behaviour
         deleteBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { //when clicked, perform delete message
                 deleteMsg();               
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered, change to lighter color
                 deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_contact_hover.png")));
             }
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered, change back to default
                 deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_contact.png")));
             }
         });
@@ -77,11 +81,12 @@ public class CloneablePanelMsg extends JPanel{
     }
     
     private void deleteMsg(){
+        //ask for confirmation
       String question = "Do you really want to delete " + msgInput + "?";
       int a = JOptionPane.showConfirmDialog(home.getContentPane(), question, "SELECT", JOptionPane.YES_OPTION);
 
         if (a == 0){
-            //delete from database
+            //delete from message table in database based on the ID
             try{
                 Connection conn = ConnectionProvider.getCon();
                 String query = "DELETE FROM message_template WHERE id = ?";
@@ -89,8 +94,10 @@ public class CloneablePanelMsg extends JPanel{
                 ps.setString(1, id);
 
                 ps.executeUpdate();
+                //show success message
                 String message = "Message deleted successfully.";
                 JOptionPane.showMessageDialog(home.getContentPane(), message); 
+                //reload home
                 home.reloadSelf();
 
             }catch(SQLException se){
@@ -99,24 +106,27 @@ public class CloneablePanelMsg extends JPanel{
         }
     }
     
+    //get message id
     public String getId() {
         return id;
     }
-
+    //set message id
     public void setId(String id) {
         this.id = id;
     }
+    //get the message content
     public String getMsgInput() {
         return msgInput;
     }
-
+    //set the message content
     public void setMsgInput(String msgInput) {
         this.msgInput = msgInput;
     }
+    //get whether is clicked or not
     public boolean isIsClicked() {
         return isClicked;
     }
-
+    //set the panel to be clicked or not
     public void setIsClicked(boolean isClicked) {
         this.isClicked = isClicked;
     }
@@ -138,16 +148,19 @@ public class CloneablePanelMsg extends JPanel{
         double strokeWidth;
         
         Graphics2D g2d = (Graphics2D) g.create();
+        //if it is clicked, set the border color to be blue
         if (isClicked) {
             g2d.setColor(new Color(125,201,255));
             g2d.setStroke(new BasicStroke(4)); // Set border width
             strokeWidth = 4f;
         } else {
+            //otherwise, the default border color is black
             g2d.setColor(Color.black);
             g2d.setStroke(new BasicStroke(borderWidth)); // Set border width
             strokeWidth = borderWidth;
         }
-                
+        
+        //draw the border
         int offset = (int) (strokeWidth / 2);
         g2d.drawRoundRect(offset, offset, getWidth() - 1 - offset * 2, getHeight() - 1 - offset * 2, borderRadius, borderRadius);
         

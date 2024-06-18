@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import javax.swing.JLabel;
 
 public class WrappedLabel extends JLabel {
+    //attributes
     private int maxWidth;
 
     public WrappedLabel(int maxWidth) {
@@ -16,22 +17,17 @@ public class WrappedLabel extends JLabel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        //super.paintComponent(g); // Ensure any background painting is done
-
         String text = getText();
         FontMetrics fm = g.getFontMetrics();
-//        String[] lines = getWrappedLines(text, fm);
 
         int lineHeight = fm.getHeight();
-        int x = (getWidth() - getPreferredSize().width) / 2;
+        int x = (getWidth() - getPreferredSize().width) / 2; //center the text horizontally
         int y = fm.getAscent();
-
-        // Center vertically by calculating the starting y position
-        //int y = (getHeight() - totalHeight) / 2 + fm.getAscent();
-
+        
+        //for every line in the array
         for (String line : getWrappedLines(text, fm)) {
-            g.drawString(line, x, y);
-            y += lineHeight;
+            g.drawString(line, x, y); //draw current line
+            y += lineHeight; //go to next line
         }
     }
 
@@ -77,7 +73,6 @@ public class WrappedLabel extends JLabel {
                 }
             }
         }
-
         // Add the last line if there's any remaining content
         if (currentLine.length() > 0) {
             wrappedLines.add(currentLine.toString());
@@ -94,20 +89,23 @@ public class WrappedLabel extends JLabel {
 
         int maxWidth = 0;
         for (String line : lines) {
+            //calculate the maximum width of the wrapped lines
             int lineWidth = fm.stringWidth(line);
             if (lineWidth > maxWidth) {
                 maxWidth = lineWidth;
             }
         }
-
+        //calculate the total height required
         int lineHeight = fm.getHeight();
         int totalHeight = lines.length * lineHeight;
-
+        
+        //return it in form of dimension
         return new Dimension(maxWidth, totalHeight);
     }
 
     @Override
     public void setText(String text) {
+        //set text
         super.setText(text);
         revalidate();
         repaint();

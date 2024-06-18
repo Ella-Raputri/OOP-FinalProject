@@ -9,6 +9,7 @@ package App;
  * @author Asus
  */
 public class Task {
+    //attributes
     private String id;
     private String userID;
     private String nameInput;
@@ -19,6 +20,7 @@ public class Task {
     private String colorInput;
     private boolean completed = false;
 
+    //constructor
     public Task(String id, String nameInput, String typeInput, String timeFromInput, String timeToInput, 
             String noteInput, String colorInput, String userID, boolean comp) {
         this.id = id;
@@ -32,6 +34,7 @@ public class Task {
         this.completed = comp;
     }
 
+    //getters and setters
     public String getId() {
         return id;
     }

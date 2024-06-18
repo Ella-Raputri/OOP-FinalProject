@@ -9,16 +9,19 @@ package App;
  * @author Asus
  */
 public class Contact {
+    //attributes
     private String id;
     private String name;
     private String phone_number;
     
+    //constructor
     public Contact(String id, String name, String phone_number){
         this.id = id;
         this.name = name;
         this.phone_number = phone_number;        
     }
 
+    //getters and setters
     public String getId() {
         return id;
     }

@@ -9,6 +9,7 @@ package App;
  * @author Asus
  */
 public class Flow {
+    //attributes
     private String id;
     private String workflowID;
     private String nameInput;
@@ -18,6 +19,7 @@ public class Flow {
     private String noteInput;
     private String colorInput;
 
+    //constructor
     public Flow(String id, String workflowID, String nameInput, String typeInput, int dayFromInput, int dayToInput, 
             String noteInput, String colorInput) {
         this.id = id;
@@ -30,6 +32,7 @@ public class Flow {
         this.colorInput = colorInput;
     }
 
+    //getters and setters
     public String getId() {
         return id;
     }
