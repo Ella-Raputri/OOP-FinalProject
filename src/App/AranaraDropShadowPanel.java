@@ -15,17 +15,24 @@ import javax.swing.JPanel;
 
 
 public class AranaraDropShadowPanel extends JPanel {
+    //display attributes
+    //it is final because all panel has the same size and color
     private final int shadowSize = 8;
     private final Color shadowColor = new java.awt.Color (0,0,0,25);
     private final int arcWidth = 20;
     private final int arcHeight = 20;
+    
+    //aranara attributes
     private String aranaraName;
     private int aranaraAffection;
     
+    //constructor
     public AranaraDropShadowPanel(String name, int affection, String userID, AranaraMenu home, MusicPlayer player) {
         this.aranaraName = name;
         this.aranaraAffection = affection;
         
+        //tArama is automatically unlocked for all users
+        //if it is other aranaras, the affection has to be greater than 0 to represent that it is unlocked
         if (name.equals("Arama") || affection > 0){
             setOpaque(false);
             setLayout(null);
@@ -45,7 +52,7 @@ public class AranaraDropShadowPanel extends JPanel {
             affection_label.setForeground(new java.awt.Color(0,0,0));
             add(affection_label);
 
-            //add button
+            //add visit button
             App.ButtonCustom visit_btn = new App.ButtonCustom();
             visit_btn.setForeground(new java.awt.Color(255, 255, 255));
             visit_btn.setText("Visit");
@@ -62,6 +69,7 @@ public class AranaraDropShadowPanel extends JPanel {
             visit_btn.setRadius(50);
             visit_btn.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    //when visit button is clicked
                     visitBtnActionPerformed(userID, home, player);
                 }
             });
@@ -69,24 +77,25 @@ public class AranaraDropShadowPanel extends JPanel {
             add(visit_btn); 
         }
         else{
+            //if the aranara is still locked
             setOpaque(false);
             setLayout(null);
             setBackground(new Color(234,234,234));
             
-            //set the requirements for each aranara
+            //the requirements for each aranara other than arama
             int requirement =0;
             if (name.equals("Ararycan")){
                 requirement = 60;
             }else if (name.equals("Arabalika")){
                 requirement = 120;
             }
-            //add the lock icon
+            //add the lock icon to the panel
             JLabel lock_label = new JLabel();
             lock_label.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/locked.png")));
             lock_label.setBounds(105, 68, 66, 88); // Set the position and size of the label\
             add(lock_label);
 
-            //add the explanation text
+            //add the explanation text about how many affections needed to unlock
             WrappedLabel explanation = new WrappedLabel(250);
             explanation.setText("Reach a total affection of "+ requirement + " to unlock");
             explanation.setBounds(13, 180, 257, 60); // Set the position and size of the label
@@ -97,6 +106,7 @@ public class AranaraDropShadowPanel extends JPanel {
     }
     
     private void visitBtnActionPerformed(String uid, AranaraMenu home, MusicPlayer player){
+        //go to edit aranara menu which is the aranara activity page
         home.setVisible(false);
         new EditAranara(aranaraName, uid, player).setVisible(true);
     }
@@ -105,6 +115,7 @@ public class AranaraDropShadowPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
+        //initialize the shadow size 
         int x = shadowSize;
         int y = shadowSize;
         int shadow_width = getWidth() - shadowSize * 2;
@@ -132,10 +143,5 @@ public class AranaraDropShadowPanel extends JPanel {
         
         g2.setStroke(oldStroke); // Restore the original stroke
         g2.dispose();
-    }
-    
-    @Override
-    protected void paintBorder(Graphics g) {
-        // Optional: paint border here
     }
 }

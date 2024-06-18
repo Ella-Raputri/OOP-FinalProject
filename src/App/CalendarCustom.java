@@ -20,6 +20,7 @@ import javax.swing.JPanel;
  * @author Asus
  */
 public class CalendarCustom extends javax.swing.JPanel {
+    //attributes
     private int month;
     private int year;
     public CalendarPanel currentPanel;
@@ -29,8 +30,9 @@ public class CalendarCustom extends javax.swing.JPanel {
      */
     public CalendarCustom(CalendarPage home) {        
         initComponents();
+        //set current panel as this month and year
         thisMonth();
-        currentPanel = new CalendarPanel(6, 2024, home);
+        currentPanel = new CalendarPanel(month, year, home);
         
         this.home = home;
         slide.show(currentPanel, PanelSlide.AnimateType.TO_RIGHT);
@@ -40,60 +42,71 @@ public class CalendarCustom extends javax.swing.JPanel {
     }
     
     private void myinit(){
+        //behaviour for the previous arrow
         prevBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //if it is clicked, then navigate to previous month
                 if (month == 1){
+                    //if the month is January, go back to December and year deducted by 1
                     month = 12;
                     year--;
                 }else{
+                    //else, go back 1 month
                     month--;
                 }
-                updateCalendarPanel(PanelSlide.AnimateType.TO_RIGHT);
+                updateCalendarPanel(PanelSlide.AnimateType.TO_RIGHT); //animate to right
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 prevBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/prev_month_hover.png")));
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered
                 prevBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/prev_month.png")));
             }
         });
         
+        //behaviour for the next arrow
         nextBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { //when clicked
+                //if month is December, then go to January and year added by 1
                 if (month == 12){
                     month = 1;
                     year++;
                 }else{
+                    //else, add 1 month from current
                     month++;
                 }
-                updateCalendarPanel(PanelSlide.AnimateType.TO_LEFT);
+                updateCalendarPanel(PanelSlide.AnimateType.TO_LEFT); //animate to left
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 nextBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/next_month_hover.png")));
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered
                nextBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/next_month.png")));
             }
         });
     }
     
     private void updateCalendarPanel(PanelSlide.AnimateType type) {
+        //create new current panel based on the month and year
         currentPanel = new CalendarPanel(month, year, home);
+        //animate the panel movement based on the direction
         slide.show(currentPanel, type);
+        //set the first date cell in the panel to be selected 
         currentPanel.setCell1Selected();
         showMonthYear();
         refreshTaskDots();
     }
     
     private void thisMonth(){
+        //set the default month and year to this month
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         month = calendar.get(Calendar.MONTH) +1;
@@ -101,59 +114,71 @@ public class CalendarCustom extends javax.swing.JPanel {
     }
     
     private void showMonthYear(){
+        //show the month and year in the month_year JLabel based on 
+        //the month and year value
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.MONTH, month-1);
+        calendar.set(Calendar.MONTH, month-1); //deducted by 1 because month starts from 0 here
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.DATE, 1);
-        SimpleDateFormat date_format = new SimpleDateFormat("MMMM yyyy");
+        
+        //the display format in MMMM yyyy
+        SimpleDateFormat date_format = new SimpleDateFormat("MMMM yyyy"); 
         month_year.setText(date_format.format(calendar.getTime()));
     }
     
     public void refreshTaskDots(){
+        //get all cells in current panel
         LinkedList<CalendarCell> panelCells = currentPanel.getCells();
         
+        //check for every task in the task list
         for (int i = 0; i < home.taskList.size(); i++){
-            LocalDate date_from = home.convertStrDate(home.taskList.get(i).getTimeFromInput());
-            String color_str = home.taskList.get(i).getColorInput();
+            LocalDate date_from = home.convertStrDate(home.taskList.get(i).getTimeFromInput()); //get the date
+            String color_str = home.taskList.get(i).getColorInput(); //get the color
             
+            //one day event
             if (home.taskList.get(i).getTypeInput().equals("One-day event")){    
                 for (CalendarCell cell1 : panelCells){
+                    //check whether the date in the cell is the same with one in the task or not
                    LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                    if (date_from.equals(date_cell)){
                        if (cell1.hasATask()){
-                           cell1.setTaskAmount(cell1.getTaskAmount() +1);
+                           cell1.setTaskAmount(cell1.getTaskAmount() +1); //set task amount
                        }
-                       cell1.setHasTasks(true, color_str);
+                       cell1.setHasTasks(true, color_str); //set the dot color
                     } 
-                }
-                
+                }                
             //multiple day event
             }else{
+                //get the last date
                 LocalDate date_to = home.convertStrDate(home.taskList.get(i).getTimeToInput());
                 for (CalendarCell cell1 : panelCells){
+                    //get cell date
                     LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     
+                    //see whether the cell date is in the range of the multiple day ebvent
                    if (date_cell.isAfter(date_from.minusDays(1)) && date_cell.isBefore(date_to.plusDays(1))){
                         if (cell1.hasATask()){
-                           cell1.setTaskAmount(cell1.getTaskAmount() +1);
+                           cell1.setTaskAmount(cell1.getTaskAmount() +1); //set task amount
                         }
-                        cell1.setHasTasks(true, color_str);
+                        cell1.setHasTasks(true, color_str); //set dot color
                    } 
                 }
             }
         }      
     }
     
-    
     public JPanel getTaskPanel(){
         return taskPanel;
     }
     
     public void addTaskBtnActionPerformed(){
+        //if there is no window open
         if (CalendarPage.open == 0){
+            //open the add new task window
            CalendarPage.open = 1; 
            new AddNewTask(home.userID, home).setVisible(true);
         }else{
+            //show message
            JOptionPane.showMessageDialog(home.getContentPane(), "One window is already open.");
         }               
     }

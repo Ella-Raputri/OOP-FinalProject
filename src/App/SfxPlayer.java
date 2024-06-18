@@ -13,9 +13,11 @@ import java.io.File;
 import java.io.IOException;
 
 public class SfxPlayer {
+    //atributes
     private Clip clip;
     private FloatControl volumeControl;
 
+    //constructor
     public SfxPlayer(String filePath, float defaultVolume) {
         loadSound(filePath, defaultVolume);
     }
@@ -44,33 +46,26 @@ public class SfxPlayer {
     }
 
     public void play() {
+        //if clip is not null
         if (clip != null) {
             clip.setFramePosition(0); //start from beginning
             clip.start();
         }
     }
 
-//    public void stop() {
-//        if (clip != null) {
-//            clip.stop();
-//        }
-//    }
-//
-//    public void close() {
-//        if (clip != null) {
-//            clip.close();
-//        }
-//    }
-
     public void setVolume(float volume) {
+        //set the volume if volumeControl is not null
         if (volumeControl != null) {
+            //get the range (min and max)
             float min = volumeControl.getMinimum();
             float max = volumeControl.getMaximum();
+            //set the volume control
             volumeControl.setValue(min + (max - min) * volume);
         }
     }
 
     public float getVolume() {
+        //get the volume
         if (volumeControl != null) {
             return volumeControl.getValue();
         }

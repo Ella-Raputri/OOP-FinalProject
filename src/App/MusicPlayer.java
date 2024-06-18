@@ -13,10 +13,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class MusicPlayer {
+    //attributes
     private Clip clip;
     private String filePath;
     private FloatControl volumeControl;
 
+    //constructor
     public MusicPlayer(String filePath, float defaultVolume) {
         this.filePath = filePath;
         loadMusic(filePath);
@@ -24,9 +26,11 @@ public class MusicPlayer {
     }
 
     public void loadMusic(String filePath) {
+        //stop the clip if the clip is not null and still running
         if (clip != null && clip.isRunning()) {
             clip.stop();
         }
+        //close the clip if the clip is not null
         if (clip != null) {
             clip.close();
         }
@@ -52,6 +56,7 @@ public class MusicPlayer {
     }
 
     public void play() {
+        //if the clip is not null, play the clip from the beginning
         if (clip != null) {
             clip.setFramePosition(0);
             clip.start();
@@ -60,26 +65,32 @@ public class MusicPlayer {
     }
 
     public void stop() {
+        //stop the clip if it is not null
         if (clip != null) {
             clip.stop();
         }
     }
 
     public void close() {
+        //close the clip if it is not null
         if (clip != null) {
             clip.close();
         }
     }
 
     public void setVolume(float volume) {
+        //if the volumeControl is not null
         if (volumeControl != null) {
+            //get the min and max of the volume control
             float min = volumeControl.getMinimum();
             float max = volumeControl.getMaximum();
+            //set the volume
             volumeControl.setValue(min + (max - min) * volume);
         }
     }
 
     public float getVolume() {
+        //get the volume control if is not null
         if (volumeControl != null) {
             return volumeControl.getValue();
         }
@@ -87,6 +98,7 @@ public class MusicPlayer {
     }
     
     public String getFilePath(){
+        //get audio filepath
         return this.filePath;
     }
 }

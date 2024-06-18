@@ -16,14 +16,17 @@ import javax.swing.Timer;
  * @author Asus
  */
 public class PanelSlide extends javax.swing.JPanel {
-
-    /**
-     * Creates new form PanelSlide
-     */
+    //attributes
+    private final Timer timer;
+    private Component comExit;
+    private Component comShow;
+    private AnimateType animateType;
+    private int animate = 30; //animate speed
+    
+    //setters and getters for animate
     public int getAnimate() {
         return animate;
     }
-
     public void setAnimate(int animate) {
         this.animate = animate;
     }
@@ -34,78 +37,81 @@ public class PanelSlide extends javax.swing.JPanel {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent ce) {
+                //adjust the size of the displayed component when the panel is resized
                 comShow.setSize(getSize());
             }
-
         });
+        //initialize the timer for the animation
         timer = new Timer(0, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                //animate or move on each timer tick
                 animate();
             }
         });
-
     }
 
-    private final Timer timer;
-    private Component comExit;
-    private Component comShow;
-    private AnimateType animateType;
-    private int animate = 30;
-
+    //show component with sliding animation
     public void show(Component com, AnimateType animateType) {
+        // Check if the timer is not already running
         if (!timer.isRunning()) {
             this.animateType = animateType;
             this.comShow = com;
-            com.setSize(getSize());
+            com.setSize(getSize()); // Set the size of the new component
+
+            // If there are no components currently in the panel
             if (getComponentCount() == 0) {
-                add(com);
-                comExit = com;
+                add(com); // Add the new component to the panel
+                comExit = com; // Set comExit to the new component
                 repaint();
                 revalidate();
             } else {
-
+                // Set the initial location of the new component for the animation
                 if (animateType == AnimateType.TO_RIGHT) {
-                    comShow.setLocation(-comShow.getWidth(), 0);
+                    comShow.setLocation(-comShow.getWidth(), 0); // Start from the left
                 } else {
-                    comShow.setLocation(getWidth(), 0);
+                    comShow.setLocation(getWidth(), 0); // Start from the right
                 }
-                add(com);
+
+                add(com); // Add the new component to the panel
                 repaint();
                 revalidate();
-                timer.start();
-
+                timer.start(); // Start the animation timer
             }
         }
     }
 
     private void animate() {
+        //animate from left to right
         if (animateType == AnimateType.TO_RIGHT) {
             if (comShow.getLocation().x < 0) {
+                //move the new and existing component to the right
                 comShow.setLocation(comShow.getLocation().x + animate, 0);
                 comExit.setLocation(comExit.getLocation().x + animate, 0);
             } else {
-                //  Stop animate
+                // Stop animate
                 comShow.setLocation(0, 0);
                 timer.stop();
                 remove(comExit);
                 comExit = comShow;
             }
+        //animate from left to right
         } else {
             if (comShow.getLocation().x > 0) {
+                //move the new and existing component to the left
                 comShow.setLocation(comShow.getLocation().x - animate, 0);
                 comExit.setLocation(comExit.getLocation().x - animate, 0);
             } else {
+                //stop animate
                 comShow.setLocation(0, 0);
                 timer.stop();
                 remove(comExit);
                 comExit = comShow;
             }
         }
-    }
-    // </editor-fold>//GEN-END:initComponents
+    }                      
 
-
+    //enum for the animation type (to left or to right)
     public static enum AnimateType {
         TO_RIGHT, TO_LEFT
     }

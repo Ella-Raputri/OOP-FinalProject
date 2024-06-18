@@ -16,8 +16,11 @@ import java.util.LinkedList;
  * @author Asus
  */
 public class CalendarPanel extends javax.swing.JLayeredPane {
+    //date attributes
      private int month;
-     private int year;    
+     private int year; 
+     
+     //display attributes
      public String color ;
      private CalendarCell current_cell = null;
      private LinkedList<CalendarCell> cells = new LinkedList<>();
@@ -34,7 +37,7 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
     }
     
     private void init(){
-        //set the titles style
+        //set the day name as title
         mon.asTitle();
         tue.asTitle();
         wed.asTitle();
@@ -46,78 +49,88 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
     }
     
     private void setDate(){
+        //set all date in the cells in the panel
+        //get the calendar and set the date, year, and month to the first day
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month-1);
+        calendar.set(Calendar.MONTH, month-1); //month is zero based on Calendar
         calendar.set(Calendar.DATE, 1);
         
+        //calculate the starting day of the first day of the week
         int start_day = calendar.get(Calendar.DAY_OF_WEEK) -1;
-        calendar.add(Calendar.DATE, -start_day);
-        CalendarToday today = getToday();
+        calendar.add(Calendar.DATE, -start_day); //move calendar back to the start of the week
+        CalendarToday today = getToday(); //get today date
         
         for (Component comp : getComponents()){
             CalendarCell cell = (CalendarCell) comp;
-            if (!cell.isTitle()){
+            if (!cell.isTitle()){ //skip cells that are title
+                //add the cell to LinkedList
                 cells.add(cell);
+                //set the text of the cell to the date
                 cell.setText(calendar.get(Calendar.DATE) + "");
                 cell.setDate(calendar.getTime());
-                cell.currentMonth(calendar.get(Calendar.MONTH) == month -1, calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY);
+                //color and format the text color
+                cell.currentMonth(calendar.get(Calendar.MONTH) == month -1, 
+                        calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY);
                 
+                //if the cell is clicked
                 cell.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
+                        //if it is not the current cell
                         if (current_cell != cell) {
                             if (current_cell != null) {
-                                current_cell.setAsSelected(false);
-                                
-                                home.refresh();
-                                //current_cell.setAsTasks(false, color);
+                                //if the current cell is not null, set the selected cell to be false
+                                current_cell.setAsSelected(false);                                
+                                home.refresh(); 
                             }
-                            //cell.setAsTasks(true, color);
-                            current_cell = cell; 
+                            current_cell = cell; //set cell as current cell
                             home.refresh();
                         }
-                        
-                        
                     }
                 });
                 
-                if (today.isToday(new CalendarToday(calendar.get(Calendar.DATE), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)))){
+                //if the date is today's date
+                if (today.isToday(new CalendarToday(calendar.get(Calendar.DATE), 
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)))){
+                    //set as today and default selected to be true
                     cell.setAsToday();
                     cell.setAsSelected(true);
                     cell.repaint();
-//                    home.queryCurrentTaskList();
-//                    home.createClonedPanels(home.currTasksList, home.currTasksList.size());
-                    //cell.setAsTasks(true, color);
                     current_cell = cell;
                 }
+                //move to the next date
                 calendar.add(Calendar.DATE, 1);
             }
         }
     }
     
+    //set color
     public void setColor(String color){
         this.color = color;
     }
     
+    //set home
     public void setHome(CalendarPage home1){
         this.home = home1;
     }
     
+    //get today date
     private CalendarToday getToday(){
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         return new CalendarToday(cal.get(Calendar.DATE), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
     }
     
+    //get current cell
     public CalendarCell getCurrentCell(){
         return current_cell;
     }
-    
+    //get all cells which is not the title
     public LinkedList<CalendarCell> getCells(){
         return cells;
     }
-    
+    //set the first cell to be selected when navigating to other months
     public void setCell1Selected(){
         current_cell = cell1;
         current_cell.setAsSelected(true);

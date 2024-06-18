@@ -21,7 +21,7 @@ import javax.swing.JLabel;
  * @author Asus
  */
 public class CalendarCell extends JButton{
-    
+    //attributes
     private Date date;
     private boolean title;
     private boolean isToday;
@@ -32,19 +32,26 @@ public class CalendarCell extends JButton{
     private int taskAmount = 0;
     
     public CalendarCell(){
+        //set the content to be empty and no border
         setContentAreaFilled(false);
         setBorder(null);
+        //set the text aligment to center
         setHorizontalAlignment(JLabel.CENTER);
         
+        //add mouse event
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //when the cell is clicked and is not selected yet
                 if (!isSelected) {
+                    //set selected to be true
                     setAsSelected(true);
                 }
             }
         });
         
+        //populate the color map with the String color name as key 
+        //and color object as value
         color_map.put("Blue", new Color(80, 213, 255));
         color_map.put("Red", new Color(255, 164, 164));
         color_map.put("Orange", new Color(255, 182, 128));
@@ -55,79 +62,86 @@ public class CalendarCell extends JButton{
         color_map.put("Brown", new Color(223, 170, 106));
     }
     
+    //set the cell as day name (title)
     public void asTitle(){
         title = true;
     }
-    
+    //get whether the cell is title or not
     public boolean isTitle(){
         return title;
     }
-        
+    
+    //getter and setter for date
     public void setDate(Date date1){
         this.date = date1;
-    }
-    
+    }    
     public Date getDate(){
         return this.date;
     }
     
+    //color the cell content based on its attributes
     public void currentMonth(boolean act, boolean isSunday){
+        //if it is in current month, but not Sunday
         if(act && !isSunday){
-            setForeground(new Color(58,58,58));
+            setForeground(new Color(58,58,58)); //black
             setFont(new java.awt.Font("Montserrat Medium", 0, 22));
         }
+        //if it is in current month and Sunday
         else if (act && isSunday){
-            setForeground(new Color(234, 111, 111));
+            setForeground(new Color(234, 111, 111)); //red
             setFont(new java.awt.Font("Montserrat Medium", 0, 22));
         }
+        //if it is not in current month, but it is Sunday
         else if (!act && isSunday){
-            setForeground(new Color(255, 167, 167));
+            setForeground(new Color(255, 167, 167)); //light red
         }
+        //if it is neither in current month nor sunday
         else {
-            setForeground(new Color(200,200,200));
+            setForeground(new Color(200,200,200)); //gray
         }
     }
     
+    //set the cell to be today
     public void setAsToday(){
         isToday = true;
-        setForeground(new Color(0,141,189));
+        //set different text color (color becomes blue)
+        setForeground(new Color(0,141,189)); 
         repaint();
     }
     
+    //setters and getters for isSelected, hasTask, and taskAmount
     public void setAsSelected(boolean bool){
         isSelected = bool;
         repaint();
-    }
-    
+    }    
     public boolean getisSelected(){
         return isSelected;
-    }
-    
+    }    
     public void setHasTasks(boolean bool, String color){
         this.colorStr = color;
         hasTask = bool;
         repaint();
-    }
-    
+    }    
     public boolean hasATask (){
         return this.hasTask;
     }
-
     public int getTaskAmount() {
         return taskAmount;
     }
-
     public void setTaskAmount(int taskAmount) {
         this.taskAmount = taskAmount;
     }
     
+    
     @Override
     protected void paintComponent(Graphics g){
         if(title){
+            //if it is title, blue text and there is a bottom border
             g.setColor(new Color(0,141,189));
             g.drawLine(20, getHeight()-1, getWidth()-20, getHeight()-1);
         }
         if (isToday){
+            //if it is today, light blue circle background
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(new Color(222, 247, 255));
@@ -136,6 +150,7 @@ public class CalendarCell extends JButton{
         super.paintComponent(g);
         if (hasTask && !title ){
             if (!colorStr.trim().isEmpty()) {
+                //if the cell has task, draw the dot based on the color
                 g.setColor(color_map.get(colorStr));
                 int dotSize = 10; // Size of the dot
                 int x = getWidth() / 2 - dotSize / 2;
@@ -150,13 +165,14 @@ public class CalendarCell extends JButton{
     
     @Override
     protected void paintBorder(Graphics g) {
+        //if it is selected, paint a gray border
        if (isSelected && !title) {
         int borderWidth = 2;
         Graphics2D g2d = (Graphics2D) g.create();
         super.paintBorder(g); // Ensure any superclass painting is done
 
         // Set border color and width
-        g2d.setColor(new Color(214, 214, 214));
+        g2d.setColor(new Color(214, 214, 214)); //gray
         g2d.setStroke(new BasicStroke(borderWidth)); // Set border width
         
         // Draw the rounded rectangle border
