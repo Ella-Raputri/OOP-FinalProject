@@ -358,8 +358,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         String[] ararycan_msg = {"Hello, Nara. I am Ararycan.", 
             "Ahhh! Nara " + username + ".", "You are good Nara. Ararycan is not afraid."};
         
-        String[] arabalika_msg = {"Hmph. I am " + parent.aranaraName + ".", 
-            "Arabalika want to see how strong Nara " + username + "is.", "Hmph. Arabalika wants to practice."};
+        String[] arabalika_msg = {"Hmph. I am Arabalika.", 
+            "Arabalika want to see how strong Nara " + username + " is.", "Hmph. Arabalika wants to practice."};
         
         Random random = new Random();
         int index = random.nextInt(3);
@@ -395,6 +395,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         if (choice == null) {
             // User pressed cancel or closed the dialog
             JOptionPane.showMessageDialog(parent.getContentPane(), "No options selected.");
+            open = 0;
             return;
         }
 
@@ -500,6 +501,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         
         if (!timeStr.contains(":")){
             JOptionPane.showMessageDialog(null, "The inputted time format is not correct.");
+            open = 0;
             return;
         }
         
@@ -814,11 +816,6 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         JSONObject weatherObj = weatherArray.getJSONObject(0);
         String weatherMain = weatherObj.getString("main");
         String weatherDesc = weatherObj.getString("description");
-        
-        System.out.println("City: " + cityName);
-        System.out.println("Temperature: " + String.format("%.2f", tempInCelsius) + " °C");
-        System.out.println("Weather: " + weatherMain);
-        System.out.println("Weather description: " + weatherDesc);
         
         String temper = String.format("%.2f", tempInCelsius) + " °C";
         String suppMsg = getAranaraMsg(weatherMain);

@@ -366,6 +366,7 @@ public class HomePage extends javax.swing.JFrame {
                 PreparedStatement ps = con.prepareStatement(query);
                 ps.setString(1, todayStr);
                 ps.setString(2, userID);
+                ps.executeUpdate();
             }
 
         }catch(Exception e){

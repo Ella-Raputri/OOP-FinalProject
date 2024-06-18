@@ -117,6 +117,12 @@ public class CalendarPanel extends javax.swing.JLayeredPane {
     public LinkedList<CalendarCell> getCells(){
         return cells;
     }
+    
+    public void setCell1Selected(){
+        current_cell = cell1;
+        current_cell.setAsSelected(true);
+        current_cell.repaint();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

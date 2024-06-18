@@ -56,7 +56,6 @@ public class CalendarPage extends javax.swing.JFrame {
         initComponents();
         initDesign();
         initHover();
-        displaySelectedTask();
     }
     
     public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
@@ -376,19 +375,6 @@ public class CalendarPage extends javax.swing.JFrame {
         return date;
     }
     
-    private void displaySelectedTask(){
-        //get the current cell
-        CalendarCell currCell = calendarCustom2.currentPanel.getCurrentCell();
-        LocalDate date1 = currCell.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        System.out.println(date1);
-        LocalDate date2 = convertStrDate("2024-06-3");
-        
-        if (date1.equals(date2)) {
-            System.out.println("The dates are the same.");
-        } else {
-            System.out.println("The dates are different.");
-        }
-    }
     
     public void queryCurrentTaskList(){
         currTasksList.clear();

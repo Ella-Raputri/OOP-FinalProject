@@ -88,6 +88,7 @@ public class CalendarCustom extends javax.swing.JPanel {
     private void updateCalendarPanel(PanelSlide.AnimateType type) {
         currentPanel = new CalendarPanel(month, year, home);
         slide.show(currentPanel, type);
+        currentPanel.setCell1Selected();
         showMonthYear();
         refreshTaskDots();
     }
