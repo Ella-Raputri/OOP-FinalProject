@@ -712,6 +712,7 @@ public class EditWorkflow extends javax.swing.JFrame {
                    queryFlow();
                    cloneablePanel.removeAll();
                    createClonedPanels(flowList, flowList.size());
+                   deactivateDeleteBtn();
 
                }catch(Exception e){
                    JOptionPane.showMessageDialog(getContentPane(), e);

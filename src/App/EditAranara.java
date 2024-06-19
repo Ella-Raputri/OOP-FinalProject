@@ -28,6 +28,7 @@ public class EditAranara extends javax.swing.JFrame {
     private int affection;
     private int patAmount;
     private String patDay;
+    private String defaultAranara;
     private AranaraChatMenu childWindow = null;
     private EditAranara parent = (EditAranara) SwingUtilities.getRoot(this);
     private MusicPlayer player;
@@ -59,55 +60,59 @@ public class EditAranara extends javax.swing.JFrame {
     } 
     
     public void setDialogText(String s){            
-        //refresh if the button is pressed continuously
+        //refresh the dialogue box if a button is pressed continuously
+        //so that the dialog box is still visible and display other text
         dialog_box.setVisible(false);
         dialog_text.setVisible(false);
         
-        //
+        //set the dialog box and text to be visible
         dialog_box.setVisible(true);
         dialog_text.setVisible(true);
         dialog_text.setText(s);
         
+        //set the timer
         Timer timer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //after 5 seconds, the box and text will be invisible again
                 dialog_box.setVisible(false);
                 dialog_text.setVisible(false);
             }
         });
-
         // Start the timer
         timer.setRepeats(false); // Make sure the timer only runs once
         timer.start();
     }
     
     public void setGameDialogIcon(String label_path){
+        //the game dialog is a special smaller dialog box when playing game with the Aranara
+        //set the dialog box icon to be other icon
         dialog_box.setVisible(true);
         dialog_box.setIcon(new javax.swing.ImageIcon(getClass().getResource(label_path)));        
         
         Timer timer = new Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //after 2 seconds, the box will be invisible and the dialog box icon will be default one again
                 dialog_box.setVisible(false);
-                //game_icon.setVisible(false);
                 dialog_box.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/dialog_box.png")));
             }
         });
-
         // Start the timer
         timer.setRepeats(false); // Make sure the timer only runs once
         timer.start();
     }
     
     private void setHeartIcon(){
+        //heart icon is visible when user pats the Aranara
         heart_icon.setVisible(true);
         Timer timer = new Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //after 2 seconds, the heart will be invisible again
                 heart_icon.setVisible(false);
             }
         });
-
         // Start the timer
         timer.setRepeats(false); // Make sure the timer only runs once
         timer.start();
@@ -117,7 +122,7 @@ public class EditAranara extends javax.swing.JFrame {
         backBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                setVisible(false);
+                setVisible(false); //go back to the Aranara menu page
                 new AranaraMenu(userID, player).setVisible(true);
             }
             @Override
@@ -132,7 +137,8 @@ public class EditAranara extends javax.swing.JFrame {
         
         patBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {                
+            public void mouseClicked(MouseEvent e) {   
+                //add the affection of the Aranara if the requirements are met and play sfx
                 sfxplay.loadSound("src/App/sound/select.wav", 0.8f);
                 sfxplay.play();
                 patBtnActionPerformed();
@@ -150,6 +156,7 @@ public class EditAranara extends javax.swing.JFrame {
         setDefaultBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //play sfx and set the current aranara as the default aranara
                 sfxplay.loadSound("src/App/sound/select.wav", 0.8f);
                 sfxplay.play();
                 setDefaultBtnActionPerformed();
@@ -164,16 +171,20 @@ public class EditAranara extends javax.swing.JFrame {
             }
         });
         
+        //the back chat button is only visible when the Aranara chat menu is opened
         backChatBtn.setVisible(false);
         backChatBtn.setEnabled(false);
         
         chatBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //play sfx
                 sfxplay.loadSound("src/App/sound/chat.wav", 0.8f);
                 sfxplay.play();
+                //open the AranaraChatMenu window
                 childWindow = new AranaraChatMenu(parent, userID);
                 childWindow.setVisible(true);
+                //set the back chat button to be visible
                 backChatBtn.setVisible(true);
                 backChatBtn.setEnabled(true);
             }
@@ -191,10 +202,13 @@ public class EditAranara extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (childWindow != null){
+                    //play sfx
                     sfxplay.loadSound("src/App/sound/chat.wav", 0.8f);
                     sfxplay.play();
+                    //set itself to be invisible again 
                     backChatBtn.setVisible(false);
                     backChatBtn.setEnabled(false);
+                    //set the child window to null again
                     childWindow.setVisible(false);
                     childWindow = null;
                 }
@@ -211,29 +225,32 @@ public class EditAranara extends javax.swing.JFrame {
     }
     
     private void patBtnActionPerformed(){   
+        //set heart icon regardless the requirements
         setHeartIcon();
-        if (affection < 100){
-            if (checkValidPat()){
+        if (affection < 100){ //if affection is not full
+            if (checkValidPat()){ //check whether the pat is valid
+                //if valid, then affection for the current aranara + 1
                 affection += 1;
                 String col = "aff_" + aranaraName.toLowerCase();
                 try{
                     Connection con = ConnectionProvider.getCon();
-
+                    //update the affection in the database
                     PreparedStatement ps = con.prepareStatement("UPDATE user SET "+ col +" = ? WHERE userID = ?");
                     ps.setInt(1, affection);
                     ps.setString(2, this.userID);
                     ps.executeUpdate();
                     
-                    //dialog message
+                    //dialog message when successfully patted
                     String[] arama_msg = {"Good day Nara!", "Arama is happy today!", "Hehe, thanks Nara!"};
-
-                    String[] ararycan_msg = {"Ahh! Ararycan is startled.", "Nara is friend of Aranara.", "Nara is the friend of forest."};
-
-                    String[] arabalika_msg = {"Hmph.", "Don't pat Arabalika like that, Nara.", "Hmph. don't disturb Arabalika."};
-
+                    String[] ararycan_msg = {"Ahh! Ararycan is startled.", "Nara is friend of Aranara.", 
+                        "Nara is the friend of forest."};
+                    String[] arabalika_msg = {"Hmph.", "Don't pat Arabalika like that, Nara.", 
+                        "Hmph. don't disturb Arabalika."};
+                    
+                    //randomize the dialog message
                     Random random = new Random();
                     int index = random.nextInt(3);
-
+                    //choose the message based on the aranara name
                     String[] proper = null;
                     switch (aranaraName) {
                         case "Arama" -> proper = arama_msg;
@@ -242,9 +259,9 @@ public class EditAranara extends javax.swing.JFrame {
                         default -> {
                         }
                     }
-                    setDialogText(proper[index]);
+                    setDialogText(proper[index]); //set the dialogue text
 
-                    //refresh progress bar
+                    //refresh progress bar based on the affection
                     affProgressBar.setValue(affection);
                     affectiontxt.setText(affection + "/100");
 
@@ -253,27 +270,32 @@ public class EditAranara extends javax.swing.JFrame {
                 } 
             }
         }else{
+            //if affection is full
             setDialogText("My affection is already full, Nara.");
         }
     }
     
     private boolean checkValidPat(){
-        String day = LocalDate.now().getDayOfWeek().name();
+        //one user can only pat all the aranaras up to three times a day
+        String day = LocalDate.now().getDayOfWeek().name(); //get the day name
         String day_name = day.charAt(0) + day.substring(1,3).toLowerCase();
-        //3 kasus, kasus 1 (hari kemarin), kasus 2 hari ini blm full, kasus 3 hari ini udah full
         
         if (!day_name.equals(patDay)){
+            //if last patted is not today
+            //set the pat amount to 1 because it is patted and update the pat database
             patDay = day_name;
-            patAmount = 0;
+            patAmount = 1;
             updatePatDatabase();
-            return true;
+            return true; //can be patted 
         }
         else{
-            if (patAmount < 2){
+            if (patAmount < 3){
+               //if the last patted is today but have not patted 3 times
                patAmount += 1;
                updatePatDatabase();
                return true;
             }else{
+                //if the user already pat 3 times
                 setDialogText("Today you have patted the Aranaras enough, Nara.");
                 return false;
             }
@@ -283,14 +305,12 @@ public class EditAranara extends javax.swing.JFrame {
     private void updatePatDatabase(){ 
         try{
             Connection con = ConnectionProvider.getCon();
-
+            //update the pat amount and the pat day in the database
             PreparedStatement ps = con.prepareStatement("UPDATE user SET pat_day = ?, pat_amount = ? WHERE userID = ?");
             ps.setString(1, patDay);
             ps.setInt(2, patAmount);
             ps.setString(3, userID);
             ps.executeUpdate();
-            //success message
-
         }catch(Exception e){
             JOptionPane.showMessageDialog(getContentPane(), e);
         }
@@ -298,29 +318,35 @@ public class EditAranara extends javax.swing.JFrame {
     
     
     private void setDefaultBtnActionPerformed(){
-        String default_aranara = aranaraName.toLowerCase();
+        //get the default aranara name in lowercase
+        String new_default_aranara = aranaraName.toLowerCase();
+        //check whether the default aranara is the same as the one in 
+        if (defaultAranara.equals(new_default_aranara)){
+            setDialogText("I'm already the default one, Nara! :]");
+            return; //return if yes
+        }
         try{
             Connection con = ConnectionProvider.getCon();
-
+            //update the default aranara in the database
             PreparedStatement ps = con.prepareStatement("UPDATE user SET default_aranara = ? WHERE userID = ?");
-            ps.setString(1, default_aranara);
+            ps.setString(1, new_default_aranara);
             ps.setString(2, this.userID);
             ps.executeUpdate();
             
-            String bgmPath = "src/App/sound/";
-                            
-            if (default_aranara.equals("arama")){
+            //get the background music corresponding to the new default aranara
+            String bgmPath = "src/App/sound/";                            
+            if (new_default_aranara.equals("arama")){
                 bgmPath += "MelodyofHiddenSeeds.wav";
             }
-            else if (default_aranara.equals("ararycan")){
+            else if (new_default_aranara.equals("ararycan")){
                 bgmPath += "IveNeverForgotten.wav"; 
-            }else if (default_aranara.equals("arabalika")){
+            }else if (new_default_aranara.equals("arabalika")){
                 bgmPath += "ForRiddlesForWonders.wav"; 
             }
             
-            player.stop();
-            player.loadMusic(bgmPath);
-            player.play();
+            player.stop(); //stop the initial music
+            player.loadMusic(bgmPath); //load the new music
+            player.play(); //play the new music
             
             //success message
             JOptionPane.showMessageDialog(getContentPane(), "Default aranara updated successfully.");
@@ -332,6 +358,7 @@ public class EditAranara extends javax.swing.JFrame {
     
     private void initBasedOnAranara(){
         try{
+            //query from the user table in the database
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM user WHERE userID = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
@@ -339,16 +366,25 @@ public class EditAranara extends javax.swing.JFrame {
             
             ResultSet rs = pstmt.executeQuery();
             if(rs.next()){
+                //get the current aranara name
                 String name = aranaraName.toLowerCase();
+                //get the affection of the current aranara
                 int aff = rs.getInt("aff_"+name);
                 affection = aff;
+                //set it in the label and progress bar
                 affectiontxt.setText(aff + "/100");
                 affProgressBar.setValue(aff);
+                
+                //set the icon of the aranara based on the aranara name
                 aranara.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/"+ name +"_animated.gif")));
                 
                 //get pat amount and day
                 patDay = rs.getString("pat_day");
                 patAmount = rs.getInt("pat_amount");
+                //get the default aranara of that user
+                defaultAranara = rs.getString("default_aranara");
+                
+                //set the dialog box and text to be initially invisible
                 dialog_box.setVisible(false);
                 dialog_text.setVisible(false);
             }
@@ -460,37 +496,7 @@ public class EditAranara extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(EditAranara.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new EditAranara().setVisible(true);
-//            }
-//        });
-//    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar affProgressBar;

@@ -41,11 +41,14 @@ public class AranaraMenu extends javax.swing.JFrame {
         initDesign();
     }
     
+    //handle hover button in the navbar
     public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
         for (JLabel label : labels){
             if (label.getIcon() != null){
+                //if it is image label, then set the hovered image
                 label.setIcon(new javax.swing.ImageIcon(getClass().getResource(image_path)));
             }else{
+                //if it is text label, set the hover color
                 label.setForeground(new java.awt.Color(colorR, colorG, colorB));
             }
         }
@@ -55,32 +58,36 @@ public class AranaraMenu extends javax.swing.JFrame {
         AranaraMenu home = (AranaraMenu) SwingUtilities.getRoot(this);
         setLayout(new AbsoluteLayout()); // Set layout manager to AbsoluteLayout
         
-        queryCurrentAffection();
+        queryCurrentAffection(); //query the affections of the Aranaras
 
-        AranaraDropShadowPanel panel_arama = new AranaraDropShadowPanel("Arama",affections.get(0), this.userID, home, player);
+        //set panel arama
+        AranaraDropShadowPanel panel_arama;
+        panel_arama = new AranaraDropShadowPanel("Arama",affections.get(0), this.userID, home, player);
         panel_arama.setBackground(Color.white);
         panel_arama.setLayout(null); // Ensure DropShadowPanel uses null layout for its children
         
-        //panel ararycan
+        //set panel ararycan
         AranaraDropShadowPanel panel_ararycan;
-        if (affections.get(0) >= 60){
-            if (affections.get(1) == 0){
+        if (affections.get(0) >= 60){ //if the total affection greater than 60
+            if (affections.get(1) == 0){ //unlock panel ararycan
                affections.set(1, affections.get(1)+1); 
             }            
            panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1),this.userID, home, player); 
         }else{
+            //this panel will still be locked
            panel_ararycan = new AranaraDropShadowPanel("Ararycan",affections.get(1),this.userID, home, player); 
         }
         panel_ararycan.setLayout(null);
         
-        //panel arabalika
+        //set panel arabalika
         AranaraDropShadowPanel panel_arabalika;
-        if ((affections.get(0) + affections.get(1)) >= 120){
-            if (affections.get(2) == 0){
+        if ((affections.get(0) + affections.get(1)) >= 120){ //if total affection greater than 120
+            if (affections.get(2) == 0){ //unlock panel arabalika
                affections.set(2, affections.get(2)+1); 
             }            
             panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2),this.userID, home, player);
         }else{
+            //the panel is still locked
            panel_arabalika = new AranaraDropShadowPanel("Arabalika",affections.get(2),this.userID, home, player);
         }
         panel_arabalika.setLayout(null);
@@ -96,7 +103,7 @@ public class AranaraMenu extends javax.swing.JFrame {
         getContentPane().add(panel_ararycan, new AbsoluteConstraints(100, 100, 200, 100));
         getContentPane().add(panel_arabalika, new AbsoluteConstraints(100, 100, 200, 100));
         
-        
+        //init side navbar components
         homeBtn = new javax.swing.JLabel();
         homeBtnTxt = new javax.swing.JLabel();
         addWorkflowBtn = new javax.swing.JLabel();
@@ -109,12 +116,15 @@ public class AranaraMenu extends javax.swing.JFrame {
         logoutBtn = new javax.swing.JLabel();
         logoutBtnTxt = new javax.swing.JLabel();
         titleLabel = new javax.swing.JLabel();
+        //init background
         bg = new javax.swing.JLabel();
 
+        //set default close operation, size, and layout
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1280, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        //style the components and add them to the frame
         homeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/home.png"))); // NOI18N
         getContentPane().add(homeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 55, -1, -1));
 
@@ -180,11 +190,13 @@ public class AranaraMenu extends javax.swing.JFrame {
     }
     
     private void hoverMenu(){
+        //side navbar buttons
         JLabel[] home_labels = {homeBtn, homeBtnTxt};
         JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
         JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
         JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
         
+        //home button
         homeBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -218,6 +230,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             }
         }); 
         
+        //add workflow button
         addWorkflowBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -267,6 +280,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             }
         });
     
+        //calendar button
         calendarBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -300,6 +314,7 @@ public class AranaraMenu extends javax.swing.JFrame {
             }
         });
         
+        //logout button
         logoutBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -340,7 +355,7 @@ public class AranaraMenu extends javax.swing.JFrame {
     }
     
     private void queryCurrentAffection(){
-        try{
+        try{ //get the current affections of all aranaras from the database
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM user WHERE userID = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
@@ -352,6 +367,7 @@ public class AranaraMenu extends javax.swing.JFrame {
                 int aff_ararycan = rs.getInt("aff_ararycan");
                 int aff_arabalika = rs.getInt("aff_arabalika");     
                 
+                //index 0 = arama, 1 = ararycan, 2 = arabalika
                 affections.add(aff_arama);
                 affections.add(aff_ararycan);
                 affections.add(aff_arabalika);
@@ -390,39 +406,6 @@ public class AranaraMenu extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(AranaraMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new AranaraMenu().setVisible(true);
-//            }
-//        });
-//    }
-
-    
     private javax.swing.JLabel addWorkflowBtn;
     private javax.swing.JLabel addWorkflowBtnTxt;
     private javax.swing.JLabel addWorkflowBtnTxt1;
