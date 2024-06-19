@@ -40,10 +40,10 @@ public class EditWorkflow extends javax.swing.JFrame {
     private JPanel contentPane;
     private JPanel cloneablePanel;
     private JScrollPane scrollPane;
-    public static int open = 0;
+    public static int open = 0; //opened window
     private LinkedList<Flow> flowList = new LinkedList<>();
     private String flowIDTemp;
-    private CloneablePanelFlow currentPanel = null;
+    private CloneablePanelFlow currentPanel = null; //selected panel
     private MusicPlayer player;
     
     
@@ -59,12 +59,14 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void queryWorkflow(){
+        //query the current workflow information from the database
         try{
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM workflow WHERE workflowID = ?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, this.workflowID);
             
+            //get its ID, title, total checkpoint, and userID
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 String id = rs.getString("workflowID");
@@ -80,8 +82,9 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void initDesign(){
-        queryWorkflow();
+        queryWorkflow(); //get the current workflow information
         
+        //initialize the components
         backButton = new javax.swing.JLabel();
         checkpoint = new javax.swing.JLabel();
         workflow_name = new javax.swing.JLabel();
@@ -111,30 +114,32 @@ public class EditWorkflow extends javax.swing.JFrame {
         //so that only one radio button can be selecter
         optGrp.add(oneDay); optGrp.add(multipleDay);
 
+        //set the frame close operation, size, and layout
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1280, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        //back button to navigate back to the add workflow menu
         backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_btn.png"))); 
         getContentPane().add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 17, -1, -1));
         backButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (open == 0){
+            public void mouseClicked(MouseEvent e) { //if clicked
+                if (open == 0){ //if no window open
                   setVisible(false);
-                  new AddWorkflowMenu(userID, player).setVisible(true);  
+                  new AddWorkflowMenu(userID, player).setVisible(true); //go back to add workflow menu 
                 }
                 else{
                   JOptionPane.showMessageDialog(getContentPane(), "There is one current operation window open.");
                 }                
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_btn_hover.png"))); 
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered
                 backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_btn.png"))); 
             }
         });
@@ -153,6 +158,7 @@ public class EditWorkflow extends javax.swing.JFrame {
         multipleDay.setText("Multiple-day event");
         multipleDay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //if it is multiple day, then the toField and toComboBox will be enabled
                 toField.setEnabled(true);
                 toComboBox.setEnabled(true);
                 revalidate();
@@ -167,6 +173,7 @@ public class EditWorkflow extends javax.swing.JFrame {
         oneDay.setText("One-day event");
         oneDay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //if it's one day event, then disable the to "fields"
                 toField.setEnabled(false);
                 toComboBox.setEnabled(false);
                 revalidate();
@@ -283,6 +290,7 @@ public class EditWorkflow extends javax.swing.JFrame {
         jScrollPane1.setBorder(null);
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 430, -1, -1));
         
+        //generate workflow to date text  button
         generateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/generate_text.png")));
         generateBtn.setBackground(Color.white);
         generateBtn.setBorderColor(new java.awt.Color(0,141,189));
@@ -299,14 +307,14 @@ public class EditWorkflow extends javax.swing.JFrame {
         });
         generateBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent me) {
+            public void mouseEntered(MouseEvent me) { //when hovered
                 generateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/generate_text_hover.png")));
                 generateBtn.setBackground(new java.awt.Color(234, 234, 234));
                 generateBtn.setBorderColor(new java.awt.Color(125, 201, 255));
             }
 
             @Override
-            public void mouseExited(MouseEvent me) {
+            public void mouseExited(MouseEvent me) { //when not hovered
                 generateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/generate_text.png")));
                 generateBtn.setBackground(Color.white);
                 generateBtn.setBorderColor(new java.awt.Color(0, 141, 189));
@@ -322,14 +330,15 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void generateBtnActionPerformed(){
-        queryFlow();
-        new TextResult(flowList).setVisible(true);
-        EditWorkflow.open = 1;
+        queryFlow(); //get all the flow list of this workflow
+        new TextResult(flowList).setVisible(true); //open the frame to do the generate text operation
+        EditWorkflow.open = 1; //one window is opened
     }
     
     private void queryFlow(){
-        flowList.clear();
+        flowList.clear(); //clear all the existing old flows (if exist)
         try{
+            //query flows from the database based on the current workflow ID
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM flow WHERE workflowID = ? ORDER BY dayFrom ASC";
             PreparedStatement pstmt = con.prepareStatement(query);
@@ -345,6 +354,7 @@ public class EditWorkflow extends javax.swing.JFrame {
                 String fnotes = rs.getString("notes");
                 String fcolor = rs.getString("color");
                 
+                //add it to the flow list
                 Flow flow = new Flow(fID, this.workflowID, fname, ftype, fdayFrom, fdayTo, fnotes, fcolor);
                 flowList.add(flow);
             }
@@ -356,7 +366,7 @@ public class EditWorkflow extends javax.swing.JFrame {
     
     private void myinit(){
         int totalElement = 0;
-        queryFlow();
+        queryFlow(); //get all the flows
         totalElement = flowList.size();
         
         // Create the content pane
@@ -389,6 +399,7 @@ public class EditWorkflow extends javax.swing.JFrame {
         cloneablePanel.setBackground(new Color(246,252,254));
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
+        //create the cloned panels
         createClonedPanels(flowList, totalElement);
         
         ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
@@ -396,7 +407,7 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void createClonedPanels(LinkedList<Flow> list, int size){
-        //panelMap.clear();
+        //iterate over all the flows inside the flow list
         for(int i=0; i<size;i++){
             String id = list.get(i).getId();
             String name = list.get(i).getNameInput();
@@ -407,46 +418,48 @@ public class EditWorkflow extends javax.swing.JFrame {
             String color = list.get(i).getColorInput();
             
             // Create a new cloned panel
-            // Cloneable Panel
-            CloneablePanelFlow clonedPanel = new CloneablePanelFlow(20, Color.white, 2 ,id, name, type, dayFrom, dayTo, note, color);
-            // Set your custom width and height for the cloned panel
+            CloneablePanelFlow clonedPanel = new CloneablePanelFlow(20, 
+                    Color.white, 2 ,id, name, type, dayFrom, dayTo, note, color);
+            // Set custom width and height for the cloned panel
             int panelWidth = 288;
             int panelHeight = 146;
-            
 
-            // Calculate the x and y positions based on row and column indices
+            // Calculate the x and y positions 
             int x = 110;
-            int y = 10 + i * (panelHeight + 50);
+            int y = 10 + i * (panelHeight + 50); //count based on panel height
 
             // Set the bounds for the cloned panel with your custom size
             clonedPanel.setBounds(x, y, panelWidth, panelHeight);
             clonedPanel.setBackground(new Color(246,252,254));
             
+            //the cloned panel can be selected
             clonedPanel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    //if it is clicked and the initial current panel is itself
                     if (currentPanel == clonedPanel){
+                        //set the current panel to become null
                        currentPanel.setClicked(false);
                        currentPanel = null;
+                       //clear all fields and deactivate delete btn
                        clearAllFields();
                        deactivateDeleteBtn();
                     }
                     else{
-                        if (currentPanel != null ) {
+                        //if the selected one is not itself
+                        if (currentPanel != null) {
+                            //set the selected one to be false
                             currentPanel.setClicked(false);
                         }
+                        //set itself to be clicked and be the new current panel
                         clonedPanel.setClicked(true);
                         currentPanel = clonedPanel;
-                        handleEditPanel();
+                        handleEditPanel(); //set up the fields inside the edit panel
                     }   
                 }
-            });
-            
+            });            
             // Add the cloned panel to the initial panel
             cloneablePanel.add(clonedPanel);
-            
-            //add the cloned panel to the hash map
-            //panelMap.put(id, clonedPanel);
             
             // Adjust preferred size of initial panel to include new panel
             Dimension newSize = new Dimension(cloneablePanel.getWidth(), y + panelHeight + 10); // Adjusted size
@@ -466,21 +479,24 @@ public class EditWorkflow extends javax.swing.JFrame {
         
         //set radio button
         if (currentPanel.getTypeInput().equals("One-day event")){
+            //if it's one day event, disable the to "fields"
             oneDay.setSelected(true);   
             toField.setEnabled(false);
             toComboBox.setEnabled(false);
             repaint();
         }else{
+            //otherwise, enable them 
             multipleDay.setSelected(true);
             toField.setEnabled(true);
             toComboBox.setEnabled(true);
             repaint();
-            //set dayTo
+            //set dayTo field
             handleDayField(currentPanel.getDayToInput(), toComboBox, toField);
         }
         
-        //set day from
+        //set day from field
         handleDayField(currentPanel.getDayFromInput(), fromComboBox, fromField);
+        //set notes text area and color combo box
         notesArea.setText(currentPanel.getNoteInput());
         colorComboBox.setSelectedItem(currentPanel.getColorInput());
         
@@ -489,34 +505,38 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void activateDeleteBtn(){
+        //remove all mouse listeners of the delete button
         removeMouseListeners(deleteBtn);
+        //set the icon to be active one
         deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow_active.png")));
-        deleteBtn.setEnabled(true);
+        deleteBtn.setEnabled(true); //enable it
         deleteBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                deleteFlow();
+            public void mouseClicked(MouseEvent e) { //when clicked
+                deleteFlow(); //delete the current flow
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow_hover.png")));
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered
                 deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow_active.png")));
             }
         });
     }
     
     private void deleteFlow(){
+        //delete the flow
+        //ask for confirmation
         String question = "Do you really want to delete " + currentPanel.getNameInput() + "?";
         int a = JOptionPane.showConfirmDialog(getContentPane(), question, "SELECT", JOptionPane.YES_OPTION);
         
-        if (currentPanel != null && a == 0){
-            String id = currentPanel.getId();
+        if (currentPanel != null && a == 0){ //if user says yes and there is a selected panel
+            String id = currentPanel.getId(); //get the id
             
-            //delete from database
+            //delete flow from database based on the id
             try{
                 Connection conn = ConnectionProvider.getCon();
                 String query = "DELETE FROM flow WHERE id = ?";
@@ -524,7 +544,9 @@ public class EditWorkflow extends javax.swing.JFrame {
                 ps.setString(1, id);
                 
                 ps.executeUpdate();
-                currentPanel = null;
+                currentPanel = null; //set the current panel to be null
+                
+                //display success message
                 String message = "Flow/checkpoint deleted successfully.";
                 JOptionPane.showMessageDialog(getContentPane(), message);                
                 
@@ -532,9 +554,10 @@ public class EditWorkflow extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(getContentPane(), se);
             }
             
-            //add the checkpoint by 1 and query to refresh workflow
+            //deduct the checkpoint by 1 and query to refresh workflow
             updateCheckpoint(-1);
             queryWorkflow();
+            //set the checkpoint text
             checkpoint.setText("Total: " + current_workflow.getCheckpoint() + " checkpoints");
 
             //refresh the flow view on the right
@@ -549,23 +572,26 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void handleDayField(int day, JComboBox box, JTextField field){
+        //if the day amount is positive, then set it to after
         if (day > 0){
             box.setSelectedItem("After");
             field.setText(""+day);
         }
-        else{
+        else{ //if it is negative, set it to before
             box.setSelectedItem("Before");
             field.setText(""+(day - 2*day));
         }
     }
     
     private void deactivateDeleteBtn(){
+        //remove all mouse listeners and disable the delete button
         removeMouseListeners(deleteBtn);
         deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/delete_flow.png")));
         deleteBtn.setEnabled(false);
     }
     
     private void removeMouseListeners(JLabel button) {
+        //remove all mouse listeners
         for (MouseListener listener : button.getMouseListeners()) {
             button.removeMouseListener(listener);
         }
@@ -573,81 +599,97 @@ public class EditWorkflow extends javax.swing.JFrame {
     
     private boolean isInteger(String str){
         try {
+            //if the str can be parse into int, then return true
             Integer.parseInt(str);
             return true;
         } catch (NumberFormatException nfe) {
+            // if not, return false
             return false;
         }
     }
     
-    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {      
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {  
+        //if the current panel is null (there is no selected panel)
         if (currentPanel == null){
+            //when save button clicked, it will insert a new flow
             insertNewFlow();
             deactivateDeleteBtn();
         }
         else{
+            //edit the selected panel flow attributes
             editFlow();
         }
     }
     
     private void editFlow(){
+        //get the name
         String nameStr = nameField.getText();
+        
+        //get the type and dayto
         String typeStr;
         String dayToStr;
         
         if(oneDay.isSelected()){
             typeStr = "One-day event";
-            dayToStr = "0";
+            dayToStr = "0"; //not important for one day event
         }
         else{
             typeStr = "Multiple-day event";
             dayToStr = toField.getText();
         }
         
+        //get day from, note, and color
         String dayFromStr = fromField.getText();
         String noteStr = notesArea.getText();
         if (noteStr.equals("Notes")){
+            //if the content of the textarea is the same as the placeholder
+            //that means that it is still empty
             noteStr = "";
         }        
         String colorStr = (String) colorComboBox.getSelectedItem();
         
-        //handle user wrong input
-        if (nameStr.equals("Name") || nameStr.equals("")){
+        //handle validation
+        if (nameStr.equals("Name") || nameStr.equals("")){ //if name is still empty
             JOptionPane.showMessageDialog(getContentPane(), "Name is still empty.");
         }
-        else if (typeStr.trim().isEmpty()){
+        else if (typeStr.trim().isEmpty()){ //if type is still empty
             JOptionPane.showMessageDialog(getContentPane(), "Type is still empty.");
         }
-        else if (dayFromStr.equals("Day") || dayFromStr.equals("")){
+        else if (dayFromStr.equals("Day") || dayFromStr.equals("")){ //if dayFrom is empty
             JOptionPane.showMessageDialog(getContentPane(), "Day 'from' is still empty.");
         }
-        else if (!isInteger(dayFromStr)){
+        else if (!isInteger(dayFromStr)){ //if day from is not integer
             JOptionPane.showMessageDialog(getContentPane(), "Day 'from' is not valid.");
         }
-        else if (colorStr.trim().isEmpty()){
+        else if (colorStr.trim().isEmpty()){ //if color is empty
             JOptionPane.showMessageDialog(getContentPane(), "Color is still empty.");
         }        
         //only for multiple day event
+        //if day to is still empty
         else if ((dayToStr.equals("Day") || dayToStr.equals("")) && typeStr.equals("Multiple-day event")){
             JOptionPane.showMessageDialog(getContentPane(), "Day 'to' is still empty.");
         }
+        //if day to is not integer
         else if (!isInteger(dayToStr) && typeStr.equals("Multiple-day event")){
             JOptionPane.showMessageDialog(getContentPane(), "Day 'to' is not valid.");
         }
         else{
-            //set day from int and day to int
+            //set day from and day to become integer
             int dayFromInt = Integer.parseInt(beforeAfterDay(dayFromStr, fromComboBox));
             int dayToInt = Integer.parseInt(beforeAfterDay(dayToStr, toComboBox));
             
             if ((dayFromInt > dayToInt) && typeStr.equals("Multiple-day event")){
+                //check whether the date range is valid for multiple day event
                 JOptionPane.showMessageDialog(getContentPane(), "Day range is not valid.");
             }
             else{
-                flowIDTemp = currentPanel.getId();
+                //if all conditions met
+                flowIDTemp = currentPanel.getId(); //get the current panel ID
 
                 try{
                    Connection con = ConnectionProvider.getCon();
                    
+                   //update the flow attributes in the database
                    String query = "UPDATE flow SET name = ?, type = ?, dayFrom = ?, dayTo = ?, notes = ?, color = ? WHERE id = ?";
                    PreparedStatement ps = con.prepareStatement(query);
                    ps.setString(1, nameStr);
@@ -657,9 +699,9 @@ public class EditWorkflow extends javax.swing.JFrame {
                    ps.setString(5, noteStr);
                    ps.setString(6, colorStr);
                    ps.setString(7, flowIDTemp);
-
                    ps.executeUpdate();
-                   //success message
+                   
+                   //show success message
                    String message = "Flow edited successfully.";              
                    JOptionPane.showMessageDialog(getContentPane(), message);
 
@@ -679,8 +721,10 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void getFlowLastID(){
+        //get the last ID of the flow
         LinkedList<String> allIdList = new LinkedList<>();
         try{
+            //query from the database to get the last ID for flow
             Connection con = ConnectionProvider.getCon();
             Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = st.executeQuery("SELECT id FROM flow");
@@ -688,11 +732,12 @@ public class EditWorkflow extends javax.swing.JFrame {
                 String text = rs.getString("id");
                 allIdList.add(text);
             }
-            
+            //if empty, then the ID is f1
             if(allIdList.isEmpty()){
                 flowIDTemp = "f1";
             }
             else{
+                //if not empty, get the last ID
                 String lastId = allIdList.getLast();
                 String temp = "";
                 for(int i=1; i<lastId.length(); i++){
@@ -700,6 +745,7 @@ public class EditWorkflow extends javax.swing.JFrame {
                 }
                 int idnow = Integer.parseInt(temp);
                 idnow++;
+                //generate the ID 
                 flowIDTemp = "f" + String.valueOf(idnow);
             }
             
@@ -711,10 +757,12 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void insertNewFlow(){
+        //get the name field
         String nameStr = nameField.getText();
         String typeStr;
         String dayToStr;
         
+        //get the type and dayTo
         if(oneDay.isSelected()){
             typeStr = "One-day event";
             dayToStr = "0";
@@ -724,51 +772,55 @@ public class EditWorkflow extends javax.swing.JFrame {
             dayToStr = toField.getText();
         }
         
+        //get the dayFrom, note, and color
         String dayFromStr = fromField.getText();
         String noteStr = notesArea.getText();
         if (noteStr.equals("Notes")){
+            //if equals to placeholder, then the note is still empty
             noteStr = "";
         }        
         String colorStr = (String) colorComboBox.getSelectedItem();
         
-        //handle user wrong input
-        if (nameStr.equals("Name") || nameStr.equals("")){
+        //handle user validation
+        if (nameStr.equals("Name") || nameStr.equals("")){//empty name
             JOptionPane.showMessageDialog(getContentPane(), "Name is still empty.");
         }
-        else if (typeStr.trim().isEmpty()){
+        else if (typeStr.trim().isEmpty()){ //empty type
             JOptionPane.showMessageDialog(getContentPane(), "Type is still empty.");
         }
-        else if (dayFromStr.equals("Day") || dayFromStr.equals("")){
+        else if (dayFromStr.equals("Day") || dayFromStr.equals("")){ //empty day from
             JOptionPane.showMessageDialog(getContentPane(), "Day 'from' is still empty.");
         }
-        else if (!isInteger(dayFromStr)){
+        else if (!isInteger(dayFromStr)){ //day from not integer
             JOptionPane.showMessageDialog(getContentPane(), "Day 'from' is not valid.");
         }
-        else if (colorStr.trim().isEmpty()){
+        else if (colorStr.trim().isEmpty()){ //emty color
             JOptionPane.showMessageDialog(getContentPane(), "Color is still empty.");
         }        
         //only for multiple day event
         else if ((dayToStr.equals("Day") || dayToStr.equals("")) && typeStr.equals("Multiple-day event")){
-            JOptionPane.showMessageDialog(getContentPane(), "Day 'to' is still empty.");
+            JOptionPane.showMessageDialog(getContentPane(), "Day 'to' is still empty."); //empty day to
         }
-        else if (!isInteger(dayToStr) && typeStr.equals("Multiple-day event")){
+        else if (!isInteger(dayToStr) && typeStr.equals("Multiple-day event")){ //day to not integer
             JOptionPane.showMessageDialog(getContentPane(), "Day 'to' is not valid.");
         }
         else{
-            //set day from int and day to int
+            //set day from day to becomes integer
             int dayFromInt = Integer.parseInt(beforeAfterDay(dayFromStr, fromComboBox));
             int dayToInt = Integer.parseInt(beforeAfterDay(dayToStr, toComboBox));
             
             if ((dayFromInt > dayToInt) && typeStr.equals("Multiple-day event")){
+                //if it's multiple day and the date range is not valid
                 JOptionPane.showMessageDialog(getContentPane(), "Day range is not valid.");
             }
             else{
-                getFlowLastID();
+                getFlowLastID(); //get last ID
                 Flow new_flow = new Flow(flowIDTemp, this.workflowID, nameStr, typeStr, dayFromInt, dayToInt, noteStr, colorStr);
 
                 try{
                    Connection con = ConnectionProvider.getCon();
-
+                   
+                   //insert the new flow to the flow table in the database
                    PreparedStatement ps = con.prepareStatement("insert into flow values(?,?,?,?,?,?,?,?)");
                    ps.setString(1, new_flow.getId());
                    ps.setString(2, new_flow.getWorkflowID());
@@ -778,8 +830,8 @@ public class EditWorkflow extends javax.swing.JFrame {
                    ps.setInt(6, new_flow.getDayToInput());
                    ps.setString(7, new_flow.getNoteInput());
                    ps.setString(8, new_flow.getColorInput());
-
                    ps.executeUpdate();
+                   
                    //success message
                    String message = "Flow added successfully.";              
                    JOptionPane.showMessageDialog(getContentPane(), message);
@@ -806,11 +858,12 @@ public class EditWorkflow extends javax.swing.JFrame {
     
     private void updateCheckpoint(int a){
         try{
+            //update the workflow total checkpoint in the database
             Connection con = ConnectionProvider.getCon();
             Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             PreparedStatement ps = con.prepareStatement("UPDATE workflow SET checkpoint = ? WHERE workflowID = ?");
-            ps.setInt(1, current_workflow.getCheckpoint()+a);
+            ps.setInt(1, current_workflow.getCheckpoint()+a); //add the current checkpoint by a
             ps.setString(2, current_workflow.getId());
             ps.executeUpdate();
 
@@ -820,8 +873,10 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
     
     private void clearAllFields(){
+        //clear all the fields in the edit panel
+        //set all the combo box to the first index
         nameField.setText("");
-        oneDay.setSelected(true);
+        oneDay.setSelected(true); //by default, the type is one day
         fromField.setText("");
         fromComboBox.setSelectedIndex(0);
         toField.setText("");
@@ -831,6 +886,8 @@ public class EditWorkflow extends javax.swing.JFrame {
     }
         
     private String beforeAfterDay(String str, JComboBox box){
+        //append the min symbol to the string if the combo box is before
+        //ex: '2 before' becomes '-2'
         if (box.getSelectedItem().equals("Before") && (!str.equals("0"))){
             str = "-" + str;
         }

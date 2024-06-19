@@ -317,7 +317,8 @@ public class Login extends javax.swing.JFrame {
         }
         else{
             if(!(validatePassword(pass_str))){ //if password is not valid
-                 JOptionPane.showMessageDialog(getContentPane(), "Password must have 8 characters with at least one number and one character");
+                 JOptionPane.showMessageDialog(getContentPane(), "Password must have 8 "
+                         + "characters with at least one number and one character");
             }
         } 
         

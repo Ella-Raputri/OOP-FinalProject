@@ -39,24 +39,28 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
     }
     
     private void myinit(){
-        setTitle("Create New Workflow");
+        //set the background and always on top
         getContentPane().setBackground(Color.white);
-        setResizable(false);
         setAlwaysOnTop(true);
         
+        //set the close operation 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Custom close operation logic
-                int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
+                // when pressing the X button, ask for xonfirmation first
+                int option = JOptionPane.showConfirmDialog(getContentPane(), 
+                        "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
+                    //if yes, then set invisible and 
+                    //make the opened window in AddWorkflowMenu to become 0 again
                     setVisible(false);
                     AddWorkflowMenu.open=0;
                 } 
             }
         });
         
+        //init the components
         idLabel = new javax.swing.JLabel();
         idtxt = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
@@ -102,21 +106,24 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
         });
         getContentPane().add(OKbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(287, 295, 102, 57));
         
-        
+        //generate the last ID
         LinkedList<String> allIdList = new LinkedList<>();
         try{
             Connection con = ConnectionProvider.getCon();
             Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = st.executeQuery("SELECT workflowID FROM workflow");
+            //query all the workflow inside the database
             while(rs.next()){
                 String text = rs.getString("workflowID");
                 allIdList.add(text);
             }
             
+            // if it is empty
             if(allIdList.isEmpty()){
                 idtxt.setText("w1");
             }
             else{
+                //if not, then generate the ID based on the last ID
                 String lastId = allIdList.getLast();
                 String temp = "";
                 for(int i=1; i<lastId.length(); i++){
@@ -125,7 +132,7 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
                 int idnow = Integer.parseInt(temp);
                 idnow++;
                 String str = "w" + String.valueOf(idnow);
-                idtxt.setText(str);
+                idtxt.setText(str); //set the last ID in the label
             }
             
         } catch(Exception e){
@@ -136,11 +143,12 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
         
     }
     
-    private void OKbuttonActionPerformed(java.awt.event.ActionEvent evt) {                                        
+    private void OKbuttonActionPerformed(java.awt.event.ActionEvent evt) {  
+        //get the ID and name of the new workflow
         String idInput = idtxt.getText();
         String titleInput = nameField.getText();
         
-        if(titleInput.trim().isEmpty()){
+        if(titleInput.trim().isEmpty()){ //if title is empty
             JOptionPane.showMessageDialog(getContentPane(), "Your workflow name is still empty");
         }
         else{
@@ -148,6 +156,7 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
                 Connection con = ConnectionProvider.getCon();
                 Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
                 
+                //insert the ID and name of the new workflow to the database
                 PreparedStatement ps = con.prepareStatement("INSERT INTO workflow VALUES(?,?,?,?)");
                 ps.setString(1, idInput);
                 ps.setString(2, titleInput);
@@ -155,7 +164,9 @@ public class CreateNewWorkflow extends javax.swing.JFrame {
                 ps.setString(4, userID);
                 ps.executeUpdate();
                 
+                //display success message
                 JOptionPane.showMessageDialog(getContentPane(), "Successfully created a new workflow!");
+                //set invisible again and the opened window become 0
                 AddWorkflowMenu.open=0;
                 setVisible(false);
                 

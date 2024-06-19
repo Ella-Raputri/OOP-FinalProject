@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
@@ -413,7 +414,8 @@ public class Signup extends javax.swing.JFrame {
            }
            else{
                if(!(validatePassword(pass_str))){ //if password pattern is not valid
-                    JOptionPane.showMessageDialog(getContentPane(), "Password must have 8 characters with at least one number and one character");
+                    JOptionPane.showMessageDialog(getContentPane(), "Password must have "
+                            + "8 characters with at least one number and one character");
                }
            }
         }
@@ -472,12 +474,18 @@ public class Signup extends javax.swing.JFrame {
     }//GEN-LAST:event_submitBtnActionPerformed
 
     private void updateTaskCompletions(String userID){
+        //get today date
+        LocalDate currentDate = LocalDate.now();        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");        
+        // Convert the date to string using the custom format
+        String dateString = currentDate.format(formatter);
+        
         //update the task completion database
         try{
             //insert all value to be 0 to the task completon database
             //because the user is new and does not complete any task before
             Connection con = ConnectionProvider.getCon();
-            String query = "INSERT INTO task_completion VALUES(?,?,?,?,?,?,?,?)";
+            String query = "INSERT INTO task_completion VALUES(?,?,?,?,?,?,?,?,?)";
              
             PreparedStatement pst = con.prepareStatement(query);
             pst.setString(1, userID);
@@ -488,6 +496,7 @@ public class Signup extends javax.swing.JFrame {
             pst.setInt(6, 0);
             pst.setInt(7, 0);
             pst.setInt(8, 0);
+            pst.setString(9, dateString);
             
             pst.executeUpdate();
 

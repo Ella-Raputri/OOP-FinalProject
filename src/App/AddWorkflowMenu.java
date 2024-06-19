@@ -37,7 +37,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     private JPanel contentPane;
     public JPanel cloneablePanel;
     private JScrollPane scrollPane;
-    public static int open = 0;
+    public static int open = 0; //opened window
     public LinkedList<Workflow> workflowList = new LinkedList<>();
     private MusicPlayer player;
     /**
@@ -53,11 +53,14 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         initComponents();
     }
     
+    //handle hover button in the navbar
     public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
         for (JLabel label : labels){
             if (label.getIcon() != null){
+                //if it is image label, then set the hovered image
                 label.setIcon(new javax.swing.ImageIcon(getClass().getResource(image_path)));
             }else{
+                //if it is text label, set the hover color
                 label.setForeground(new java.awt.Color(colorR, colorG, colorB));
             }
         }
@@ -65,11 +68,11 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     
     private void initHover(){
         JLabel[] home_labels = {homeBtn, homeBtnTxt};
-        JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
         JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
         JLabel[] aranara_labels = {aranaraBtn, aranaraBtnTxt};
         JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
         
+        //home button
         homeBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -103,6 +106,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             }
         }); 
         
+        //calendar button
         calendarBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -136,6 +140,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             }
         });
         
+        //aranara button
         aranaraBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -169,6 +174,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             }
         });
         
+        //logout button
         logoutBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -205,6 +211,8 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
                 hoverButton("/App/img/logout.png", 255, 255, 255, logout_labels);
             }
         });
+        
+        //the search workflow field
         search_field.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -223,6 +231,8 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     
     
     private void initDesign(){
+        //initialize design
+        //init the side navbar buttons
         homeBtn = new javax.swing.JLabel();
         homeBtnTxt = new javax.swing.JLabel();
         addWorkflowBtn = new javax.swing.JLabel();
@@ -234,6 +244,8 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         aranaraBtnTxt = new javax.swing.JLabel();
         logoutBtn = new javax.swing.JLabel();
         logoutBtnTxt = new javax.swing.JLabel();
+        
+        //init the title search icon and search field
         titletxt = new javax.swing.JLabel();
         search_icon = new javax.swing.JLabel();
         search_field = new RoundJTextField(21, "Find workflow");
@@ -242,6 +254,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(1280, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        //styling for all components
         homeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/home.png"))); // NOI18N
         getContentPane().add(homeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 55, -1, -1));
 
@@ -307,8 +320,10 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     }
     
     public void queryWorkflow(){
+        //clear the list of workflow
         workflowList.clear();
         try{
+            //query from the workflow table with the userID of this user
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM workflow WHERE userID = ?";
             PreparedStatement ps = con.prepareStatement(query);
@@ -316,6 +331,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
+                //insert all the workflows inside the list
                 String id = rs.getString("workflowID");
                 String title = rs.getString("title");
                 int checkpoint = rs.getInt("checkpoint");
@@ -330,6 +346,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     }
     
     private void myinit(){
+        //query all the workflow
         queryWorkflow();
         // Create the content pane
         contentPane = new JPanel() {
@@ -361,11 +378,9 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         cloneablePanel.setBackground(Color.white);
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
+        //create the cloneable panels and the add panel
         createClonedPanels(workflowList, workflowList.size());
         createAddPanel();
-        
-        ImageIcon bgImage = new ImageIcon("src/App/img/background_adminhome.png");
-        contentPane.setPreferredSize(new Dimension(bgImage.getIconWidth(), bgImage.getIconHeight()));
         
         initDesign(); //initialize all the design components
         initHover(); //initialize the hovering method for buttons
@@ -377,28 +392,29 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
     }
     
     public void createClonedPanels(LinkedList<Workflow> list, int totalElement){
+        //get this frame as home or parent frame
         AddWorkflowMenu home = (AddWorkflowMenu) SwingUtilities.getRoot(this);
         int row=0, column=0;
         for(int i=0; i<totalElement;i++){
+            //for every workflow in the list
             String id = list.get(i).getId();
             String title = list.get(i).getTitle();
             int checkpoint = list.get(i).getCheckpoint();
             
             // Create a new cloned panel
-            // Cloneable Panel
             CloneablePanelWorkflow clonedPanel = new CloneablePanelWorkflow(20, Color.white, 2 ,id, title, checkpoint, home);
-            // Set your custom width and height for the cloned panel
+            // Set width and height for the cloned panel
             int panelWidth = 292;
             int panelHeight = 278;
             
-            
             // Calculate the row and column indices
+            //because each row only contains three workflows and the first row has the add panel
             if (i == 0 || i == 1){
-                column = (i % 3) +1;
+                column = (i % 3) +1; //+1 because of the add panel
                 row = 0;
             }else{
-              column = (i-2) % 3;  
-              row = (i+1)/3;
+              column = (i-2) % 3;  //-2 is for the panel0 and panel1
+              row = (i+1)/3; //+1 because the first row is for the add panel, panel0, and panel1
             }
 
             // Calculate the x and y positions based on row and column indices
@@ -439,7 +455,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         BasicStroke dashedStroke = new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10, dashPattern, 0);
         add_panel.setBorder(BorderFactory.createStrokeBorder(dashedStroke, new Color(31,139,217)));
         
-        //labels inside the add panel
+        //label inside the add panel
         JLabel createtxt = new JLabel();
         createtxt.setFont(new java.awt.Font("Montserrat Medium", 0, 28)); // NOI18N
         createtxt.setForeground(new java.awt.Color(167, 204, 231));
@@ -447,17 +463,20 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         createtxt.setBounds(57, 172, 235, 34);
         add_panel.add(createtxt);
         
+        //the add icon inside the add panel
         JLabel add_icon = new JLabel();
         add_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow_icon.png"))); 
         add_icon.setBounds(102, 77, 79, 78);
         add_panel.add(add_icon);
         
-        //add_panel get selected
+        //if add_panel get selected
         AddWorkflowMenu home = (AddWorkflowMenu) SwingUtilities.getRoot(this);
         add_panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //if there is no window ipen
                 if (open == 0){
+                    //open create new workfloe menu
                    AddWorkflowMenu.open = 1;
                     new CreateNewWorkflow(userID, home).setVisible(true); 
                 }
@@ -466,13 +485,13 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
                 }                
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 createtxt.setForeground(new java.awt.Color(31, 139, 217));
                 add_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow_icon_hover.png")));
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered
                 createtxt.setForeground(new java.awt.Color(167, 204, 231));
                 add_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/add_workflow_icon.png")));
             }
@@ -486,37 +505,45 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
         scrollPane.getVerticalScrollBar().setValue(0);
     }
     
-    private void handleSearch(){        
+    private void handleSearch(){     
+        //get the text of the search field
         String searchStr = search_field.getText();
         LinkedList<Workflow> resultList= new LinkedList<>();
-        boolean exist = false;
+        boolean exist = false; //track whether exists the result or not
 
         for (int i = 0; i < workflowList.size(); i++){
+            //iterate over the workflow list
             String want_to_be_check = workflowList.get(i).getTitle().toLowerCase();
+            //if the searched string equals to the title of the workflow
             if (want_to_be_check.contains(searchStr.toLowerCase())){
+                //append it to the result list
                 resultList.add(workflowList.get(i));
                 exist = true;
             }
         }
 
         if (exist == true){
+             //reset the cloneable panel that contains the cloned panel
             cloneablePanel.removeAll();
+            //create the add panel and the cloned panels based on the result 
             createClonedPanels(resultList, resultList.size());
             createAddPanel();  
         }
         else{
+            //reset the cloneable panel and only create the add panel
             cloneablePanel.removeAll();
             createAddPanel();
-        }
-        
+        }        
     }
     
     public void goToEdit(String workflowID){
+        //go to edit workflow menu
         setVisible(false);
         new EditWorkflow(workflowID, userID, player).setVisible(true);
     }
     
     public void reload(){
+        //reload the add workflow menu
         setVisible(false);
         new AddWorkflowMenu(this.userID, this.player).setVisible(true);
     }
@@ -547,38 +574,7 @@ public class AddWorkflowMenu extends javax.swing.JFrame {
 
     /**
      * @param args the command line arguments
-//     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(AddWorkflowMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new AddWorkflowMenu().setVisible(true);
-//            }
-//        });
-//    }
+     */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

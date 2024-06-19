@@ -43,8 +43,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class HomePage extends javax.swing.JFrame {
     private String userID = "u1";
     private HashMap<String, Integer> completionRate = new HashMap<>();
-    private String[] quotes = new String[80];
-    private String[] by = new String[80];
+    private String[] quotes = new String[80]; //for the quote
+    private String[] by = new String[80]; //for the person who said the quote
     private int count = 0;
     private MusicPlayer player;
     /**
@@ -62,7 +62,7 @@ public class HomePage extends javax.swing.JFrame {
     
     private void inputQuote() {
         try {
-            //read the ExampleQuestions file
+            //read the Quotes file
             FileReader fr =new FileReader("src/App/Quotes.txt");    
             BufferedReader reader = new BufferedReader(fr);
             String eachLine;
@@ -72,7 +72,7 @@ public class HomePage extends javax.swing.JFrame {
                 String[] part = eachLine.split("_");
                 if (part.length == 2) {
                     quotes[count] = part[0]; // the first part is the quote
-                    by[count] = part[1]; // the second part is the answer
+                    by[count] = part[1]; // the second part is the person who said the quote
                     count++;
                 } else {
                     System.out.println("Invalid format in line: " + eachLine);
@@ -87,9 +87,13 @@ public class HomePage extends javax.swing.JFrame {
     }
     
     private void setRandomQuote(){
+        //input the quote into the array
         inputQuote();
+        //randomize quote choice
         Random random = new Random();
         int index = random.nextInt(80);
+        
+        //set and display the quote 
         quotetxt.setText(quotes[index]);
         quotetxt.setHorizontalAlignment(SwingConstants.CENTER);
         quoteby_txt.setText("~" +by[index]);
@@ -100,8 +104,10 @@ public class HomePage extends javax.swing.JFrame {
     public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
         for (JLabel label : labels){
             if (label.getIcon() != null){
+                //if it is image label, then set the hovered image
                 label.setIcon(new javax.swing.ImageIcon(getClass().getResource(image_path)));
             }else{
+                //if it is text label, set the hover color
                 label.setForeground(new java.awt.Color(colorR, colorG, colorB));
             }
         }
@@ -113,7 +119,7 @@ public class HomePage extends javax.swing.JFrame {
         JLabel[] aranara_labels = {aranaraBtn, aranaraBtnTxt};
         JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
 
-       
+       //for add workflow button
         addWorkflowBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -163,6 +169,7 @@ public class HomePage extends javax.swing.JFrame {
             }
         });
     
+        //for calendar button
         calendarBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -196,6 +203,7 @@ public class HomePage extends javax.swing.JFrame {
             }
         });
         
+        //for aranara button
         aranaraBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -229,6 +237,7 @@ public class HomePage extends javax.swing.JFrame {
             }
         });
         
+        //for logout button
         logoutBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -266,6 +275,7 @@ public class HomePage extends javax.swing.JFrame {
             }
         });
         
+        //when clicking the enlarge button besides the aranara picture
         new_window_btn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -286,6 +296,7 @@ public class HomePage extends javax.swing.JFrame {
     
     private void myinit(){
         try{
+            //query from the database
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM user WHERE userID = ?";
              
@@ -294,9 +305,11 @@ public class HomePage extends javax.swing.JFrame {
             
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
+                    //get the username and set it in the welcome text
                     String user_name = rs.getString("username");
                     welcometxt.setText("Welcome, Nara " +user_name +"!");
                     
+                    //get the default aranara and set the corresponding picture
                     String default_aranara = rs.getString("default_aranara");
                     String path = "/App/img/"+ default_aranara + "_home.png";                    
                     aranara_pict.setIcon(new javax.swing.ImageIcon(getClass().getResource(path)));
@@ -306,11 +319,11 @@ public class HomePage extends javax.swing.JFrame {
             e.printStackTrace();
         }
         
-        initHover();
-        showBarChart();
-        setAnalysisTxt();
-        setTodayTasks();
-        setRandomQuote();
+        initHover(); //hover behaviour of buttons
+        showBarChart(); //display bar chart
+        setAnalysisTxt(); //set the text about how many task completion for today
+        setTodayTasks(); //set today upcomong task
+        setRandomQuote(); //set quote
     }
     
     private boolean isNewWeek(LocalDate referenceDate, LocalDate currentDate) {
@@ -331,15 +344,18 @@ public class HomePage extends javax.swing.JFrame {
     
     public LocalDate convertStrDate(String timeStr){
         String modify = timeStr;
+        //if the date is still 2024-02-8, then make it to become 2024-02-08
         if (timeStr.length() != 10){
             modify = timeStr.substring(0, 8) + "0" + timeStr.charAt(8);
         }
+        //convert the date to localdate
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(modify, formatter);
         return date;
     }
     
     private void resetTaskCompletions(boolean isReset, LocalDate todayDate){
+        //convert the date to String 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String todayStr = todayDate.format(formatter);
         
@@ -347,8 +363,10 @@ public class HomePage extends javax.swing.JFrame {
             Connection con = ConnectionProvider.getCon();
             
             if (isReset){
-                String query = "UPDATE task_completion SET Mon = ?, Tue = ?, Wed = ?, Thu = ?, Fri = ?, Sat = ?, Sun = ?, last_login = ? WHERE userID = ?";
- 
+                //reset the task completion database weekly 
+                String query = "UPDATE task_completion SET Mon = ?, Tue = ?, Wed = ?, Thu = ?, Fri = ?, Sat = ?, Sun = ?, "
+                        + "last_login = ? WHERE userID = ?";
+                //set all the task completion to be 0 again
                 PreparedStatement ps = con.prepareStatement(query);
                 ps.setInt(1, 0);
                 ps.setInt(2, 0);
@@ -357,11 +375,12 @@ public class HomePage extends javax.swing.JFrame {
                 ps.setInt(5, 0);
                 ps.setInt(6, 0);
                 ps.setInt(7, 0);
-                ps.setString(8, todayStr);
+                ps.setString(8, todayStr); //set today as the last login
                 ps.setString(9, userID);
                 ps.executeUpdate();
                 
             }else{
+                //only set today as the last login
                 String query = "UPDATE task_completion SET last_login = ? WHERE userID = ?";
                 PreparedStatement ps = con.prepareStatement(query);
                 ps.setString(1, todayStr);
@@ -376,9 +395,9 @@ public class HomePage extends javax.swing.JFrame {
     }
     
     
-    private void queryTaskCompletions(){
-        
+    private void queryTaskCompletions(){        
         try{
+            //query from the database
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM task_completion WHERE userID = ?";
              
@@ -387,11 +406,12 @@ public class HomePage extends javax.swing.JFrame {
             
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    //reset the graph and databaseif it is the new week
+                    //get today date and last login date
                     String last = rs.getString("last_login");
                     LocalDate today = LocalDate.now();
                     LocalDate last_login = convertStrDate(last);
                     
+                    //get task completions for this week
                     int amtMon = rs.getInt("Mon");
                     int amtTue = rs.getInt("Tue");
                     int amtWed = rs.getInt("Wed");
@@ -399,7 +419,8 @@ public class HomePage extends javax.swing.JFrame {
                     int amtFri = rs.getInt("Fri");
                     int amtSat = rs.getInt("Sat");
                     int amtSun = rs.getInt("Sun");
-
+                    
+                    //if it is a new week, then reset the task completion in the database
                     if (isNewWeek(last_login, today)){
                         resetTaskCompletions(true, today);
                         amtMon = 0;
@@ -410,9 +431,11 @@ public class HomePage extends javax.swing.JFrame {
                         amtSat = 0;
                         amtSun = 0;
                     }else{
+                        //do not reset the task completion, only reset the last login
                         resetTaskCompletions(false, today);
                     }
                     
+                    //put the completion rate to the hashmap to ease chart making
                     completionRate.put("Mon", amtMon);
                     completionRate.put("Tue", amtTue);
                     completionRate.put("Wed", amtWed);
@@ -429,10 +452,13 @@ public class HomePage extends javax.swing.JFrame {
     }
     
     private void setAnalysisTxt(){
+        //set text about how many tasks that the user has completed today
+        //get today day name
         String day = LocalDate.now().getDayOfWeek().name();
         String day_name = day.charAt(0) + day.substring(1,3).toLowerCase();  
-        int todayCompleted = completionRate.get(day_name);
+        int todayCompleted = completionRate.get(day_name); //get task amount
         
+        //set the message
         if (todayCompleted == 0){
             analyze_task_txt.setText("You haven't done any task today, Nara.");
         }else if (todayCompleted ==1){
@@ -444,28 +470,68 @@ public class HomePage extends javax.swing.JFrame {
     }
     
     private void setTodayTasks(){
+        //set upcoming task for today
+        String task_name = "";
+        String task_date_from = "";
+        String task_date_to = "";
+        String task_type = "";
+        LocalDate currentDate = LocalDate.now(); //get today date
+        
          try{
+             //query from the task table in the database
             Connection con = ConnectionProvider.getCon();
-            String query = "SELECT * FROM tasks WHERE userID = ? ORDER BY completed, timeFrom ASC";
+            String query = "SELECT * FROM tasks WHERE userID = ? ORDER BY completed ASC";
              
             PreparedStatement pst = con.prepareStatement(query);
             pst.setString(1, this.userID);
             
             try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) {
                     String name = rs.getString("name");
                     String type = rs.getString("type");
                     String dateFrom = rs.getString("timeFrom");
                     String dateTo = rs.getString("timeTo");
+                    boolean comp = rs.getBoolean("completed");
                     
-                    nearest_task.setText(name);
-                    if (type.equals("One-day event")){
-                        nearest_time.setText(convertDate(dateFrom));
-                    }else{
-                        String time = convertDate(dateFrom) + " to " + convertDate(dateTo);
-                        nearest_time.setText(time);
+                    //check if it is completed or not, if it is not completed yet
+                    if (!comp){
+                        if (type.equals("One-day event")){ //if it is one day event
+                            //check the date from, if same, then set the task that want to be displayed
+                            if (convertStrDate(dateFrom).equals(currentDate)){
+                                task_name = name;
+                                task_type = "One-day event";
+                                task_date_from = dateFrom;
+                                break; //break the loop
+                            }
+                         //multiple day event
+                        }else{
+                            //check the date range
+                            //if the date is inside the range, then set this task to be displayed
+                            if (currentDate.isAfter(convertStrDate(dateFrom).minusDays(1)) 
+                                    && currentDate.isBefore(convertStrDate(dateTo).plusDays(1))){
+                                task_name = name;
+                                task_type = "Multiple-day event";
+                                task_date_from = dateFrom;
+                                task_date_to = dateTo;
+                                break; //break the loop
+                            }
+                        }
                     }
-                }                 
+                }
+                
+                //set the nearest task and nearest time label based on the result
+                //convertDate method is used to change 2024-05-06 to 6 May 2024
+                if (task_type.equals("One-day event")){
+                    nearest_task.setText(task_name);
+                    nearest_time.setText(convertDate(task_date_from));
+                }else if (task_type.equals("Multiple-day event")){
+                    nearest_task.setText(task_name);
+                    String time = convertDate(task_date_from) + " to " + convertDate(task_date_to);
+                    nearest_time.setText(time);
+                }else{
+                    nearest_task.setText("No task available today.");
+                    nearest_time.setText("Try checking out other tasks in the calendar!");
+                }
             }
 
         }catch(Exception e){
@@ -473,56 +539,36 @@ public class HomePage extends javax.swing.JFrame {
         }
     }
     
-    //2024-06-2
     private String convertDate(String strDate){
-        String day = strDate.substring(8, strDate.length());
-        String year = strDate.substring(0,4);
-        String month = strDate.substring(5,7);
+        //change the date from YYYY-MM-dd to dd (name of month) YYYY
+        String day = strDate.substring(8, strDate.length()); //get the date
+        String year = strDate.substring(0,4); //get the year
+        String month = strDate.substring(5,7); //get the month
         
+        //get the name of the month
         switch (month){
-            case "01":
-                month = "Jan";
-                break;
-            case "02":
-                month = "Feb";
-                break;
-            case "03":
-                month = "Mar";
-                break;
-            case "04":
-                month = "Apr";
-                break;
-            case "05":
-                month = "May";
-                break;
-            case "06":
-                month = "Jun";
-                break;
-            case "07":
-                month = "Jul";
-                break;
-            case "08":
-                month = "Aug";
-                break;
-            case "09":
-                month = "Sep";
-                break;
-            case "10":
-                month = "Oct";
-                break;
-            case "11":
-                month = "Nov";
-                break;
-            case "12":
-                month = "Des";
-                break;
+            case "01" -> month = "Jan";
+            case "02" -> month = "Feb";
+            case "03" -> month = "Mar";
+            case "04" -> month = "Apr";
+            case "05" -> month = "May";
+            case "06" -> month = "Jun";
+            case "07" -> month = "Jul";
+            case "08" -> month = "Aug";
+            case "09" -> month = "Sep";
+            case "10" -> month = "Oct";
+            case "11" -> month = "Nov";
+            case "12" -> month = "Des";
         }
-        
+        //return the formatted 
         return day + " " + month + " " + year;
     }
     
     private void showBarChart(){
-        queryTaskCompletions();
+        //show the bar chart
+        queryTaskCompletions(); //query the task completion of the user
+        
+        //set the dataset based on the completion rate amount of each day
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         dataset.setValue(completionRate.get("Mon"), "Amount", "Mon");
         dataset.setValue(completionRate.get("Tue"), "Amount", "Tue");
@@ -532,9 +578,11 @@ public class HomePage extends javax.swing.JFrame {
         dataset.setValue(completionRate.get("Sat"), "Amount", "Sat");        
         dataset.setValue(completionRate.get("Sun"), "Amount", "Sun");
         
+        //create a bar chart
         JFreeChart chart = ChartFactory.createBarChart("Task Completion","Day","Amount", 
                 dataset, PlotOrientation.VERTICAL, false,true,false);
         
+        //make the chart looks flatter
         CategoryPlot categoryPlot = chart.getCategoryPlot();
         categoryPlot.setRangeGridlinePaint(Color.BLUE);
         categoryPlot.setBackgroundPaint(Color.WHITE);
@@ -544,6 +592,7 @@ public class HomePage extends javax.swing.JFrame {
         renderer.setBarPainter(new StandardBarPainter()); // Disable gradient effect
         renderer.setMaximumBarWidth(0.08);
         
+        //draw the x axis labels (the day name)  by iterating over the key 
         for(int i=1; i<= completionRate.size(); i++){ 
             for(String key: completionRate.keySet()){
                 if (completionRate.get(key) == 0){
@@ -554,8 +603,10 @@ public class HomePage extends javax.swing.JFrame {
             }            
         }
         
+        //create the chart
         ChartPanel barChart = new ChartPanel(chart);
         barChart.setPreferredSize(new Dimension(1000, 400));
+        //remove the old chart (if exists) and set the new chart inside the panel
         barChartPanel.removeAll();
         barChartPanel.add(barChart, BorderLayout.CENTER);
         barChartPanel.validate();
@@ -723,6 +774,7 @@ public class HomePage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void viewMoreBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewMoreBtnActionPerformed
+        //when user clicks the view more button below the upcoming task for today
         setVisible(false);
         new CalendarPage(userID, player).setVisible(true);
     }//GEN-LAST:event_viewMoreBtnActionPerformed
@@ -730,37 +782,6 @@ public class HomePage extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new HomePage().setVisible(true);
-//            }
-//        });
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addWorkflowBtn;

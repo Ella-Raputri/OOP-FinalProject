@@ -55,6 +55,7 @@ public class AddNewTask extends javax.swing.JFrame {
     private void initDesign(){
         getContentPane().setBackground(Color.white);
         
+        //init the components
         oneDay = new javax.swing.JRadioButton();
         nameField = new PlaceHolderTextField("Name",10);
         multipleDay = new javax.swing.JRadioButton();
@@ -74,6 +75,7 @@ public class AddNewTask extends javax.swing.JFrame {
         toYearField = new PlaceHolderTextField("Year",20);
         optGrp = new javax.swing.ButtonGroup();
         
+        //so that only one button can be selected
         optGrp.add(oneDay); optGrp.add(multipleDay);
         
         setTitle("Add Task");
