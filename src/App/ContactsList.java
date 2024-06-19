@@ -49,36 +49,47 @@ public class ContactsList extends javax.swing.JFrame {
     }
     
     private void initHover(){
+        //set the window close operation
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Custom close operation logic
+                //ask for confirmation then
+                // go back to ContactOthers when user presses close
                 int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     setVisible(false);
+                    new ContactOthers(userID).setVisible(true);
                 } 
             }
         });
+        //the back button function is the same with the window close operation
         backBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new ContactOthers(userID).setVisible(true);
+                //ask for confirmation
+                int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    //go back to contact others
+                    setVisible(false);
+                    new ContactOthers(userID).setVisible(true);
+                } 
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_msg_hover.png")));
             }
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { //when not hovered
                 backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_msg.png")));
             }
         });
     }
     
     private void myinit(){
-        queryContact();
+        queryContact(); //query all the contacts 
+        
+        //create the content pane
          contentPane = new JPanel();
          contentPane.setBackground(Color.white);
         contentPane.setLayout(null); // Use absolute layout
@@ -100,6 +111,7 @@ public class ContactsList extends javax.swing.JFrame {
         cloneablePanel.setBackground(Color.white);
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
+        //create the cloneable panel based on the contact list
         createClonedPanels(contactList, contactList.size());
         
         contentPane.setPreferredSize(new Dimension(400, 480));
@@ -108,46 +120,52 @@ public class ContactsList extends javax.swing.JFrame {
     }
     
     private void createClonedPanels(LinkedList<Contact> list, int size){
-        
+        //create the cloneable panels by iterating over the contact inside the contact list
         for(int i=0; i<size;i++){
             String id = list.get(i).getId();
             String name = list.get(i).getName();
             String phone = list.get(i).getPhone();
             
             // Create a new cloned panel
-            // Cloneable Panel
-            CloneablePanelContact clonedPanel = new CloneablePanelContact(home, 20, Color.white, 2 ,id, name, phone);
-            // Set your custom width and height for the cloned panel
+            CloneablePanelContact clonedPanel = new CloneablePanelContact(home, 20, 
+                    Color.white, 2 ,id, name, phone);
+            // Set width and height for the cloned panel
             int panelWidth = 255;
             int panelHeight = 60;
-            
 
-            // Calculate the x and y positions based on row and column indices
+            // Calculate the x and y positions 
             int x = 10;
             int y = 10 + i * (panelHeight + 20);
 
-            // Set the bounds for the cloned panel with your custom size
+            // Set the bounds and background for the cloned panel 
             clonedPanel.setBounds(x, y, panelWidth, panelHeight);
             clonedPanel.setBackground(new Color(246,252,254));
             
+            //the cloned panel can be clicked
             clonedPanel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    //if clicked and the cloned panel is the current panel
+                    //then set the the current panel to be null
                     if (currentPanel == clonedPanel){
                        currentPanel.setIsClicked(false);
                        currentPanel = null;
                        clonedPanel.repaint();
+                       //clear all fields
                        nameField.setText("");
                        phoneField.setText("");
                     }
                     else{
+                        //if the current panel is not null
                         if (currentPanel != null ) {
                             currentPanel.setIsClicked(false);
                             currentPanel.repaint();
                         }
+                        //set the cloned panel to be the new current panel
                         clonedPanel.setIsClicked(true);
                         currentPanel = clonedPanel;
                         clonedPanel.repaint();
+                        //set current panel info in the fields
                         nameField.requestFocus();
                         nameField.setText(currentPanel.getNameInput());
                         phoneField.setText(currentPanel.getPhoneInput());
@@ -155,11 +173,7 @@ public class ContactsList extends javax.swing.JFrame {
                 }
             });
             // Add the cloned panel to the initial panel
-            cloneablePanel.add(clonedPanel);
-            
-            //add the cloned panel to the hash map
-            //panelMap.put(id, clonedPanel);
-            
+            cloneablePanel.add(clonedPanel);            
             // Adjust preferred size of initial panel to include new panel
             Dimension newSize = new Dimension(cloneablePanel.getWidth(), y + panelHeight + 10); // Adjusted size
             cloneablePanel.setPreferredSize(newSize);
@@ -172,8 +186,9 @@ public class ContactsList extends javax.swing.JFrame {
     }
     
     private void queryContact(){
-        contactList.clear();
+        contactList.clear(); //clear the contact list
         try{
+            //query all the contacts from the database
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM contact WHERE userID = ?";
             PreparedStatement ps = con.prepareStatement(query);
@@ -184,7 +199,7 @@ public class ContactsList extends javax.swing.JFrame {
                 String id = rs.getString("id");
                 String name = rs.getString("name");
                 String phone = rs.getString("phone");
-                
+                //add it to the contact list
                 Contact contact = new Contact(id, name, phone);
                 contactList.add(contact);
             }
@@ -196,18 +211,20 @@ public class ContactsList extends javax.swing.JFrame {
     
     
     private void initDesign(){
+        //set background color
         getContentPane().setBackground(Color.white);
-        
+        //init components
         backBtn = new JLabel();
         contacttxt = new JLabel("Contact");
         nameField = new PlaceHolderTextField("New Name", 0);
         phoneField = new PlaceHolderTextField("Phone Number", 0);
         setBtn = new App.ButtonCustom();
         
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        //set size and layout
         setPreferredSize(new java.awt.Dimension(400, 480));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
+        //style components and add them to the frame
         backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_msg.png"))); // NOI18N
         getContentPane().add(backBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 13, -1, -1));
         
@@ -253,6 +270,7 @@ public class ContactsList extends javax.swing.JFrame {
     }
 
     private void getLastID(){
+        //get the last ID of the contact
         LinkedList<String> allIdList = new LinkedList<>();
         try{
             Connection con = ConnectionProvider.getCon();
@@ -262,7 +280,7 @@ public class ContactsList extends javax.swing.JFrame {
                 String text = rs.getString("id");
                 allIdList.add(text);
             }
-            
+            //if it is the first contact, then the ID will be c1
             if(allIdList.isEmpty()){
                 IDtemp = "c1";
             }
@@ -273,8 +291,8 @@ public class ContactsList extends javax.swing.JFrame {
                     temp = temp + lastId.charAt(i);
                 }
                 int idnow = Integer.parseInt(temp);
-                idnow++;
-                IDtemp = "c" + String.valueOf(idnow);
+                idnow++; //the last ID + 1
+                IDtemp = "c" + String.valueOf(idnow); //set the new ID to it
             }
             
         } catch(Exception e){
@@ -286,38 +304,43 @@ public class ContactsList extends javax.swing.JFrame {
     
     private boolean isPhoneInteger(String test){
         try{
+            //for every character in the phone number
             for (int i = 0; i < test.length(); i++){
                 String s = test.charAt(i) + "";
+                //try to parse it
                 int a = Integer.parseInt(s);
             }            
         }
         catch(NumberFormatException e){
-            return false;
+            //if exception caught, then there is character that is not integer
+            return false; 
         }
-        return true;
+        return true; //return true if no error
     }
     
     private void handleAdd(){
+        //get the data in the name and phone field
         String nameStr = nameField.getText();
         String phoneStr = phoneField.getText();
         
-        if (nameStr.equals("New Name") || nameStr.equals("")){
+        if (nameStr.equals("New Name") || nameStr.equals("")){ //empty name
             JOptionPane.showMessageDialog(getContentPane(), "Name is still empty.");
         }
-        else if (phoneStr.equals("Phone Number") || nameStr.equals("")){
+        else if (phoneStr.equals("Phone Number") || phoneStr.equals("")){ //empty phone number
             JOptionPane.showMessageDialog(getContentPane(), "Phone number is still empty.");
         }
-        else if (!isPhoneInteger(phoneStr)){
+        else if (!isPhoneInteger(phoneStr)){ //character in the phone number is not integer
             JOptionPane.showMessageDialog(getContentPane(), "Phone number is not valid.");           
         }
         else{
-            getLastID();
+            getLastID(); //get the last id for the new contact
+            //add the new contact to the contact list
             Contact new_contact = new Contact(IDtemp, nameStr, phoneStr);
             contactList.add(new_contact);
             
             try{
                 Connection con = ConnectionProvider.getCon();
-
+                //insert the new contact to the database
                 PreparedStatement ps = con.prepareStatement("INSERT INTO contact VALUES(?,?,?,?)");
                 ps.setString(1, IDtemp);
                 ps.setString(2, userID);
@@ -333,7 +356,8 @@ public class ContactsList extends javax.swing.JFrame {
                 nameField.setText("");
                 phoneField.setText("");
                 
-                reloadSelf();
+                //reload to show the cloned panels of the added contact
+                reloadSelf(); 
 
             }catch(Exception e){
                 JOptionPane.showMessageDialog(getContentPane(), e);
@@ -342,31 +366,32 @@ public class ContactsList extends javax.swing.JFrame {
     }
     
     private void handleEdit(){
+        //get the name and phone from the field
         String nameStr = nameField.getText();
         String phoneStr = phoneField.getText();
         
-        if (nameStr.equals("New Name") || nameStr.equals("")){
+        if (nameStr.equals("New Name") || nameStr.equals("")){ //if the name is empty
             JOptionPane.showMessageDialog(getContentPane(), "Name is still empty.");
         }
-        else if (phoneStr.equals("Phone Number") || nameStr.equals("")){
+        else if (phoneStr.equals("Phone Number") || phoneStr.equals("")){ //if the phone is empty
             JOptionPane.showMessageDialog(getContentPane(), "Phone number is still empty.");
         }
-        else if (!isPhoneInteger(phoneStr)){
+        else if (!isPhoneInteger(phoneStr)){ //if exists non integer character in the phone number
             JOptionPane.showMessageDialog(getContentPane(), "Phone number is not valid.");           
         }
         else{
-            IDtemp = currentPanel.getId();
+            IDtemp = currentPanel.getId(); //get ID of current selected panel
             
             try{
                 Connection con = ConnectionProvider.getCon();
-                    
+                //update it in the database
                 String query = "UPDATE contact SET name = ?, phone = ? WHERE id = ?";
                 PreparedStatement ps = con.prepareStatement(query);
                 ps.setString(1, nameStr);
                 ps.setString(2, phoneStr);
                 ps.setString(3, IDtemp);
-
                 ps.executeUpdate();
+                
                 //success message
                 String message = "Contact edited successfully.";              
                 JOptionPane.showMessageDialog(getContentPane(), message);
@@ -375,7 +400,7 @@ public class ContactsList extends javax.swing.JFrame {
                 nameField.setText("");
                 phoneField.setText("");
 
-                //refresh the flow view on the right
+                //refresh the cloned panels
                 reloadSelf();
 
             }catch(Exception e){
@@ -385,17 +410,18 @@ public class ContactsList extends javax.swing.JFrame {
     }
     
     private void setBtnActionPerformed(){
+        //if there is no selected panel
         if (currentPanel == null){
-            handleAdd();
+            handleAdd(); //add a new contact
         }else{
-            handleEdit();
+            handleEdit(); //edit or update the contact
         }        
     }
     
     public void reloadSelf(){
-        queryContact();
-        cloneablePanel.removeAll();
-        createClonedPanels(contactList, contactList.size());
+        queryContact(); //get the updated contact list
+        cloneablePanel.removeAll(); //remove all cloned panels
+        createClonedPanels(contactList, contactList.size()); //recreate the cloned panels
     }
     /**
      * This method is called from within the constructor to initialize the form.

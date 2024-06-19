@@ -58,17 +58,21 @@ public class CalendarPage extends javax.swing.JFrame {
         initHover();
     }
     
+    //handle hover button in the navbar
     public void hoverButton(String image_path, int colorR, int colorG, int colorB, JLabel[] labels){
         for (JLabel label : labels){
             if (label.getIcon() != null){
+                //if it is image label, then set the hovered image
                 label.setIcon(new javax.swing.ImageIcon(getClass().getResource(image_path)));
             }else{
+                //if it is text label, set the hover color
                 label.setForeground(new java.awt.Color(colorR, colorG, colorB));
             }
         }
     }
     
     public void goToEditTask(String taskid){
+        //show the edit task window if there is no opened window
         if (CalendarPage.open == 0){
            CalendarPage.open = 1; 
            new EditTask(userID, home, taskid).setVisible(true);
@@ -78,12 +82,13 @@ public class CalendarPage extends javax.swing.JFrame {
     }
     
     private void initHover(){
+        //side navbar buttons
         JLabel[] home_labels = {homeBtn, homeBtnTxt};
         JLabel[] add_workflow_labels = {addWorkflowBtn, addWorkflowBtnTxt, addWorkflowBtnTxt1};
-        JLabel[] calendar_labels = {calendarBtn, calendarBtnTxt};
         JLabel[] aranara_labels = {aranaraBtn, aranaraBtnTxt};
         JLabel[] logout_labels = {logoutBtn, logoutBtnTxt};
         
+        //home button
         homeBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -117,6 +122,7 @@ public class CalendarPage extends javax.swing.JFrame {
             }
         }); 
         
+        //add workflow button
         addWorkflowBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -166,7 +172,7 @@ public class CalendarPage extends javax.swing.JFrame {
             }
         });
     
-        
+        //aranara button
         aranaraBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -200,6 +206,7 @@ public class CalendarPage extends javax.swing.JFrame {
             }
         });
         
+        //logout button
         logoutBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -236,6 +243,8 @@ public class CalendarPage extends javax.swing.JFrame {
                 hoverButton("/App/img/logout.png", 255, 255, 255, logout_labels);
             }
         });
+        
+        //insert workflow as task button
         insertBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent me) {
@@ -254,10 +263,11 @@ public class CalendarPage extends javax.swing.JFrame {
                 insertBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/insert_workflow.png")));
                 insertBtn.setBackground(Color.white);
                 insertBtn.setBorderColor(new java.awt.Color(0, 141, 189));
-                insertWorkflowBtn();
+                insertWorkflowBtn(); //open the insert workflow task frame
             }
         });
         
+        //contact others button
         contactBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent me) {
@@ -270,6 +280,7 @@ public class CalendarPage extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent me) {
                 if (CalendarPage.open == 0){
+                    //open the contact others frame when there is no other opened window
                     CalendarPage.open = 1; 
                     new ContactOthers(userID).setVisible(true);
                 }else{
@@ -280,6 +291,8 @@ public class CalendarPage extends javax.swing.JFrame {
     }
     
     private void insertWorkflowBtn(){
+        //open the insert workflow as task frame 
+        //if there is no other opened window
         if (CalendarPage.open == 0){
            CalendarPage.open = 1; 
            new InsertWorkflowTask(userID, home).setVisible(true);
@@ -289,13 +302,16 @@ public class CalendarPage extends javax.swing.JFrame {
     }
     
     public void queryTask(){
-       taskList.clear();
+       taskList.clear(); //clear all remaining tasks
         try{
+            //query from the database to get the tasks
             Connection con = ConnectionProvider.getCon();
+            //the order is from the not completed one first
             String query = "SELECT * FROM tasks WHERE userID = ? ORDER BY completed ASC";
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, this.userID);
             
+            //get the task attributes
             ResultSet rs = pstmt.executeQuery();
             while(rs.next()){
                 String tID = rs.getString("taskID");
@@ -307,6 +323,7 @@ public class CalendarPage extends javax.swing.JFrame {
                 String tcolor = rs.getString("color");
                 boolean tcomp = rs.getBoolean("completed");
                 
+                //add it to the task list
                 Task new_task = new Task(tID, tname, ttype, ttimeFrom, ttimeTo, tnotes, tcolor, this.userID, tcomp);
                 taskList.add(new_task);
             }
@@ -317,14 +334,17 @@ public class CalendarPage extends javax.swing.JFrame {
     }
     
     public void refresh(){
-        queryCurrentTaskList();
-        cloneablePanel.removeAll();
-        createClonedPanels(home.currTasksList, home.currTasksList.size());        
-        renewTaskText();
+        //refresh the calendar page
+        queryCurrentTaskList(); //get the selected date task
+        cloneablePanel.removeAll(); //remove all the cloned panel
+        //create cloned panels based on current task 
+        createClonedPanels(home.currTasksList, home.currTasksList.size());       
+        renewTaskText(); //renew the task text and the add task button
     }
     
     
     public void renewTaskText(){
+        //renew the task panel
         JPanel taskPanel = calendarCustom2.getTaskPanel();
         JLabel tasktxt = new JLabel();
         tasktxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 32)); // NOI18N
@@ -335,11 +355,13 @@ public class CalendarPage extends javax.swing.JFrame {
         taskPanel.add(tasktxt);
         tasktxt.setBounds(90, 20, 100, 39);
         
+        //renew the line inside the task panel
         JLabel jLabel1 = new JLabel();
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/line.png"))); // NOI18N
         taskPanel.add(jLabel1);
         jLabel1.setBounds(30, 50, 232, 43);
         
+        //renew the add task button on the bottom of task panel
         ButtonCustom addBtn = new App.ButtonCustom();
         addBtn.setForeground(java.awt.Color.white);
         addBtn.setText("Add task");
@@ -360,41 +382,50 @@ public class CalendarPage extends javax.swing.JFrame {
             }
         });
         addBtn.setBounds(120, 470, 133, 40);
-        
+        //revalidate and repaint
         taskPanel.revalidate();
         taskPanel.repaint();
     }
     
     public LocalDate convertStrDate(String timeStr){
         String modify = timeStr;
+        //if the date is still 2024-02-8, then make it to become 2024-02-08
         if (timeStr.length() != 10){
             modify = timeStr.substring(0, 8) + "0" + timeStr.charAt(8);
         }
+        //convert the date to localdate
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(modify, formatter);
         return date;
-    }
-    
+    }    
     
     public void queryCurrentTaskList(){
-        currTasksList.clear();
-        queryTask();
-        CalendarCell currCell = calendarCustom2.currentPanel.getCurrentCell();
+        currTasksList.clear(); //clear all remaining task
+        queryTask(); //refresh the task list
+        CalendarCell currCell = calendarCustom2.currentPanel.getCurrentCell(); //get the selected cell
+        
+        //get the selected cell's date
         LocalDate date_cell = currCell.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         
         for (int i = 0; i < taskList.size(); i++){
+            //get the date from of the task
             LocalDate date_from = convertStrDate(taskList.get(i).getTimeFromInput());
-            if (taskList.get(i).getTypeInput().equals("One-day event")){                
+            //one-day event
+            if (taskList.get(i).getTypeInput().equals("One-day event")){       
+                //if the current cell's date is the same with the date from of the task
                 if (date_from.equals(date_cell)){
-                    currTasksList.add(taskList.get(i));
+                    currTasksList.add(taskList.get(i)); //add the task to the current task list
                 }
             //multiple day event
             }else{
+                //get the date to of the task
                 LocalDate date_to = convertStrDate(taskList.get(i).getTimeToInput());
                 LocalDate curr_iter = date_from;
         
                 while (!curr_iter.isAfter(date_to)) {
+                    //iterate to check if the cell date is in range of the dateFrom to dateTo of the task
                     if (curr_iter.equals(date_cell)){
+                        //if yes, append the task to the current task list
                         currTasksList.add(taskList.get(i));
                         break;
                     }
@@ -407,7 +438,7 @@ public class CalendarPage extends javax.swing.JFrame {
 
     
     private void myinit(){
-        queryTask();
+        queryTask(); //query task list
         
         // Create the content pane
         contentPane = new JPanel() {
@@ -415,7 +446,7 @@ public class CalendarPage extends javax.swing.JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // Load the background image
-                ImageIcon bgImage = new ImageIcon("src/App/img/search.png");
+                ImageIcon bgImage = new ImageIcon("src/App/img/default_page.png");
                 // Draw the background image
                 g.drawImage(bgImage.getImage(), 0, 0, getWidth(), getHeight(), null);
             }
@@ -439,12 +470,11 @@ public class CalendarPage extends javax.swing.JFrame {
         cloneablePanel.setBackground(new Color(31, 139, 217));
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
-        calendarCustom2 = new App.CalendarCustom(this.home);
+        calendarCustom2 = new App.CalendarCustom(this.home); //init the calendar panel
         contentPane.add(calendarCustom2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, -1, -1));
-        
-        //contentPane.add(addTaskBtn);
 
-        queryCurrentTaskList();
+        queryCurrentTaskList(); //query the current task list
+        //create the cloned panels in the task panel based on the current date task
         createClonedPanels(currTasksList, currTasksList.size());
 
         contentPane.setPreferredSize(new Dimension(1280, 750));
@@ -452,17 +482,17 @@ public class CalendarPage extends javax.swing.JFrame {
         // Make the components viewable
         cloneablePanel.setVisible(true);
         calendarCustom2.setVisible(true);
-        
+        //revalidate and repaint
         contentPane.revalidate();
         contentPane.repaint();
     }
     
     public void createClonedPanels(LinkedList<Task> list, int size){
         JPanel taskPanel = calendarCustom2.getTaskPanel(); // Access the taskPanel from calendarCustom2
-        taskPanel.removeAll();
+        taskPanel.removeAll(); //remove all the elements inside it
     
-        //panelMap.clear();
         for(int i=0; i<size;i++){
+            //iterates over task list
             String id = list.get(i).getId();
             String name = list.get(i).getNameInput();
             String type = list.get(i).getTypeInput();
@@ -473,18 +503,17 @@ public class CalendarPage extends javax.swing.JFrame {
             boolean comp = list.get(i).getCompleted();
             
             // Create a new cloned panel
-            // Cloneable Panel
             CloneablePanelTask clonedPanel = new CloneablePanelTask(this.home, 0, new Color(31, 139, 217), 1 ,
                     id, name, type, timeFrom, timeTo, note, color, comp);
-            // Set your custom width and height for the cloned panel
+            // Set width and height for the cloned panel
             int panelWidth = 260;
             int panelHeight = 90;
             
-            // Calculate the x and y positions based on row and column indices
+            // Calculate the x and y positions 
             int x = -10;
             int y = 10 + i * (panelHeight + 30);
 
-            // Set the bounds for the cloned panel with your custom size
+            // Set the bounds for the cloned panel 
             clonedPanel.setBounds(x, y, panelWidth, panelHeight);
             
             // Add the cloned panel to the initial panel
@@ -511,6 +540,7 @@ public class CalendarPage extends javax.swing.JFrame {
     
     
     private void initDesign(){
+        //init the components
         homeBtnTxt = new javax.swing.JLabel();
         homeBtn = new javax.swing.JLabel();
         addWorkflowBtn = new javax.swing.JLabel();
@@ -528,10 +558,12 @@ public class CalendarPage extends javax.swing.JFrame {
         contactBtn = new javax.swing.JLabel();
         bg = new javax.swing.JLabel();
 
+        //set default close operation, size, and layout
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1280, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        //styling components
         homeBtnTxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 16)); // NOI18N
         homeBtnTxt.setForeground(new java.awt.Color(255, 255, 255));
         homeBtnTxt.setText("Home");
@@ -631,39 +663,7 @@ public class CalendarPage extends javax.swing.JFrame {
 
     /**
      * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(CalendarPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new CalendarPage().setVisible(true);
-//            }
-//        });
-//    }
-    
+     */    
     private javax.swing.JLabel addWorkflowBtn;
     private javax.swing.JLabel addWorkflowBtnTxt;
     private javax.swing.JLabel addWorkflowBtnTxt1;

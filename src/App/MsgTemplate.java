@@ -50,46 +50,58 @@ public class MsgTemplate extends javax.swing.JFrame {
     }
     
     private void initHover(){
+        //when the user clicks the close button on the window
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Custom close operation logic
+                //ask for confirmation
                 int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
+                    //go back to Contact Others frame
                     setVisible(false);
+                    new ContactOthers(userID).setVisible(true);
                 } 
             }
         });
+        //the back button is the same as the close button 
         backBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                setVisible(false);
-                new ContactOthers(userID).setVisible(true);
+                //asl for confirmation
+                int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                //go back to Contact Others frame
+                    setVisible(false);
+                    new ContactOthers(userID).setVisible(true);
+                } 
             }
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) { //when hovered
                 backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_msg_hover.png")));
             }
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent e) {//when not hovered
                 backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_msg.png")));
             }
         });
     }
     
     private void initDesign(){
+        //set background color
         getContentPane().setBackground(Color.white);
         
+        //init components
         backBtn = new JLabel();
         messagetxt = new JLabel("Message Template");
         newMsgField = new PlaceHolderTextField("Add new message", 0);
         setBtn = new App.ButtonCustom();
         
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        //set size and layout
         setPreferredSize(new java.awt.Dimension(400, 400));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
+        //style the components and add them to the frame
         backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/App/img/back_msg.png"))); // NOI18N
         getContentPane().add(backBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 13, -1, -1));
         
@@ -129,7 +141,7 @@ public class MsgTemplate extends javax.swing.JFrame {
     }
     
     private void myinit(){
-        queryMsg();
+        queryMsg(); //query the message templates
         contentPane = new JPanel();
         contentPane.setBackground(Color.white);
         contentPane.setLayout(null); // Use absolute layout
@@ -151,27 +163,26 @@ public class MsgTemplate extends javax.swing.JFrame {
         cloneablePanel.setBackground(Color.white);
         scrollPane.setViewportView(cloneablePanel); // Set this panel as viewport's view
         
-        createClonedPanels(msgList, msgList.size());
-        
+        //create cloned panels based on the message list
+        createClonedPanels(msgList, msgList.size());        
         contentPane.setPreferredSize(new Dimension(400, 400));
         
         initDesign(); //initialize all the design components
     }
     
     private void createClonedPanels(LinkedList<Message> list, int size){
-        
+        //iterates over all message in the message list
         for(int i=0; i<size;i++){
             String id = list.get(i).getId();
             String msg = list.get(i).getMsg();
             
             // Create a new cloned panel
-            // Cloneable Panel
             CloneablePanelMsg clonedPanel = new CloneablePanelMsg(home, 20, Color.white, 2 ,id, msg);
-            // Set your custom width and height for the cloned panel
+            // Set width and height for the cloned panel
             int panelWidth = 290;
             int panelHeight = 90;
 
-            // Calculate the x and y positions based on row and column indices
+            // Calculate the x and y positions 
             int x = 30;
             int y = 10 + i * (panelHeight + 20);
 
@@ -182,30 +193,33 @@ public class MsgTemplate extends javax.swing.JFrame {
             clonedPanel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    //if clicked and the cloned panel is the current panel
+                    //then set the the current panel to be null
                     if (currentPanel == clonedPanel){
                        currentPanel.setIsClicked(false);
                        currentPanel = null;
                        clonedPanel.repaint();
+                       //clear all fields
                        newMsgField.setText("");
                     }
                     else{
+                        //if the current panel is not null
                         if (currentPanel != null ) {
                             currentPanel.setIsClicked(false);
                             currentPanel.repaint();
                         }
+                        //set the cloned panel to be the new current panel
                         clonedPanel.setIsClicked(true);
                         currentPanel = clonedPanel;
                         clonedPanel.repaint();
+                        //set current panel info in the fields
                         newMsgField.requestFocus();
                         newMsgField.setText(currentPanel.getMsgInput());
-                    }   
+                    }    
                 }
             });
             // Add the cloned panel to the initial panel
             cloneablePanel.add(clonedPanel);
-            
-            //add the cloned panel to the hash map
-            //panelMap.put(id, clonedPanel);
             
             // Adjust preferred size of initial panel to include new panel
             Dimension newSize = new Dimension(cloneablePanel.getWidth(), y + panelHeight + 10); // Adjusted size
@@ -219,8 +233,9 @@ public class MsgTemplate extends javax.swing.JFrame {
     }
     
     private void queryMsg(){
-        msgList.clear();
+        msgList.clear(); //clear the message list
         try{
+            //query all the message template from the database
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM message_template WHERE userID = ?";
             PreparedStatement ps = con.prepareStatement(query);
@@ -230,19 +245,20 @@ public class MsgTemplate extends javax.swing.JFrame {
             while(rs.next()){
                 String id = rs.getString("id");
                 String name = rs.getString("message");
-                
+                //add it to the message list 
                 Message msg = new Message(id, name);
                 msgList.add(msg);
-            }
-            
+            }            
         }catch(Exception e){
             JOptionPane.showMessageDialog(getContentPane(), e);
         }
     }
     
     private void getLastID(){
+        //get the last ID of message
         LinkedList<String> allIdList = new LinkedList<>();
         try{
+            //get the message template id from the database
             Connection con = ConnectionProvider.getCon();
             Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = st.executeQuery("SELECT id FROM message_template");
@@ -250,7 +266,7 @@ public class MsgTemplate extends javax.swing.JFrame {
                 String text = rs.getString("id");
                 allIdList.add(text);
             }
-            
+            //if it is the first message, set the id to be m1
             if(allIdList.isEmpty()){
                 IDtemp = "m1";
             }
@@ -261,10 +277,9 @@ public class MsgTemplate extends javax.swing.JFrame {
                     temp = temp + lastId.charAt(i);
                 }
                 int idnow = Integer.parseInt(temp);
-                idnow++;
-                IDtemp = "m" + String.valueOf(idnow);
-            }
-            
+                idnow++; //add 1 from the last ID
+                IDtemp = "m" + String.valueOf(idnow);//set the new ID as the last ID +1
+            }            
         } catch(Exception e){
             JFrame jf = new JFrame();
             jf.setAlwaysOnTop(true);
@@ -273,33 +288,35 @@ public class MsgTemplate extends javax.swing.JFrame {
     }
     
     private void handleAdd(){
+        //get the message
         String messageStr = newMsgField.getText();
         
-        if (messageStr.equals("Add new message") || messageStr.equals("")){
+        if (messageStr.equals("Add new message") || messageStr.equals("")){ //if still empty
             JOptionPane.showMessageDialog(getContentPane(), "Message is still empty.");
         }
         else{
-            getLastID();
+            getLastID(); //get the last ID
+            //add the new message to the message list
             Message new_msg = new Message(IDtemp, messageStr);
             msgList.add(new_msg);
             
             try{
                 Connection con = ConnectionProvider.getCon();
-
+                //insert the message to the database
                 PreparedStatement ps = con.prepareStatement("INSERT INTO message_template VALUES(?,?,?)");
                 ps.setString(1, IDtemp);
                 ps.setString(2, userID);
                 ps.setString(3, messageStr);
-
                 ps.executeUpdate();
+                
                 //success message
                 String message = "Message added successfully.";              
                 JOptionPane.showMessageDialog(getContentPane(), message);
 
-                //clear all the field
+                //clear all the fields
                 currentPanel = null;
                 newMsgField.setText("");                
-                reloadSelf();
+                reloadSelf(); //reload to show the new panel
 
             }catch(Exception e){
                 e.printStackTrace();
@@ -308,23 +325,24 @@ public class MsgTemplate extends javax.swing.JFrame {
     }
     
     private void handleEdit(){
+        //get the message
         String msgStr = newMsgField.getText();
         
-        if (msgStr.equals("Add new message") || msgStr.equals("")){
+        if (msgStr.equals("Add new message") || msgStr.equals("")){ //if still empty
             JOptionPane.showMessageDialog(getContentPane(), "Message is still empty.");
         }
         else{
-            IDtemp = currentPanel.getId();
+            IDtemp = currentPanel.getId(); //get current panel's ID
             
             try{
                 Connection con = ConnectionProvider.getCon();
-                    
+                //update the message database
                 String query = "UPDATE message_template SET message = ? WHERE id = ?";
                 PreparedStatement ps = con.prepareStatement(query);
                 ps.setString(1, msgStr);
                 ps.setString(2, IDtemp);
-
                 ps.executeUpdate();
+                
                 //success message
                 String message = "Message edited successfully.";              
                 JOptionPane.showMessageDialog(getContentPane(), message);
@@ -332,8 +350,7 @@ public class MsgTemplate extends javax.swing.JFrame {
                 //clear all the field
                 currentPanel = null;
                 newMsgField.setText("");
-                //refresh the flow view on the right
-                reloadSelf();
+                reloadSelf(); //refresh the panel view
 
             }catch(Exception e){
                 e.printStackTrace();
@@ -343,16 +360,16 @@ public class MsgTemplate extends javax.swing.JFrame {
     
     private void setBtnActionPerformed(){
         if (currentPanel == null){
-            handleAdd();
+            handleAdd(); //insert data as new message 
         }else{
-            handleEdit();
+            handleEdit(); //update the data of the selected panel
         }        
     }
     
     public void reloadSelf(){
-        queryMsg();
-        cloneablePanel.removeAll();
-        createClonedPanels(msgList, msgList.size());
+        queryMsg(); //get the updated message
+        cloneablePanel.removeAll(); //remove all cloned panels
+        createClonedPanels(msgList, msgList.size()); //recreate updated cloned panels
     }
     
     /**
@@ -384,7 +401,6 @@ public class MsgTemplate extends javax.swing.JFrame {
      * @param args the command line arguments
      */
 
-    
     private javax.swing.JLabel backBtn;
     private javax.swing.JLabel messagetxt;
     private javax.swing.JTextField newMsgField;

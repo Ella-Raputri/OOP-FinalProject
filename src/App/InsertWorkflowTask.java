@@ -45,20 +45,21 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
     
     
     private void initDesign(){
+        //upon clicking the 'x' button, the window will not close
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Custom close operation logic
+                // ask for confirmation
                 int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
+                    //close this window only and set the opened window of calendar page to become 0
+                    CalendarPage.open = 0;
                     setVisible(false);
-                    CalendarPage.open=0;
                 } 
             }
         });
-        
-        
+        //populate the month map with the pair of the month name and month number
         monthMap.put("January", "01");
         monthMap.put("February", "02");
         monthMap.put("March", "03");
@@ -72,7 +73,10 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         monthMap.put("November", "11");
         monthMap.put("December", "12");
         
+        //set background color
         getContentPane().setBackground(Color.white);
+        
+        //init components
         chooseDatetxt = new javax.swing.JLabel();
         d_day = new javax.swing.JLabel();
         dateField = new PlaceHolderTextField("Date", 5);
@@ -82,10 +86,11 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         chooseWorkflowtxt = new javax.swing.JLabel();
         OKbtn = new App.ButtonCustom();
         
-        setBackground(new java.awt.Color(255, 255, 255));
+        //set size and layout
         setPreferredSize(new java.awt.Dimension(450, 350));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         
+        //get today's date
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = currentDate.format(formatter);
@@ -93,6 +98,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         String month = formattedDate.substring(5,7);
         String date = formattedDate.substring(8,10);
 
+        //style the components
         chooseDatetxt.setFont(new java.awt.Font("Montserrat SemiBold", 0, 20)); // NOI18N
         chooseDatetxt.setText("Choose Date");
         getContentPane().add(chooseDatetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
@@ -131,7 +137,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
         getContentPane().add(chooseWorkflowtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, -1, -1));
         
         String[] workflowOptions = queryAllWorkflow();
-        String[] optionIfEmpty = {"None"};
+        String[] optionIfEmpty = {"None"}; //if there is no workflow available
         if (workflowOptions == null){
             workflowOptions = optionIfEmpty;
         }
@@ -167,8 +173,9 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
     }
     
     private String[] queryAllWorkflow(){
-        workflowList.clear();
+        workflowList.clear(); //clear the remaining workflow
         try{
+            //query all workflow information from the database
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM workflow WHERE userID = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
@@ -179,7 +186,7 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
                 String wid = rs.getString("workflowID");
                 String wtitle = rs.getString("title");
                 int wcheckpoint = rs.getInt("checkpoint");
-                
+                //add it to the workflow list
                 Workflow workflow = new Workflow(wtitle, wcheckpoint, wid, this.userID);
                 workflowList.add(workflow);
             }
@@ -188,8 +195,10 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(getContentPane(), e);
         }
         if (!workflowList.isEmpty()){
+            //if there are available workflows
             String[] name = new String[workflowList.size()];
             for (int i = 0; i < workflowList.size(); i++){
+                //set the array of the workflow name
                 name[i] = workflowList.get(i).getTitle();
             }
             return name;
@@ -200,34 +209,40 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
     
     public boolean isValid(String dateStr, DateTimeFormatter dateFormatter) {
         try {
+            //check whether a string is a date  or not
             LocalDate.parse(dateStr, dateFormatter);
         } catch (DateTimeParseException e) {
-            return false;
+            return false; //return false if exception caught
         }
-        return true;
+        return true; //return true if no error
     }
     
     private LocalDate conditioningDate(){        
+        //get the full date from the fields
         String dateStr = dateField.getText();
         String monthStr = (String) monthComboBox.getSelectedItem();
         String yearStr = yearField.getText();
         
+        //modify the field to become YYYY-MM-dd
         String modify = yearStr + "-" + monthMap.get(monthStr) + "-" + dateStr ;
         if (modify.length() != 10){
             modify = modify.substring(0, 8) + "0" + modify.charAt(8);
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        //if the String is a valid date
         if (isValid(modify, formatter)){
-            LocalDate settedDate = LocalDate.parse(modify, formatter);
-            
+            //set the valid localdate
+            LocalDate settedDate = LocalDate.parse(modify, formatter);            
             return settedDate;
         }else{
+            //show error message if not valid
             JOptionPane.showMessageDialog(getContentPane(), "Date is not valid.");
             return null;
         }        
     }
     
     private void getNewID(){
+        //get new ID for the tasks that want to be inserted
         LinkedList<String> allIdList = new LinkedList<>();
         try{
             Connection con = ConnectionProvider.getCon();
@@ -237,19 +252,20 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
                 String text = rs.getString("taskID");
                 allIdList.add(text);
             }
-            
+            //if the task table is still empty, set the task ID to be the first
             if(allIdList.isEmpty()){
                 this.lastID = "t1";
             }
             else{
+                //set the task ID based on the last ID
                 String lastId = allIdList.getLast();
                 String temp = "";
                 for(int i=1; i<lastId.length(); i++){
                     temp = temp + lastId.charAt(i);
                 }
                 int idnow = Integer.parseInt(temp);
-                idnow++;
-                this.lastID = "t" + String.valueOf(idnow);
+                idnow++; //add the last ID by 1
+                this.lastID = "t" + String.valueOf(idnow); //set it to the new taskID
             }
             
         } catch(Exception e){
@@ -260,8 +276,9 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
     }
     
     private void getCurrentFlows(){
-        flowList.clear();
+        flowList.clear(); //clear the flowlist
         
+        //get the selected workflow
         Workflow currWorkflow = null;
         for (int i = 0 ; i<workflowList.size(); i++){
             if(workflowBox.getSelectedItem().equals(workflowList.get(i).getTitle())){
@@ -269,69 +286,85 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
                 break;
             }
         }
-        
-        try{
-            Connection con = ConnectionProvider.getCon();
-            String query = "SELECT * FROM flow WHERE workflowID = ? ORDER BY dayFrom ASC";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, currWorkflow.getId());
-            
-            ResultSet rs = pstmt.executeQuery();
-            while(rs.next()){
-                String fID = rs.getString("id");
-                String fname = rs.getString("name");
-                String ftype = rs.getString("type");
-                int fdayFrom = rs.getInt("dayFrom");
-                int fdayTo = rs.getInt("dayTo");
-                String fnotes = rs.getString("notes");
-                String fcolor = rs.getString("color");
-                
-                Flow flow = new Flow(fID, currWorkflow.getId(), fname, ftype, fdayFrom, fdayTo, fnotes, fcolor);
-                flowList.add(flow);
+        //if there is no such workflow, display the message
+        if (currWorkflow == null){
+            JOptionPane.showMessageDialog(getContentPane(), "The selected workflow does not exist!");
+        }else{        
+            try{
+                //query all the flows of the eslected workflow
+                Connection con = ConnectionProvider.getCon();
+                String query = "SELECT * FROM flow WHERE workflowID = ? ORDER BY dayFrom ASC";
+                PreparedStatement pstmt = con.prepareStatement(query);
+                pstmt.setString(1, currWorkflow.getId());
+
+                ResultSet rs = pstmt.executeQuery();
+                while(rs.next()){
+                    String fID = rs.getString("id");
+                    String fname = rs.getString("name");
+                    String ftype = rs.getString("type");
+                    int fdayFrom = rs.getInt("dayFrom");
+                    int fdayTo = rs.getInt("dayTo");
+                    String fnotes = rs.getString("notes");
+                    String fcolor = rs.getString("color");
+                    //add it to the flow list
+                    Flow flow = new Flow(fID, currWorkflow.getId(), fname, ftype, fdayFrom, fdayTo, fnotes, fcolor);
+                    flowList.add(flow);
+                }
             }
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(getContentPane(), e);
+            catch(Exception e){
+                JOptionPane.showMessageDialog(getContentPane(), e);
+            }
         }
     }
     
     
     private void OKbtnActionPerformed(){
+        //get the date from the fields
         String dateStr = dateField.getText();
         String yearStr = yearField.getText();
         
-        if (dateStr.trim().isEmpty()){
+        if (dateStr.trim().isEmpty()){ //empty date
            JOptionPane.showMessageDialog(getContentPane(), "Date is still empty."); 
         }
-        else if (yearStr.trim().isEmpty()){
+        else if (yearStr.trim().isEmpty()){ //empty year
            JOptionPane.showMessageDialog(getContentPane(), "Year is still empty."); 
         }
         else{
-            getCurrentFlows();
-            LocalDate datee = conditioningDate();
+            getCurrentFlows(); //get the flows of the selected workflow
+            
+            //if the flow list is empty
+            if (flowList.isEmpty()){
+                JOptionPane.showMessageDialog(getContentPane(), "The workflow is not valid or does not have any flows yet.");
+                return;
+            }
+            LocalDate datee = conditioningDate(); //get the LocalDate format of the inputted date
 
             for (Flow flow : flowList){
-                 getNewID();
+                //iterates for every flow inside the flow list
+                 getNewID(); //get new ID for the flow before inserting it as a task
                  LocalDate dateFrom;
                  LocalDate dateTo;
                  String dateToStr = "0-null-0";
                  
                  //if one day event
                  if (flow.getTypeInput().equals("One-day event")){
+                     //get the date from based on the amount of day from of the flow
                      dateFrom = datee.plusDays(flow.getDayFromInput());
                  }
                  else{
                      //if multiple day event
+                     //get the dateFrom and dateTo based on the amount of the dayFrom and dayTo and the inputted date
                      dateFrom = datee.plusDays(flow.getDayFromInput());
                      dateTo = datee.plusDays(flow.getDayToInput());
                      dateToStr = dateTo.toString();
                  }
+                 //create a new task for the flow
                  Task new_task = new Task(this.lastID, flow.getNameInput(), flow.getTypeInput(), 
                          dateFrom.toString(), dateToStr, flow.getNoteInput(), flow.getColorInput(), this.userID, false);
 
                  try{
                     Connection con = ConnectionProvider.getCon();
-
+                    //insert the new task to the task database
                     PreparedStatement ps = con.prepareStatement("insert into tasks values(?,?,?,?,?,?,?,?,?)");
                     ps.setString(1, new_task.getId());
                     ps.setString(2, new_task.getNameInput());                   
@@ -344,22 +377,26 @@ public class InsertWorkflowTask extends javax.swing.JFrame {
                     ps.setBoolean(9, new_task.getCompleted());
                     ps.executeUpdate();
 
-
                 }catch(Exception e){
                     JOptionPane.showMessageDialog(getContentPane(), e);
                 }
              }
-
+            //show success message
             JOptionPane.showMessageDialog(getContentPane(), "Workflow tasks added successfully.");
             //go back to calendarpage
              CalendarPage.open=0;
              setVisible(false);
-
-             home.queryTask();
-             home.queryCurrentTaskList();
+             
+             //refresh calendar page
+             home.queryTask(); //query task list
+             home.queryCurrentTaskList(); //query current task list
+             
+             //refresh the task panel
              home.cloneablePanel.removeAll();
              home.createClonedPanels(home.currTasksList, home.currTasksList.size());
              home.renewTaskText();
+             
+             //refresh the task dots
              home.calendarCustom2.refreshTaskDots();
              home.calendarCustom2.currentPanel.revalidate();
              home.calendarCustom2.currentPanel.repaint();

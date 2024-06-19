@@ -55,8 +55,10 @@ public class EditTask extends javax.swing.JFrame {
     }
     
     private void initDesign(){
+        //set background color
         getContentPane().setBackground(Color.white);
         
+        //init components
         oneDay = new javax.swing.JRadioButton();
         nameField = new PlaceHolderTextField("Name",10);
         multipleDay = new javax.swing.JRadioButton();
@@ -77,21 +79,21 @@ public class EditTask extends javax.swing.JFrame {
         toYearField = new PlaceHolderTextField("Year",20);
         optGrp = new javax.swing.ButtonGroup();
 
+        //add them to the button group, so that only one button can be selected at a time
         optGrp.add(oneDay); optGrp.add(multipleDay);
         
-        setTitle("Add Task");
-        setAlwaysOnTop(true);
-        setBackground(new java.awt.Color(255, 255, 255));
+        //set size and layout
         setPreferredSize(new java.awt.Dimension(500, 577));
-        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        //styling components
         oneDay.setBackground(new java.awt.Color(255, 255, 255));
         oneDay.setFont(new java.awt.Font("Montserrat", 0, 18)); // NOI18N
         oneDay.setSelected(true);
         oneDay.setText("One-day event");
         oneDay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //disable the to fields
                 toDateField.setEnabled(false);
                 toYearField.setEnabled(false);
                 monthToComboBox.setEnabled(false);
@@ -114,6 +116,7 @@ public class EditTask extends javax.swing.JFrame {
         multipleDay.setText("Multiple-day event");
         multipleDay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //enable the to fields
                 toDateField.setEnabled(true);
                 toYearField.setEnabled(true);
                 monthToComboBox.setEnabled(true);
@@ -245,6 +248,7 @@ public class EditTask extends javax.swing.JFrame {
         toYearField.setToolTipText("");
         getContentPane().add(toYearField, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 245, 90, 38));
         
+        //the to fields are disabled by default because one-day is selected by default
         toDateField.setEnabled(false);
         toYearField.setEnabled(false);
         monthToComboBox.setEnabled(false);
@@ -253,12 +257,13 @@ public class EditTask extends javax.swing.JFrame {
     }
     
     private void deleteBtnActionPerformed(){
-        queryCurrentTask();
+        queryCurrentTask(); //get the information of the current task
+        //ask for confirmation
         String question = "Do you really want to delete " + thisTask.getNameInput() + "?";
         int a = JOptionPane.showConfirmDialog(getContentPane(), question, "SELECT", JOptionPane.YES_OPTION);
         
         if (a == 0){
-            String id = thisTask.getId();
+            String id = thisTask.getId(); //get task ID
             
             //delete from database
             try{
@@ -280,37 +285,45 @@ public class EditTask extends javax.swing.JFrame {
             setVisible(false);
             
             //refresh calendar page
-            home.queryTask();
-            home.queryCurrentTaskList();
+            home.queryTask(); //refresh task list
+            home.queryCurrentTaskList(); //refresh current task list
+            
+            //refresh task panel
             home.cloneablePanel.removeAll();
             home.createClonedPanels(home.currTasksList, home.currTasksList.size());
             home.renewTaskText();
+            //refresh task dots in calendar panel
             home.calendarCustom2.refreshTaskDots();
             
             //remove the task dot
             if (thisTask.getTypeInput().equals("One-day event")){
-                CalendarCell current = home.calendarCustom2.currentPanel.getCurrentCell();
-                current.setTaskAmount(current.getTaskAmount() -1);
+                //if it is a one day event
+                CalendarCell current = home.calendarCustom2.currentPanel.getCurrentCell(); //get current cell
+                current.setTaskAmount(current.getTaskAmount() -1); //deduct the task amount
                 if (current.getTaskAmount() <= 0){
-                   current.setHasTasks(false, ""); 
+                    //false has task means that there is no other dots
+                   current.setHasTasks(false, ""); //set has task to be false if the task amount <= 0
                 }                
             }
             else{
+                //get the range of date to and date from
                 LocalDate date_to = home.convertStrDate(thisTask.getTimeToInput());
                 LocalDate date_from = home.convertStrDate(thisTask.getTimeFromInput());
                 
+                //for every cell 
                 for (CalendarCell cell1 : home.calendarCustom2.currentPanel.getCells()){
                     LocalDate date_cell = cell1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    
+                    //if the cell is in the task date range
                    if (date_cell.isAfter(date_from.minusDays(1)) && date_cell.isBefore(date_to.plusDays(1))){
-                        cell1.setTaskAmount(cell1.getTaskAmount() -1);
+                        cell1.setTaskAmount(cell1.getTaskAmount() -1); //deduct the task amount
                         if (cell1.getTaskAmount() <= 0){
-                             cell1.setHasTasks(false, ""); 
+                            //false has task means that there is no other dots
+                             cell1.setHasTasks(false, ""); //set has task as false if the task amount  <= 0
                         }
                    } 
                 }
             }
-            
+            //revalidate and repaint
             home.calendarCustom2.currentPanel.revalidate();
             home.calendarCustom2.currentPanel.repaint();
         }
@@ -318,20 +331,23 @@ public class EditTask extends javax.swing.JFrame {
     
     private boolean isInteger(String str){
         try {
+            //ig there is no error when parsing the integer, return tru
             Integer.parseInt(str);
             return true;
         } catch (NumberFormatException nfe) {
+            //if exception happens, return false
             return false;
         }
     }
     
     private void queryCurrentTask(){
-        try{
+        try{ //get information about current task based on its ID
             Connection con = ConnectionProvider.getCon();
             String query = "SELECT * FROM tasks WHERE taskID = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, this.thisID);
             
+            //get the attribute
             ResultSet rs = pstmt.executeQuery();
             while(rs.next()){
                 String tName = rs.getString("name");
@@ -340,7 +356,7 @@ public class EditTask extends javax.swing.JFrame {
                 String timeTo = rs.getString("timeTo");
                 String tNotes = rs.getString("notes");
                 String tColor = rs.getString("color");                
-                
+                //set it as a task object
                 thisTask = new Task(this.thisID, tName, tType, timeFrom, timeTo, tNotes, tColor, this.userID, false);
             }
         }
@@ -350,55 +366,62 @@ public class EditTask extends javax.swing.JFrame {
     }
     
     private void handleDateMonthYear(String time, JTextField dateField, JComboBox monthBox, JTextField yearField){
+        //split the string YYYY-MM-dd to three elements
         String[] arrTime = time.split("-");
-        yearField.setText(arrTime[0]);
-        dateField.setText(arrTime[2]);
         
-        //String curr_month = getKeyByValue(monthMap, arrTime[1]);
-        monthBox.setSelectedIndex(Integer.parseInt(arrTime[1])-1);
+        yearField.setText(arrTime[0]); //the YYYY part will be the year
+        dateField.setText(arrTime[2]); //the dd part will be the date   
+        monthBox.setSelectedIndex(Integer.parseInt(arrTime[1])-1); //the month box selected index will be the same as MM
     }
     
     private void setUpFields(){
+        //set name field as the task name
         nameField.requestFocus();
         nameField.setText(thisTask.getNameInput());
         
         //set radio button
         if (thisTask.getTypeInput().equals("One-day event")){
+            //if it is one day event
             oneDay.setSelected(true);   
+            //disable the to fields
             toDateField.setEnabled(false);
             monthToComboBox.setEnabled(false);
             toYearField.setEnabled(false);
             repaint();
         }else{
+            //if it is multiple day event
             multipleDay.setSelected(true);
+            //enable the to fields
             toDateField.setEnabled(true);
             monthToComboBox.setEnabled(true);
             toYearField.setEnabled(true);
             repaint();
-            //set dateTo
+            //set dateTo to the to fields
             handleDateMonthYear(thisTask.getTimeToInput(), toDateField, monthToComboBox, toYearField);
         }
         
-        //set day from
+        //set date from to the from fields
         handleDateMonthYear(thisTask.getTimeFromInput(), fromDateField, monthFromComboBox, fromYearField);
-        noteArea.setText(thisTask.getNoteInput());
-        colorComboBox.setSelectedItem(thisTask.getColorInput());
+        noteArea.setText(thisTask.getNoteInput()); //set notes
+        colorComboBox.setSelectedItem(thisTask.getColorInput()); //set color
     }
     
-    private void myinit(){
-        //query current task
-        queryCurrentTask();
-        setUpFields();
+    private void myinit(){        
+        queryCurrentTask(); //query current task
+        setUpFields(); //set up the fields based on the task info
+        
         //set default close operation
+        //upon clicking the 'x' button, the window will not close
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Custom close operation logic
+                // ask for confirmation
                 int option = JOptionPane.showConfirmDialog(getContentPane(), "Do you really want to go back?", null, JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
+                    //close this window only and set the opened window of calendar page to become 0
+                    CalendarPage.open = 0;
                     setVisible(false);
-                    CalendarPage.open=0;
                 } 
             }
         });
@@ -420,12 +443,14 @@ public class EditTask extends javax.swing.JFrame {
     
     
     private void saveBtnActionPerformed(){
+        //get the data inside the fieldw
         String nameStr = nameField.getText();
         String typeStr;
         String dateToStr, monthToStr, yearToStr;
         
         if(oneDay.isSelected()){
             typeStr = "One-day event";
+            //the to field attributes are not important if it is one day event
             dateToStr = "0";
             monthToStr = "0";
             yearToStr = "0";
@@ -448,39 +473,39 @@ public class EditTask extends javax.swing.JFrame {
         String colorStr = (String) colorComboBox.getSelectedItem();
         
         //validation
-        if (nameStr.equals("Name") || nameStr.equals("")){
+        if (nameStr.equals("Name") || nameStr.equals("")){ //empty name
             JOptionPane.showMessageDialog(getContentPane(), "Name is still empty.");
         }
-        else if (dateFromStr.equals("Date") || dateFromStr.equals("")){
+        else if (dateFromStr.equals("Date") || dateFromStr.equals("")){ //empty dateFrom
             JOptionPane.showMessageDialog(getContentPane(), "Date 'from' is still empty.");
         }
-        else if (!isInteger(dateFromStr)){
+        else if (!isInteger(dateFromStr)){ //dateFrom is not integer
             JOptionPane.showMessageDialog(getContentPane(), "Date 'from' is not valid.");
         }
-        else if (yearFromStr.equals("Year") || yearFromStr.equals("")){
+        else if (yearFromStr.equals("Year") || yearFromStr.equals("")){ //yearFrom is empty
             JOptionPane.showMessageDialog(getContentPane(), "Year 'from' is still empty.");
         }
-        else if (!isInteger(yearFromStr)){
+        else if (!isInteger(yearFromStr)){ //yearFrom is not ineteger
             JOptionPane.showMessageDialog(getContentPane(), "Year 'from' is not valid.");
         }       
         //only for multiple day event
         else if ((dateToStr.equals("Date") || dateToStr.equals("")) && typeStr.equals("Multiple-day event")){
-            JOptionPane.showMessageDialog(getContentPane(), "Date 'to' is still empty.");
+            JOptionPane.showMessageDialog(getContentPane(), "Date 'to' is still empty."); //empty dateTo
         }
         else if (!isInteger(dateToStr) && typeStr.equals("Multiple-day event")){
-            JOptionPane.showMessageDialog(getContentPane(), "Date 'to' is not valid.");
+            JOptionPane.showMessageDialog(getContentPane(), "Date 'to' is not valid."); //dateTo is not integer
         }
         else if ((yearToStr.equals("Year") || yearToStr.equals("")) && typeStr.equals("Multiple-day event")){
-            JOptionPane.showMessageDialog(getContentPane(), "Year 'to' is still empty.");
+            JOptionPane.showMessageDialog(getContentPane(), "Year 'to' is still empty."); //empty yearTo
         }
         else if (!isInteger(yearToStr) && typeStr.equals("Multiple-day event")){
-            JOptionPane.showMessageDialog(getContentPane(), "Year 'to' is not valid.");
+            JOptionPane.showMessageDialog(getContentPane(), "Year 'to' is not valid."); //yearTo is not ineteger
         }
         else{
-            //set day from int and day to int
+            //set date from and date to become String YYYY-MM-dd
             String timeFrom = yearFromStr + "-"  + monthMap.get(monthFromStr) + "-" + dateFromStr;
             String timeTo = yearToStr + "-"  + monthMap.get(monthToStr) + "-" + dateToStr;
-            boolean safe = false;
+            boolean safe = false; //track whether the date range is valid
             
             if (typeStr.equals("Multiple-day event")){
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");            
@@ -489,12 +514,13 @@ public class EditTask extends javax.swing.JFrame {
                     Date dateFrom = dateFormat.parse(timeFrom);
                     Date dateTo = dateFormat.parse(timeTo);
 
-                    // Compare the dates
+                    // Compare the dates to see whether the date range is valid
                     if (dateFrom.compareTo(dateTo) > 0) {
                         JOptionPane.showMessageDialog(getContentPane(), "Date range is not valid.");
                     } else if (dateFrom.compareTo(dateTo) < 0) {
-                        safe = true;
+                        safe = true; //valid
                     } else {
+                        //if the dateFrom and dateTo is the same
                         JOptionPane.showMessageDialog(getContentPane(), "Date 'from' and 'to' are the same. Consider changing to one-day event.");
                     }
                 } catch (ParseException e) {
@@ -505,11 +531,12 @@ public class EditTask extends javax.swing.JFrame {
                 safe = true;
             }
             
-            if (safe){
+            if (safe){//if valid
                 try{
                    Connection con = ConnectionProvider.getCon();
-
-                   PreparedStatement ps = con.prepareStatement("UPDATE tasks SET name = ?, type = ?, timeFrom = ?, timeTo = ?, notes = ?, color = ? WHERE taskID = ?");
+                   //update the tasks table
+                   PreparedStatement ps = con.prepareStatement("UPDATE tasks SET name = ?, type = ?, timeFrom = ?, "
+                           + "timeTo = ?, notes = ?, color = ? WHERE taskID = ?");
                    ps.setString(1, nameStr);
                    ps.setString(2, typeStr);                   
                    ps.setString(3, timeFrom);
@@ -526,14 +553,18 @@ public class EditTask extends javax.swing.JFrame {
                    //go back to calendarpage
                     CalendarPage.open=0;
                     setVisible(false);
-
-                    home.queryTask();
-                    home.queryCurrentTaskList();
-                    home.cloneablePanel.removeAll();
+                    
+                    //refresh calendar page
+                    home.queryTask(); //query task list
+                    home.queryCurrentTaskList(); //query current task list
+                    
+                    //refresh the task panel
+                    home.cloneablePanel.removeAll(); 
                     home.createClonedPanels(home.currTasksList, home.currTasksList.size());
                     home.renewTaskText();
-                    home.calendarCustom2.refreshTaskDots();
                     
+                    //refresh the task dots
+                    home.calendarCustom2.refreshTaskDots();                    
                     home.calendarCustom2.currentPanel.revalidate();
                     home.calendarCustom2.currentPanel.repaint();
 
