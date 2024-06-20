@@ -1,5 +1,7 @@
 # SchedNara - An Aranara Workflow and Scheduling App
 
+<img src="README_images/logo.png" alt ="Home Page" width = "600"> <br>
+
 **Name:** Ella Raputri
 
 **Class:** L2AC
