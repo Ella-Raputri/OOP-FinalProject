@@ -876,12 +876,15 @@ public class EditWorkflow extends javax.swing.JFrame {
     private void clearAllFields(){
         //clear all the fields in the edit panel
         //set all the combo box to the first index
+        currentPanel = null;
         nameField.setText("");
         oneDay.setSelected(true); //by default, the type is one day
         fromField.setText("");
         fromComboBox.setSelectedIndex(0);
         toField.setText("");
         toComboBox.setSelectedIndex(0);
+        toField.setEnabled(false);
+        toComboBox.setEnabled(false);
         notesArea.setText("");
         colorComboBox.setSelectedIndex(0);
     }

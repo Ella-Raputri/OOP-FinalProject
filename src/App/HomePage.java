@@ -598,7 +598,7 @@ public class HomePage extends javax.swing.JFrame {
                 if (completionRate.get(key) == 0){
                     NumberAxis rangeAxis = (NumberAxis) categoryPlot.getRangeAxis();
                     rangeAxis.setTickUnit(new NumberTickUnit(1));
-                    rangeAxis.setRange(0.0, 5.0);
+                    rangeAxis.setRange(0.0, 8.0);
                 }
             }            
         }
