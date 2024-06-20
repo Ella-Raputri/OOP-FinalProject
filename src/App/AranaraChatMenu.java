@@ -45,7 +45,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     private LinkedList<Task> taskList = new LinkedList<>();
     private String game_choice;
     private String aranara_choice;
-    CONFIG config = new CONFIG();
+    private CONFIG config = new CONFIG();
     private final String API_KEY = config.getAPI_KEY(); 
     private static final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s";
     private static int open = 0;
@@ -862,7 +862,7 @@ public class AranaraChatMenu extends javax.swing.JFrame {
         //get the reccomendation of the aranara based on the main weather description
         String suppMsg = getAranaraMsg(weatherMain); 
         //set up the message
-        String msg = "The weather in " + cityName + " today is " + weatherMain 
+        String msg = "The weather in " + cityName + " today is " + weatherMain.toLowerCase()
                 + " (" + weatherDesc + ") with the temperature of " 
                 + temper + ". " + suppMsg;
         
