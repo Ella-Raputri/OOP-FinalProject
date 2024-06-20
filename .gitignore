@@ -1,1 +1,3 @@
 /dist/
+/build/classes/DatabaseConnection/CONFIG.class
+/src/DatabaseConnection/CONFIG.java

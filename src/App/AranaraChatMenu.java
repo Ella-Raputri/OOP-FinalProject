@@ -5,6 +5,7 @@
 package App;
 
 import DatabaseConnection.ConnectionProvider;
+import DatabaseConnection.CONFIG;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -44,7 +45,8 @@ public class AranaraChatMenu extends javax.swing.JFrame {
     private LinkedList<Task> taskList = new LinkedList<>();
     private String game_choice;
     private String aranara_choice;
-    private static final String API_KEY = "53df037de4b6740e159a2d4f1841580f"; 
+    CONFIG config = new CONFIG();
+    private final String API_KEY = config.getAPI_KEY(); 
     private static final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s";
     private static int open = 0;
     private SfxPlayer sfx = new SfxPlayer("src/App/sound/select.wav", 0.4f);;
